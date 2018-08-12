@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#42f4c2</color>
+    <color name="colorPrimaryDark">#20d9a5</color>
+    <color name="colorAccent">#646464</color>
+    <color name="CardColor">#ffffff</color>
+    <color name="white">#ffffff</color>
+    <color name="yellow">#fff17c</color>
+    <color name="red">#d45b2a</color>
+    <color name="black">#000000</color>
+    <color name="blue">#3c5a98</color>
+    <color name="gray">#e9e9e9</color>
+
+    <!--Info Window Model Color-->
+    <color name="InfoWindowModelColor">#e1fff7</color>
+
+
+    <!--Gps Settings-->
+    <color name="gps">#fdc007</color>
+    <color name="gps_red">#d45b2a</color>
+
+
+    <!--No Internet Settings-->
+    <color name="internet">#fa5757</color>
+
+    <!--Alert user-->
+    <color name="clone_user">#fa5757</color>
+
+</resources>
