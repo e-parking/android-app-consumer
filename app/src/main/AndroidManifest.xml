@@ -75,6 +75,8 @@
         <activity android:name=".Activities.PhoneNumberActivity" />
         <activity android:name=".Activities.ProfileActivity" />
         <activity android:name=".Activities.VerifyPhoneActivity"></activity>
+
+
     </application>
 
 </manifest>

@@ -67,6 +67,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.clustering.ClusterManager;
 import com.nerdcastle.eparking.Activities.LoginActivity;
@@ -80,6 +81,7 @@ import com.nerdcastle.eparking.OtherClasses.OnInfoWindowElemTouchListener;
 import com.nerdcastle.eparking.OtherClasses.TempData;
 import com.nerdcastle.eparking.PoJoClasses.Consumer;
 import com.nerdcastle.eparking.PoJoClasses.MyItems;
+import com.nerdcastle.eparking.PoJoClasses.ParkPlace;
 import com.nerdcastle.eparking.PoJoClasses.Provider;
 import com.nerdcastle.eparking.PoJoClasses.Request;
 import com.nerdcastle.eparking.PoJoClasses.StatusOfConsumer;
@@ -89,7 +91,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -152,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements
     private ProgressDialog progressDialog;
 
     private List<Provider> providerList = new ArrayList<>();
+    private List<ParkPlace> ParkPlaceList = new ArrayList<>();
     private String mRequestID;
     private String mConsumerID;
     private Request mRequest;
@@ -578,6 +583,68 @@ public class MainActivity extends AppCompatActivity implements
                 LatLng myLocation = new LatLng(TempData.getLatitude(),TempData.getLongitude());
                 providerList.clear();
                 clusterManager.clearItems();
+                System.out.println("HHHHHHHHHHHHHHH >>>"+dataSnapshot.getValue(Provider.class));
+                for(DataSnapshot data:dataSnapshot.getChildren()) {
+
+
+                    Provider provider = data.getValue(Provider.class);
+                    if (provider != null && provider.getmName() != null && provider.getmLatitude() != null && provider.getmLongitude()!= null){
+
+
+                        providerList.add(provider);
+                        System.out.println(">>>>>>>>>>>>>>>>>>>>>> " + provider.getmName());
+                        double lat = Double.parseDouble(provider.getmLatitude());
+                        double lon = Double.parseDouble(provider.getmLongitude());
+
+                        if (lat != 0 && lon != 0) {
+                            LatLng restaurant = new LatLng(lat, lon);
+                            MyItems item = new MyItems(restaurant, provider.getmName(), provider.getmProviderID());
+                            clusterManager.addItem(item);
+                            clusterManager.cluster();
+                        }
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
+
+
+                        if (provider.getParkPlaceList()!= null) {
+                            for (Map.Entry<String, ParkPlace> me : provider.getParkPlaceList().entrySet()) {
+                                ParkPlaceList.add(me.getValue());
+                            }
+                        }
+
+
+                    }
+
+                }
+
+                for (ParkPlace x: ParkPlaceList)
+                {
+                    System.out.println(">>>>>>>>>>> HH: "+x);
+                }
+
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The to read event data: " + databaseError.getCode());
+            }
+        });
+    }
+
+
+
+    public void getAllParkingPlaces()
+    {
+        mFirebaseDatabase = mFirebaseInstance.getReference("ProviderList");
+        progressDialog = ProgressDialog.show(this, "Please wait.",
+                "We are collecting Parking Owners.", true);
+        mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //Event event = dataSnapshot.getValue(Event.class);
+                LatLng myLocation = new LatLng(TempData.getLatitude(),TempData.getLongitude());
+                providerList.clear();
+                clusterManager.clearItems();
                 System.out.println(dataSnapshot.getValue(Provider.class));
                 for(DataSnapshot data:dataSnapshot.getChildren()) {
 
@@ -596,7 +663,7 @@ public class MainActivity extends AppCompatActivity implements
                             clusterManager.cluster();
                         }
                         map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
-                }
+                    }
 
                 }
                 progressDialog.dismiss();
@@ -608,6 +675,7 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
     }
+
 
 
 

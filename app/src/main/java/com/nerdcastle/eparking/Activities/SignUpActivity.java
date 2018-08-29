@@ -58,6 +58,8 @@ import static android.content.ContentValues.TAG;
 public class SignUpActivity extends AppCompatActivity {
 
 
+
+
     private DatabaseReference mFirebaseDatabase;
     private FirebaseDatabase mFirebaseInstance;
     private DatabaseReference mFirebaseUserInformation;
@@ -142,6 +144,14 @@ public class SignUpActivity extends AppCompatActivity {
         mProviderPhone.setSelected(false);
         mProviderPhone.setKeyListener(null);
         //--------------------------------------------
+
+        mProviderProfilePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pickDocument4();
+            }
+        });
+
 
         getUserInformation ();
 

@@ -1,6 +1,13 @@
 package com.nerdcastle.eparking.PoJoClasses;
 
+import com.nerdcastle.eparking.OtherClasses.ParkPlaceList;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class Provider {
+
 
     private String mProviderID;
     private String mName;
@@ -16,6 +23,11 @@ public class Provider {
     private String mCreatedDate;
     private String mLatitude;
     private String mLongitude;
+    private Map<String, ParkPlace> ParkPlaceList;
+    //private List<Request> Request = new ArrayList<>();
+    //private List<TransactionHistory> TransactionHistory = new ArrayList<>();
+
+
 
 
     public Provider() {
@@ -38,6 +50,14 @@ public class Provider {
         this.mLongitude = mLongitude;
     }
 
+
+    public Map<String, ParkPlace> getParkPlaceList() {
+        return ParkPlaceList;
+    }
+
+    public void setParkPlaceList(Map<String, ParkPlace> parkPlaceList) {
+        ParkPlaceList = parkPlaceList;
+    }
 
     public String getmProviderID() {
         return mProviderID;
@@ -150,4 +170,6 @@ public class Provider {
     public void setmLongitude(String mLongitude) {
         this.mLongitude = mLongitude;
     }
+
+
 }
