@@ -24,7 +24,7 @@ public class CustomClusterRenderer extends DefaultClusterRenderer<MyItems> {
     @Override
     protected void onBeforeClusterItemRendered(MyItems item, MarkerOptions markerOptions) {
         super.onBeforeClusterItemRendered(item, markerOptions);
-        final BitmapDescriptor markerDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.parking_space_icon);
+        final BitmapDescriptor markerDescriptor = BitmapDescriptorFactory.fromResource(R.drawable.marker_icon);
 
         markerOptions.icon(markerDescriptor);
     }

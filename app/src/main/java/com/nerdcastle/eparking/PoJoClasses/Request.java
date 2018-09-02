@@ -15,15 +15,12 @@ public class Request {
     public Request() {
     }
 
-    public Request(String mRequestID, String mSenderUID, String mRequstSenderName, String mRequstSenderPhone, String mRequstSenderPhoto, String mBookingTimeFrom, String mBookingTimeTo, String mVehicleType, String mVehicleNumber) {
+    public Request(String mRequestID, String mSenderUID, String mRequstSenderName, String mRequstSenderPhone, String mRequstSenderPhoto,  String mVehicleNumber) {
         this.mRequestID = mRequestID;
         this.mSenderUID = mSenderUID;
         this.mRequstSenderName = mRequstSenderName;
         this.mRequstSenderPhone = mRequstSenderPhone;
         this.mRequstSenderPhoto = mRequstSenderPhoto;
-        this.mBookingTimeFrom = mBookingTimeFrom;
-        this.mBookingTimeTo = mBookingTimeTo;
-        this.mVehicleType = mVehicleType;
         this.mVehicleNumber = mVehicleNumber;
     }
 

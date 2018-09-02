@@ -12,36 +12,34 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/circularImageView"
-        android:layout_marginTop="20dp"
         android:layout_width="80dp"
         android:layout_height="80dp"
+        android:layout_marginTop="20dp"
         android:src="@drawable/profile"
-        app:civ_border_width="2dp"
-        app:civ_border_color="#ffffff"/>
+        app:civ_border_color="#ffffff"
+        app:civ_border_width="2dp" />
 
     <TextView
         android:id="@+id/mUserName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/josefinsans_regular"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text=""
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="#ffffff"
-        android:textStyle="bold"
         android:textSize="18dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/mUserEmailAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
+        android:fontFamily="@font/josefinsans_regular"
+        android:text=""
         android:textSize="14sp"
-        android:textStyle="bold"
-        android:text="" />
-
-
-
+        android:textStyle="bold" />
 </LinearLayout>

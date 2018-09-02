@@ -35,6 +35,7 @@
                     android:textSize="14dp"
                     android:gravity="center_vertical"
                     android:layout_weight="2"
+                    android:fontFamily="@font/josefinsans_regular"
                     android:text="Transcation: 5645631646465 "/>
 
                 <TextView
@@ -44,6 +45,7 @@
                     android:textSize="18dp"
                     android:gravity="right"
                     android:textStyle="bold"
+                    android:fontFamily="@font/josefinsans_bold"
                     android:layout_weight="1"
                     android:text="৳86.0"/>
 
@@ -63,6 +65,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="16dp"
                     android:gravity="left"
+                    android:fontFamily="@font/josefinsans_regular"
                     android:layout_weight="2"
                     android:text="Jun 23 2018, 09:38 AM"/>
 
@@ -82,6 +85,7 @@
                     android:textSize="16dp"
                     android:textStyle="bold"
                     android:gravity="right"
+                    android:fontFamily="@font/josefinsans_bold"
                     android:text="CHA 139 DMC"/>
 
 
@@ -127,6 +131,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="right"
+                        android:fontFamily="@font/josefinsans_regular"
                         android:text="Simple formated address goes here"
                         />
                     <LinearLayout
@@ -143,6 +148,7 @@
                             android:layout_gravity="center_vertical"
                             android:textStyle="bold"
                             android:gravity="right"
+                            android:fontFamily="@font/josefinsans_regular"
                             android:text="ParkingOwner Name"
                             />
 
@@ -153,6 +159,7 @@
                             android:layout_gravity="center_vertical"
                             android:gravity="right"
                             android:textStyle="bold"
+                            android:fontFamily="@font/josefinsans_bold"
                             android:textColor="@color/red"
                             android:text="REPORT ISSUES" />
 

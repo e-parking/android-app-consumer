@@ -7,9 +7,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:padding="15dp"
-        android:background="@color/InfoWindowModelColor"
-        android:orientation="vertical">
+        android:background="@color/colorAccent"
+        android:orientation="vertical"
+        android:padding="15dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -18,75 +18,75 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/parkPlaceImage"
                 android:layout_width="0dp"
                 android:layout_height="120dp"
+                android:layout_weight="1"
                 android:scaleType="centerCrop"
-                android:src="@drawable/sample"
-                android:layout_weight="1"/>
+                android:src="@drawable/sample" />
 
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:padding="10dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="10dp">
 
                 <TextView
-                    android:id="@+id/title"
+                    android:id="@+id/providerName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
+                    android:fontFamily="@font/josefinsans_regular"
                     android:text="Owner: BITM Office"
-                    android:textSize="18sp" />
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/snippet"
+                    android:id="@+id/parkAddress"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/josefinsans_regular"
                     android:text="Rate/Hr: 20 TK"
+                    android:textColor="@color/white"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/parkPlaceTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:text="CCTV Camera" />
+                    android:fontFamily="@font/josefinsans_regular"
+                    android:text="CCTV Camera"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
 
                 <TextView
+                    android:id="@+id/parkingType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:text="Car Cover" />
+                    android:fontFamily="@font/josefinsans_regular"
+                    android:text="Car Cover"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:text="Floor: G2" />
-                
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="12sp"
-                    android:text="Capacity: 12 Cars" />
             </LinearLayout>
 
 
         </LinearLayout>
 
-
-
         <Button
             android:id="@+id/button"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
             android:layout_gravity="right"
+            android:layout_weight="1"
             android:background="@drawable/round_but_red_sel"
+            android:fontFamily="@font/josefinsans_regular"
             android:padding="10dp"
-            android:text="Send Request" />
+            android:text="Send Request"
+            android:textColor="@color/white" />
 
     </LinearLayout>
 

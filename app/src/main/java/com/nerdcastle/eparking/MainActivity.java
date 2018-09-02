@@ -27,6 +27,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -41,6 +42,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -67,7 +69,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.clustering.ClusterManager;
 import com.nerdcastle.eparking.Activities.LoginActivity;
@@ -83,7 +84,9 @@ import com.nerdcastle.eparking.PoJoClasses.Consumer;
 import com.nerdcastle.eparking.PoJoClasses.MyItems;
 import com.nerdcastle.eparking.PoJoClasses.ParkPlace;
 import com.nerdcastle.eparking.PoJoClasses.Provider;
+import com.nerdcastle.eparking.PoJoClasses.ParkingRequest;
 import com.nerdcastle.eparking.PoJoClasses.Request;
+import com.nerdcastle.eparking.PoJoClasses.Status;
 import com.nerdcastle.eparking.PoJoClasses.StatusOfConsumer;
 import com.nerdcastle.eparking.PoJoClasses.TempHolder;
 import com.nerdcastle.eparking.WebApis.WebApi;
@@ -91,22 +94,17 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static android.content.ContentValues.TAG;
-
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener
-        ,OnMapReadyCallback
-        ,ActivityFragment.ActivityFragmentInterface
-        ,PaymentFragment.PaymentFragmentInterface{
+        , OnMapReadyCallback
+        , ActivityFragment.ActivityFragmentInterface
+        , PaymentFragment.PaymentFragmentInterface {
 
-
-
+    private static final String TAG = "MainActivity";
     //------------Custom Dialogs ---------
     private Dialog mGpsDialog;
     private Dialog mInternetDialog;
@@ -124,13 +122,15 @@ public class MainActivity extends AppCompatActivity implements
     private DatabaseReference mFirebaseUserInformation;
     private DatabaseReference mFirebaseRequestRef;
     private DatabaseReference mDatabaseConsumerStatus;
+    private DatabaseReference consumerRequestDb;
+    private DatabaseReference providerRequestDb;
     private FirebaseUser mCurrentUser;
 
     private FusedLocationProviderClient client;
     private LocationRequest request;
     private LocationCallback callback;
-    private Double latitude,longitude;
-    private ClusterManager<MyItems>clusterManager;
+    private Double latitude, longitude;
+    private ClusterManager<MyItems> clusterManager;
     private GoogleMap map;
     private GoogleMapOptions options;
     private LatLng mCurrentLocation;
@@ -142,8 +142,13 @@ public class MainActivity extends AppCompatActivity implements
     private MapWrapperLayout mapWrapperLayout;
     private ViewGroup infoWindow;
     private ViewGroup mCurrentLocationWindowBox;
-    private TextView infoTitle;
-    private TextView infoSnippet;
+    private TextView infoProviderName;
+    private TextView infoParkPlaceAddress;
+    private TextView infoParkPlaceTitle;
+    private TextView infoParkingType;
+    private ImageView infoParkPlaceImage;
+    // private String currentProviderId;
+    private Provider provider;
     private Button infoButton;
     private OnInfoWindowElemTouchListener infoButtonListener;
 
@@ -151,12 +156,12 @@ public class MainActivity extends AppCompatActivity implements
     private android.support.v4.app.FragmentManager fm;
     private android.support.v4.app.FragmentTransaction ft;
 
-    private TextView mArivalTime,mLeavingTime;
+    private TextView mArivalTime, mLeavingTime;
     private LinearLayout mHeaderMenu;
     private ProgressDialog progressDialog;
 
     private List<Provider> providerList = new ArrayList<>();
-    private List<ParkPlace> ParkPlaceList = new ArrayList<>();
+    private List<ParkPlace> parkPlaceList = new ArrayList<>();
     private String mRequestID;
     private String mConsumerID;
     private Request mRequest;
@@ -165,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements
 
     //------------- Time Picking -----------------
     private Calendar calendar;
-    private int year,day,month;
+    private int year, day, month;
 
     //-------------- Notification  --------------------
     private static final int NOTIFICATION_ID = 1;
@@ -179,10 +184,8 @@ public class MainActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
 
 
-
         mInternetStatus = isNetworkAvailable();
-        if (!mInternetStatus)
-        {
+        if (!mInternetStatus) {
             showInternetDialogBox();
         }
         //-------------- Custom Dialog -------------------
@@ -235,10 +238,8 @@ public class MainActivity extends AppCompatActivity implements
         */
 
 
-
-
         //final MapFragment mapFragment = (MapFragment)getFragmentManager().findFragmentById(R.id.fragmentContainer);
-        mapWrapperLayout = (MapWrapperLayout)findViewById(R.id.map_relative_layout);
+        mapWrapperLayout = (MapWrapperLayout) findViewById(R.id.map_relative_layout);
         mArivalTime = findViewById(R.id.arivingTime);
         mLeavingTime = findViewById(R.id.leavingTime);
         mHeaderMenu = findViewById(R.id.headerMenu);
@@ -248,8 +249,6 @@ public class MainActivity extends AppCompatActivity implements
 
         fm = getSupportFragmentManager();
         ft = fm.beginTransaction();
-
-
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -263,10 +262,9 @@ public class MainActivity extends AppCompatActivity implements
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-            this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
 
 
         mProfileImage.setOnClickListener(new View.OnClickListener() {
@@ -295,13 +293,13 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
 
-                        String AM_PM ;
-                        if(selectedHour < 12) {
+                        String AM_PM;
+                        if (selectedHour < 12) {
                             AM_PM = " AM";
                         } else {
                             AM_PM = " PM";
                         }
-                        mArivalTime.setText("Ariving \n at "+selectedHour + ":" + selectedMinute+AM_PM);
+                        mArivalTime.setText("Ariving \n at " + selectedHour + ":" + selectedMinute + AM_PM);
                         Toast.makeText(MainActivity.this, "dfsdf", Toast.LENGTH_SHORT).show();
                     }
                 }, hour, minute, true);//Yes 24 hour time
@@ -323,13 +321,13 @@ public class MainActivity extends AppCompatActivity implements
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
 
-                        String AM_PM ;
-                        if(selectedHour < 12) {
+                        String AM_PM;
+                        if (selectedHour < 12) {
                             AM_PM = " AM";
                         } else {
                             AM_PM = " PM";
                         }
-                        mLeavingTime.setText("Leaving \n at "+selectedHour + ":" + selectedMinute+AM_PM);
+                        mLeavingTime.setText("Leaving \n at " + selectedHour + ":" + selectedMinute + AM_PM);
                     }
                 }, hour, minute, true);//Yes 24 hour time
                 mTimePicker.setTitle("Select Time");
@@ -338,11 +336,7 @@ public class MainActivity extends AppCompatActivity implements
         });
 
 
-
-
         //------------------------------------------------------------------------------------------
-
-
 
 
         //----------------------------------- Location ---------------------------------------------
@@ -352,20 +346,19 @@ public class MainActivity extends AppCompatActivity implements
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         request.setInterval(10000);
         request.setFastestInterval(5000);
-        callback = new LocationCallback(){
+        callback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
-                if(locationResult == null){
+                if (locationResult == null) {
                     return;
                 }
-                for(Location location : locationResult.getLocations()){
+                for (Location location : locationResult.getLocations()) {
                     latitude = location.getLatitude();
                     longitude = location.getLongitude();
-                    if(latitude!=0 && longitude!=0) {
-                        if (isMapInitialized == false)
-                        {
+                    if (latitude != 0 && longitude != 0) {
+                        if (isMapInitialized == false) {
                             isMapInitialized = true;
-                            innitializeMap ();
+                            innitializeMap();
                         }
                         TempData.latitude = latitude;
                         TempData.longitude = longitude;
@@ -374,8 +367,6 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         };
-
-
 
 
         //------------------------------- End Of location Section ----------------------------------
@@ -397,33 +388,35 @@ public class MainActivity extends AppCompatActivity implements
     //----------------------------------------------------------------------------------------------
 
 
-
-    public void innitializeMap ()
-    {
+    public void innitializeMap() {
         mGpsDialog.dismiss();
         options = new GoogleMapOptions();
         options.zoomControlsEnabled(true);
         SupportMapFragment mapFragment = SupportMapFragment.newInstance(options);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer,mapFragment);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction().replace(R.id.fragmentContainer, mapFragment);
         ft.commit();
         mapFragment.getMapAsync(this);
     }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
-        clusterManager = new ClusterManager<MyItems>(this,map);
+        clusterManager = new ClusterManager<MyItems>(this, map);
         mapWrapperLayout.init(map, getPixelsFromDp(this, 39 + 20));
         // We want to reuse the info window for all the markers,
         // so let's create only one class member instance
 
-        this.infoWindow = (ViewGroup)getLayoutInflater().inflate(R.layout.info_window, null);
-        this.mCurrentLocationWindowBox = (ViewGroup)getLayoutInflater().inflate(R.layout.dialog_current_location, null);
-        this.infoTitle = (TextView)infoWindow.findViewById(R.id.title);
-        this.infoSnippet = (TextView)infoWindow.findViewById(R.id.snippet);
-        this.infoButton = (Button)infoWindow.findViewById(R.id.button);
+        this.infoWindow = (ViewGroup) getLayoutInflater().inflate(R.layout.info_window, null);
+        this.mCurrentLocationWindowBox = (ViewGroup) getLayoutInflater().inflate(R.layout.dialog_current_location, null);
+        this.infoProviderName = infoWindow.findViewById(R.id.providerName);
+        this.infoParkPlaceAddress = infoWindow.findViewById(R.id.parkAddress);
+        this.infoParkPlaceTitle = infoWindow.findViewById(R.id.parkPlaceTitle);
+        this.infoParkingType = infoWindow.findViewById(R.id.parkingType);
+        this.infoParkPlaceImage = infoWindow.findViewById(R.id.parkPlaceImage);
+        this.infoButton = infoWindow.findViewById(R.id.button);
 
 
-        renderer = new CustomClusterRenderer(this,map,clusterManager);
+        renderer = new CustomClusterRenderer(this, map, clusterManager);
         clusterManager.setRenderer(renderer);
 
         map.setOnMarkerClickListener(clusterManager);
@@ -434,9 +427,9 @@ public class MainActivity extends AppCompatActivity implements
         }
         map.setMyLocationEnabled(true);
 
-        mCurrentLocation = new LatLng(TempData.getLatitude(),TempData.getLongitude());
-        map.addMarker(new MarkerOptions().position(mCurrentLocation).title("My Current Location").snippet("Mirpur DOHS, Avenue 9").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_icon)));
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLocation,15));
+        mCurrentLocation = new LatLng(TempData.getLatitude(), TempData.getLongitude());
+        map.addMarker(new MarkerOptions().position(mCurrentLocation).title("My Current Location").snippet("Mirpur DOHS, Avenue 9").icon(BitmapDescriptorFactory.fromResource(R.drawable.current_location)));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLocation, 15));
 
 
 
@@ -451,7 +444,6 @@ public class MainActivity extends AppCompatActivity implements
         });*/
 
 
-
         //------------------------------------------------------------------------------------------
 
 
@@ -463,9 +455,8 @@ public class MainActivity extends AppCompatActivity implements
         {
             @Override
             protected void onClickConfirmed(View v, Marker marker) {
-                // Here we can perform some action triggered after clicking the button
-                Toast.makeText(MainActivity.this, "Request Sent to > "+marker.getTitle(), Toast.LENGTH_SHORT).show();
-                sendRequest(marker.getSnippet());
+                ParkPlace parkPlace = getParkPlaceByID(marker.getSnippet());
+                sendRequest(parkPlace);
             }
         };
         this.infoButton.setOnTouchListener(infoButtonListener);
@@ -480,31 +471,40 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public View getInfoContents(Marker marker) {
                 // Setting up the infoWindow with current's marker info
-                Provider provider = new Provider();
-                if (marker.getTitle()!= null)
-                {
+                // Provider provider = new Provider();
+                ParkPlace parkPlace = new ParkPlace();
+                if (marker.getTitle() != null) {
 
-                if (marker.getTitle().equals("My Current Location"))
-                {
+                    if (marker.getTitle().equals("My Current Location")) {
 
-                    infoTitle.setText("My Current Location");
-                    infoSnippet.setText("");
-                    return mCurrentLocationWindowBox;
-                    //infoButtonListener.setMarker(marker);
-                }
-                else
-                {
-                    provider = getProviderByID(marker.getSnippet());
-                    infoTitle.setText(provider.getmName());
-                    infoSnippet.setText(provider.getmAddress());
-                    infoButtonListener.setMarker(marker);
-                }
-                }else
-                    {
+                        infoProviderName.setText("My Current Location");
+                        infoParkPlaceAddress.setText("");
+                        return mCurrentLocationWindowBox;
+                        //infoButtonListener.setMarker(marker);
+                    } else {
+                        //provider = getProviderByID(marker.getSnippet());
+                        parkPlace = getParkPlaceByID(marker.getSnippet());
+                        provider = getProviderByID(parkPlace.getmProviderID());
+                        //currentProviderId = provider.getmProviderID();
+                        infoProviderName.setText(provider.getmName());
+                        infoParkPlaceAddress.setText(parkPlace.getmAddress());
+                        infoParkPlaceTitle.setText(parkPlace.getmParkPlaceTitle());
+                        infoParkingType.setText("1 " + parkPlace.getmParkingType());
 
-                        Toast.makeText(MainActivity.this, "Zoom Out", Toast.LENGTH_SHORT).show();
-                        return null;
+                        if (parkPlace.getmParkPlacePhotoUrl().contains("https://")) {
+                            Picasso.get().load(parkPlace.getmParkPlacePhotoUrl()).into(infoParkPlaceImage);
+                        } else {
+                            Bitmap bitmap = decodeBase64(parkPlace.getmParkPlacePhotoUrl());
+                            infoParkPlaceImage.setImageBitmap(bitmap);
+                        }
+
+                        infoButtonListener.setMarker(marker);
                     }
+                } else {
+
+                    Toast.makeText(MainActivity.this, "Zoom Out", Toast.LENGTH_SHORT).show();
+                    return null;
+                }
 
                 // We must call this to set the current marker and infoWindow references
                 // to the MapWrapperLayout
@@ -516,8 +516,7 @@ public class MainActivity extends AppCompatActivity implements
 
         //------------------------------------------------------------------------------------------
 
-        if (mInternetStatus)
-        {
+        if (mInternetStatus) {
             getAllParkOwnerFromFirebase();
         }
 
@@ -525,37 +524,58 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
-    public void sendRequest (String mProviderID)
-    {
-        mFirebaseRequestRef = mFirebaseInstance.getReference("ProviderList/"+mProviderID+"/Request/");
-        mRequestID = mFirebaseRequestRef.push().getKey();
+    public static Bitmap decodeBase64(String input) {
+        byte[] decodedBytes = Base64.decode(input, 0);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
+    }
+
+    public void sendRequest(ParkPlace parkPlace) {
+        providerRequestDb = mFirebaseInstance.getReference
+                ("ProviderList/" + provider.getmProviderID() + "/ParkPlaceList/" + parkPlace.getmParkPlaceID() + "/Request/");
+        mRequestID = providerRequestDb.push().getKey();
         String mSenderUID = mAuth.getCurrentUser().getUid();
         String mSenderName = mAuth.getCurrentUser().getDisplayName();
 
-        if (TempHolder.mConsumer != null)
-        {
-            mRequest = new Request(mRequestID,mSenderUID,mSenderName,TempHolder.mConsumer.getmPhone(),TempHolder.mConsumer.getmPhoto(),"11:30 AM","2:30 PM","Car","DMC 5643 TA");
+        if (TempHolder.mConsumer != null) {
+            mRequest = new Request(mRequestID, mSenderUID, TempHolder.mConsumer.getmName(),
+                    TempHolder.mConsumer.getmPhone(),
+                    TempHolder.mConsumer.getmPhoto(), "DMC 5643 TA");
+            Consumer consumer = TempHolder.mConsumer;
+            ParkingRequest providerRequest = new ParkingRequest(consumer.getmComsumerID(), provider.getmProviderID(),
+                    parkPlace.getmParkPlaceID(),
+                    parkPlace.getmParkPlaceTitle(), mRequestID, consumer.getmName(),
+                    consumer.getmPhone(), "DMC 5643 TA", provider.getmName(),
+                    provider.getmPhone(), parkPlace.getmAddress(), parkPlace.getmLatitude(),
+                    parkPlace.getmLongitude(), Status.PENDING);
+
+            consumerRequestDb = mFirebaseInstance.getReference
+                    ("ConsumerList/" + consumer.getmComsumerID() + "/Request/");
+
+            providerRequestDb.child(mRequestID).setValue(providerRequest);
+            consumerRequestDb.child(mRequestID).setValue(providerRequest);
         }
 
-        mFirebaseRequestRef.child(mRequestID).setValue(mRequest);
+
         addRequestChangeListener();
     }
 
 
     private void addRequestChangeListener() {
         // User data change listener
-        mFirebaseDatabase.child(mRequestID).addValueEventListener(new ValueEventListener() {
+        providerRequestDb.child(mRequestID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Request request = dataSnapshot.getValue(Request.class);
 
+                Request request = dataSnapshot.getValue(Request.class);
+                ParkingRequest providerRequest = dataSnapshot.getValue(ParkingRequest.class);
+
+                goToActivity();
                 // Check for null
-                if (request == null) {
+                if (providerRequest == null) {
                     Log.e(TAG, "New Request is null!");
                     return;
-                }else
-                    Toast.makeText(MainActivity.this, "Request Sent", Toast.LENGTH_SHORT).show();
-
+                } else
+                    Toast.makeText(MainActivity.this, "Request Sent  ", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -571,8 +591,7 @@ public class MainActivity extends AppCompatActivity implements
     //----------------------------------------------------------------------------------------------
 
 
-    public void getAllParkOwnerFromFirebase()
-    {
+    public void getAllParkOwnerFromFirebase() {
         mFirebaseDatabase = mFirebaseInstance.getReference("ProviderList");
         progressDialog = ProgressDialog.show(this, "Please wait.",
                 "We are collecting Parking Owners.", true);
@@ -580,19 +599,23 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //Event event = dataSnapshot.getValue(Event.class);
-                LatLng myLocation = new LatLng(TempData.getLatitude(),TempData.getLongitude());
+                LatLng myLocation = new LatLng(TempData.getLatitude(), TempData.getLongitude());
                 providerList.clear();
+                parkPlaceList.clear();
+
                 clusterManager.clearItems();
-                System.out.println("HHHHHHHHHHHHHHH >>>"+dataSnapshot.getValue(Provider.class));
-                for(DataSnapshot data:dataSnapshot.getChildren()) {
+                System.out.println("HHHHHHHHHHHHHHH >>>" + dataSnapshot.getValue(Provider.class));
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
 
 
                     Provider provider = data.getValue(Provider.class);
-                    if (provider != null && provider.getmName() != null && provider.getmLatitude() != null && provider.getmLongitude()!= null){
-
+                    if (provider != null && provider.getmName() != null
+                            && provider.getmLatitude() != null
+                            && provider.getmLongitude() != null) {
 
                         providerList.add(provider);
-                        System.out.println(">>>>>>>>>>>>>>>>>>>>>> " + provider.getmName());
+
+                   /*     System.out.println(">>>>>>>>>>>>>>>>>>>>>> " + provider.getmName());
                         double lat = Double.parseDouble(provider.getmLatitude());
                         double lon = Double.parseDouble(provider.getmLongitude());
 
@@ -602,23 +625,50 @@ public class MainActivity extends AppCompatActivity implements
                             clusterManager.addItem(item);
                             clusterManager.cluster();
                         }
-                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
+                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));*/
+
+                    }
+
+                }
+                for (Provider provider : providerList) {
+                    DatabaseReference dbReference = FirebaseDatabase.getInstance().
+                            getReference("ProviderList/" + provider.getmProviderID() + "/ParkPlaceList");
+                    dbReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            for (DataSnapshot data : dataSnapshot.getChildren()) {
 
 
-                        if (provider.getParkPlaceList()!= null) {
-                            for (Map.Entry<String, ParkPlace> me : provider.getParkPlaceList().entrySet()) {
-                                ParkPlaceList.add(me.getValue());
+                                ParkPlace parkPlace = data.getValue(ParkPlace.class);
+                                if (parkPlace != null && parkPlace.getmAddress() != null
+                                        && parkPlace.getmLatitude() != null
+                                        && parkPlace.getmLongitude() != null) {
+
+                                    parkPlaceList.add(parkPlace);
+
+                                    double lat = Double.parseDouble(parkPlace.getmLatitude());
+                                    double lon = Double.parseDouble(parkPlace.getmLongitude());
+                                    Log.e(TAG, "LATLON " + lat + " " + lon);
+                                    if (lat != 0 && lon != 0) {
+                                        LatLng latLng = new LatLng(lat, lon);
+                                        Log.e(TAG, "LATLON " + lat + " " + lon);
+                                        MyItems item = new MyItems(latLng, parkPlace.getmParkPlaceTitle(), parkPlace.getmParkPlaceID());
+                                        clusterManager.addItem(item);
+                                        clusterManager.cluster();
+                                    }
+                                    // map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
+
+                                }
+
                             }
                         }
 
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-                    }
-
-                }
-
-                for (ParkPlace x: ParkPlaceList)
-                {
-                    System.out.println(">>>>>>>>>>> HH: "+x);
+                        }
+                    });
                 }
 
                 progressDialog.dismiss();
@@ -632,9 +682,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-
-    public void getAllParkingPlaces()
-    {
+    public void getAllParkingPlaces() {
         mFirebaseDatabase = mFirebaseInstance.getReference("ProviderList");
         progressDialog = ProgressDialog.show(this, "Please wait.",
                 "We are collecting Parking Owners.", true);
@@ -642,14 +690,14 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //Event event = dataSnapshot.getValue(Event.class);
-                LatLng myLocation = new LatLng(TempData.getLatitude(),TempData.getLongitude());
+                LatLng myLocation = new LatLng(TempData.getLatitude(), TempData.getLongitude());
                 providerList.clear();
                 clusterManager.clearItems();
                 System.out.println(dataSnapshot.getValue(Provider.class));
-                for(DataSnapshot data:dataSnapshot.getChildren()) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
 
                     Provider provider = data.getValue(Provider.class);
-                    if (provider != null && provider.getmName() != null && provider.getmLatitude() != null && provider.getmLongitude()!= null){
+                    if (provider != null && provider.getmName() != null && provider.getmLatitude() != null && provider.getmLongitude() != null) {
 
                         providerList.add(provider);
                         System.out.println(">>>>>>>>>>>>>>>>>>>>>> " + provider.getmName());
@@ -677,11 +725,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-
-
-    public void getStatus ()
-    {
-        mDatabaseConsumerStatus =mFirebaseInstance.getReference("ConsumerList/"+mConsumerID+"/Status/");
+    public void getStatus() {
+        mDatabaseConsumerStatus = mFirebaseInstance.getReference("ConsumerList/" + mConsumerID + "/Status/");
         System.out.println(">>>>>>>>>>>>>> Get Status Called");
         mDatabaseConsumerStatus.addValueEventListener(new ValueEventListener() {
             @Override
@@ -689,9 +734,8 @@ public class MainActivity extends AppCompatActivity implements
 
                 TempHolder.mStatusOfConsuner = dataSnapshot.getValue(StatusOfConsumer.class);
                 System.out.println(">>>>>>>>>>>>>> Get Status Called  from firebase");
-                if (TempHolder.mStatusOfConsuner != null)
-                {
-                    setNotification(TempHolder.mStatusOfConsuner.getmProviderName(),"accepted your request.");
+                if (TempHolder.mStatusOfConsuner != null) {
+                    setNotification(TempHolder.mStatusOfConsuner.getmProviderName(), "accepted your request.");
                 }
 
             }
@@ -704,9 +748,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    public void getUserInformation ()
-    {
-        mFirebaseUserInformation  = mFirebaseInstance.getReference("ConsumerList/"+mConsumerID);
+    public void getUserInformation() {
+        mFirebaseUserInformation = mFirebaseInstance.getReference("ConsumerList/" + mConsumerID);
         System.out.println(">>>>>>>>>>>>>> Get Status Called");
         mFirebaseUserInformation.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -714,28 +757,23 @@ public class MainActivity extends AppCompatActivity implements
 
 
                 System.out.println(">>>>>>>>>>>>>> Get Status Called  from firebase");
-                if (dataSnapshot.getValue(Consumer.class) != null)
-                {
+                if (dataSnapshot.getValue(Consumer.class) != null) {
                     TempHolder.mConsumer = dataSnapshot.getValue(Consumer.class);
                     mUserName.setText(TempHolder.mConsumer.getmName());
 
-                    if (TempHolder.mConsumer.getmEmail().contains("@mail.com"))
-                    {
+                    if (TempHolder.mConsumer.getmEmail().contains("@mail.com")) {
                         mUserEmailAddress.setText("");
-                    }else
-                    {
+                    } else {
                         mUserEmailAddress.setText(TempHolder.mConsumer.getmEmail());
                     }
 
-                    if (!TempHolder.mConsumer.getmPhoto().equals(""))
-                    {
+                    if (!TempHolder.mConsumer.getmPhoto().equals("")) {
                         Picasso.get().load(TempHolder.mConsumer.getmPhoto()).into(mProfileImage);
-                    }else
-                    {
+                    } else {
                         mProfileImage.setImageResource(R.drawable.profile);
                     }
 
-                    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> USER : "+TempHolder.mConsumer);
+                    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> USER : " + TempHolder.mConsumer);
                     getStatus();
                 }
 
@@ -798,10 +836,6 @@ public class MainActivity extends AppCompatActivity implements
     }*/
 
 
-
-
-
-
     //----------------------------------------------------------------------------------------------
     //--------------------------------------Navigation Draware Initials-----------------------------
     //----------------------------------------------------------------------------------------------
@@ -841,7 +875,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -850,18 +884,14 @@ public class MainActivity extends AppCompatActivity implements
             goToActivity();
 
         } else if (id == R.id.nav_map) {
-            innitializeMap ();
+            innitializeMap();
 
         } else if (id == R.id.nav_payments) {
             goToPayment();
-        } else if (id == R.id.nav_settings) {
-
-        } else if (id == R.id.nav_share) {
-
         } else if (id == R.id.nav_logout) {
             mLoginPreference.setStatus(false);
             signOut();
-            Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             finish();
             startActivity(intent);
@@ -873,9 +903,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-
-    public void signOut ()
-    {
+    public void signOut() {
 
         mAuth.signOut();
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
@@ -890,29 +918,28 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(grantResults.length!=0)
-        {
-            if(requestCode == 111 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+        if (grantResults.length != 0) {
+            if (requestCode == 111 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getDeviceCurrentLocation();
             }
         }
     }
 
-    private boolean checkLocationPermission(){
-        if(ActivityCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},111);
+    private boolean checkLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 111);
             return false;
         }
         return true;
     }
 
     private void getDeviceCurrentLocation() {
-        if(checkLocationPermission()){
+        if (checkLocationPermission()) {
             client.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
-                    if(location == null){
+                    if (location == null) {
                         return;
                     }
                     latitude = location.getLatitude();
@@ -926,15 +953,15 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void getLocationUpdates() {
-        if(checkLocationPermission()){
-            client.requestLocationUpdates(request,callback,null);
+        if (checkLocationPermission()) {
+            client.requestLocationUpdates(request, callback, null);
         }
     }
 
 
     public static int getPixelsFromDp(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
-        return (int)(dp * scale + 0.5f);
+        return (int) (dp * scale + 0.5f);
     }
 
 
@@ -959,13 +986,9 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-
-    public Provider getProviderByID (String ID)
-    {
-        for (Provider provider: providerList)
-        {
-            if (provider.getmProviderID().equals(ID))
-            {
+    public Provider getProviderByID(String ID) {
+        for (Provider provider : providerList) {
+            if (provider.getmProviderID().equals(ID)) {
                 return provider;
             }
         }
@@ -973,10 +996,16 @@ public class MainActivity extends AppCompatActivity implements
         return null;
     }
 
+    public ParkPlace getParkPlaceByID(String ID) {
+        for (ParkPlace parkPlace : parkPlaceList) {
+            if (parkPlace.getmParkPlaceID().equals(ID)) {
+                return parkPlace;
+            }
+        }
+        return null;
+    }
 
-
-    public void setNotification (String title,String msg)
-    {
+    public void setNotification(String title, String msg) {
         Intent notificationIntent = new Intent(this, MainActivity.class);
 
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -1058,8 +1087,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    public void showGPSDialogBox ()
-    {
+    public void showGPSDialogBox() {
         mGpsDialog = new Dialog(this);
         mGpsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         mGpsDialog.setContentView(R.layout.dialog_gps);
@@ -1078,8 +1106,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    public void showInternetDialogBox ()
-    {
+    public void showInternetDialogBox() {
         mInternetDialog = new Dialog(this);
         mInternetDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         mInternetDialog.setContentView(R.layout.dialog_internet);
@@ -1091,14 +1118,13 @@ public class MainActivity extends AppCompatActivity implements
         mRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage( getBaseContext().getPackageName() );
+                Intent i = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
                 i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);
             }
         });
         mInternetDialog.show();
     }
-
 
 
     private boolean isNetworkAvailable() {
@@ -1109,7 +1135,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-
     public void statusCheck() {
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -1118,8 +1143,6 @@ public class MainActivity extends AppCompatActivity implements
 
         }
     }
-
-
 
 
 }
