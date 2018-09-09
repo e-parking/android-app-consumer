@@ -1,18 +1,13 @@
 package com.nerdcastle.eparking.Activities;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.transition.Slide;
 import android.util.Log;
-import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -91,7 +86,7 @@ public class PasswordActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        Slide enterSlide = new Slide(RIGHT);
+     /*   Slide enterSlide = new Slide(RIGHT);
         enterSlide.setDuration(700);
         enterSlide.addTarget(R.id.llphone);
         enterSlide.setInterpolator(new DecelerateInterpolator(2));
@@ -101,7 +96,7 @@ public class PasswordActivity extends AppCompatActivity {
         returnSlide.setDuration(700);
         returnSlide.addTarget(R.id.llphone);
         returnSlide.setInterpolator(new DecelerateInterpolator());
-        getWindow().setReturnTransition(returnSlide);
+        getWindow().setReturnTransition(returnSlide);*/
 
 
     }

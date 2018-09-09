@@ -22,6 +22,9 @@ public class ParkPlace {
 
     private String mParkPlacePhotoUrl;//Auto
 
+    // for checking parking is available or not
+    private String mIsAvailable;
+
 
     public ParkPlace() {
     }
@@ -37,7 +40,7 @@ public class ParkPlace {
     }
 
 
-    public ParkPlace(String mProviderID, String mParkPlaceID, String mParkPlaceTitle, String mParkingType, String mParkingStatus, String mParkedVehicle, String mParkingChargePerHour, String mAddress, String mLatitude, String mLongitude, String mParkingIsApproved, String mHouseNumber, String mRoadNumber, String mCityName, String mAreaName, String mParkPlacePhotoUrl) {
+    public ParkPlace(String mProviderID, String mParkPlaceID, String mParkPlaceTitle, String mParkingType, String mParkingStatus, String mParkedVehicle, String mParkingChargePerHour, String mAddress, String mLatitude, String mLongitude, String mParkingIsApproved, String mHouseNumber, String mRoadNumber, String mCityName, String mAreaName, String mParkPlacePhotoUrl, String mIsAvailable) {
         this.mProviderID = mProviderID;
         this.mParkPlaceID = mParkPlaceID;
         this.mParkPlaceTitle = mParkPlaceTitle;
@@ -54,6 +57,7 @@ public class ParkPlace {
         this.mCityName = mCityName;
         this.mAreaName = mAreaName;
         this.mParkPlacePhotoUrl = mParkPlacePhotoUrl;
+        this.mIsAvailable=mIsAvailable;
     }
 
     public String getmProviderID() {
@@ -182,5 +186,13 @@ public class ParkPlace {
 
     public void setmParkPlacePhotoUrl(String mParkPlacePhotoUrl) {
         this.mParkPlacePhotoUrl = mParkPlacePhotoUrl;
+    }
+
+    public String getmIsAvailable() {
+        return mIsAvailable;
+    }
+
+    public void setmIsAvailable(String mIsAvailable) {
+        this.mIsAvailable = mIsAvailable;
     }
 }

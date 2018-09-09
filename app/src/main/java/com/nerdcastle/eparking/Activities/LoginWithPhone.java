@@ -99,11 +99,11 @@ public class LoginWithPhone extends AppCompatActivity {
 
 
         ButterKnife.bind(this);
-        setupWindowAnimations();
+        //setupWindowAnimations();
 
     }
 
-    private void setupWindowAnimations() {
+  /*  private void setupWindowAnimations() {
 
         ChangeBounds enterTransition = new ChangeBounds();
         enterTransition.setDuration(1000);
@@ -268,7 +268,7 @@ public class LoginWithPhone extends AppCompatActivity {
         public void onTransitionResume(Transition transition) {
 
         }
-    };
+    };*/
 
 
     @OnClick(R.id.fabProgressCircle)

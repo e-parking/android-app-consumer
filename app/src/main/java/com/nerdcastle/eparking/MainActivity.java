@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements
     private DatabaseReference mDatabaseConsumerStatus;
     private DatabaseReference consumerRequestDb;
     private DatabaseReference providerRequestDb;
+    private DatabaseReference providerRequestDb2;
     private FirebaseUser mCurrentUser;
 
     private FusedLocationProviderClient client;
@@ -428,7 +429,7 @@ public class MainActivity extends AppCompatActivity implements
         map.setMyLocationEnabled(true);
 
         mCurrentLocation = new LatLng(TempData.getLatitude(), TempData.getLongitude());
-        map.addMarker(new MarkerOptions().position(mCurrentLocation).title("My Current Location").snippet("Mirpur DOHS, Avenue 9").icon(BitmapDescriptorFactory.fromResource(R.drawable.current_location)));
+        //map.addMarker(new MarkerOptions().position(mCurrentLocation).title("My Current Location").snippet("Mirpur DOHS, Avenue 9").icon(BitmapDescriptorFactory.fromResource(R.drawable.current_location)));
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLocation, 15));
 
 
@@ -548,6 +549,12 @@ public class MainActivity extends AppCompatActivity implements
                     provider.getmPhone(), parkPlace.getmAddress(), parkPlace.getmLatitude(),
                     parkPlace.getmLongitude(), Status.PENDING);
 
+            //for update parking current status available or not
+            providerRequestDb2 = mFirebaseInstance.getReference
+                    ("ProviderList/" + provider.getmProviderID() + "/ParkPlaceList/" + parkPlace.getmParkPlaceID());
+            providerRequestDb2.child("mIsAvailable").setValue("false");
+            //end
+
             consumerRequestDb = mFirebaseInstance.getReference
                     ("ConsumerList/" + consumer.getmComsumerID() + "/Request/");
 
@@ -643,7 +650,8 @@ public class MainActivity extends AppCompatActivity implements
                                 ParkPlace parkPlace = data.getValue(ParkPlace.class);
                                 if (parkPlace != null && parkPlace.getmAddress() != null
                                         && parkPlace.getmLatitude() != null
-                                        && parkPlace.getmLongitude() != null) {
+                                        && parkPlace.getmLongitude() != null
+                                        && parkPlace.getmIsAvailable().equals("true")) {
 
                                     parkPlaceList.add(parkPlace);
 
