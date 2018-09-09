@@ -69,6 +69,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.clustering.ClusterManager;
 import com.nerdcastle.eparking.Activities.LoginActivity;
@@ -86,14 +87,17 @@ import com.nerdcastle.eparking.PoJoClasses.ParkPlace;
 import com.nerdcastle.eparking.PoJoClasses.Provider;
 import com.nerdcastle.eparking.PoJoClasses.ParkingRequest;
 import com.nerdcastle.eparking.PoJoClasses.Request;
+import com.nerdcastle.eparking.PoJoClasses.SelfBook;
 import com.nerdcastle.eparking.PoJoClasses.Status;
 import com.nerdcastle.eparking.PoJoClasses.StatusOfConsumer;
 import com.nerdcastle.eparking.PoJoClasses.TempHolder;
 import com.nerdcastle.eparking.WebApis.WebApi;
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -151,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements
     // private String currentProviderId;
     private Provider provider;
     private Button infoButton;
+    String formattedCurrentDate;
     private OnInfoWindowElemTouchListener infoButtonListener;
 
     private FrameLayout fragmentContainer;
@@ -237,6 +242,13 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
         */
+
+        //get current date
+        Date date=Calendar.getInstance().getTime();
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MMM-yyyy");
+        formattedCurrentDate=simpleDateFormat.format(date);
+
+
 
 
         //final MapFragment mapFragment = (MapFragment)getFragmentManager().findFragmentById(R.id.fragmentContainer);
@@ -637,44 +649,103 @@ public class MainActivity extends AppCompatActivity implements
                     }
 
                 }
-                for (Provider provider : providerList) {
-                    DatabaseReference dbReference = FirebaseDatabase.getInstance().
+                for (final Provider provider : providerList) {
+                    final DatabaseReference dbReference = FirebaseDatabase.getInstance().
                             getReference("ProviderList/" + provider.getmProviderID() + "/ParkPlaceList");
                     dbReference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
 
 
-
                             for (DataSnapshot data : dataSnapshot.getChildren()) {
 
-                                String mKey=dataSnapshot.child().getKey();
-                                Toast.makeText(MainActivity.this, mKey, Toast.LENGTH_SHORT).show();
+                                final ParkPlace parkPlace = data.getValue(ParkPlace.class);
 
-                                ParkPlace parkPlace = data.getValue(ParkPlace.class);
 
                                 if (parkPlace != null && parkPlace.getmAddress() != null
                                         && parkPlace.getmLatitude() != null
                                         && parkPlace.getmLongitude() != null
                                         && parkPlace.getmIsAvailable().equals("true")) {
 
-                                    parkPlaceList.add(parkPlace);
 
-                                    double lat = Double.parseDouble(parkPlace.getmLatitude());
-                                    double lon = Double.parseDouble(parkPlace.getmLongitude());
-                                    Log.e(TAG, "LATLON " + lat + " " + lon);
-                                    if (lat != 0 && lon != 0) {
-                                        LatLng latLng = new LatLng(lat, lon);
-                                        Log.e(TAG, "LATLON " + lat + " " + lon);
-                                        MyItems item = new MyItems(latLng, parkPlace.getmParkPlaceTitle(), parkPlace.getmParkPlaceID());
-                                        clusterManager.addItem(item);
-                                        clusterManager.cluster();
-                                    }
-                                    // map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
+                                    DatabaseReference dbReferenceS = FirebaseDatabase.getInstance().
+                                            getReference("ProviderList/" + provider.getmProviderID() + "/ParkPlaceList/" + parkPlace.getmParkPlaceID()+ "/SelfBookList");
+
+                                    Query query=dbReferenceS.orderByChild("date").equalTo(formattedCurrentDate);
+                                    dbReferenceS.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                            if (dataSnapshot.exists())
+                                            {
+                                                for (DataSnapshot data : dataSnapshot.getChildren()) {
+
+                                                    SelfBook selfBook = data.getValue(SelfBook.class);
+                                                    long currentTime = System.currentTimeMillis();
+
+                                                    if (selfBook.getStartTime() < currentTime && selfBook.getEndTime() > currentTime) {
+
+                                                    } else {
+
+                                                        Toast.makeText(MainActivity.this, "start Time: " + currentTime, Toast.LENGTH_SHORT).show();
+
+                                                        parkPlaceList.add(parkPlace);
+
+                                                        double lat = Double.parseDouble(parkPlace.getmLatitude());
+                                                        double lon = Double.parseDouble(parkPlace.getmLongitude());
+                                                        Log.e(TAG, "LATLON " + lat + " " + lon);
+                                                        if (lat != 0 && lon != 0) {
+                                                            LatLng latLng = new LatLng(lat, lon);
+                                                            Log.e(TAG, "LATLON " + lat + " " + lon);
+                                                            MyItems item = new MyItems(latLng, parkPlace.getmParkPlaceTitle(), parkPlace.getmParkPlaceID());
+                                                            clusterManager.addItem(item);
+                                                            clusterManager.cluster();
+                                                        }
+                                                        // map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
+                                                    }
+
+
+                                                }
+                                        }
+                                        else {
+                                                parkPlaceList.add(parkPlace);
+
+                                                double lat = Double.parseDouble(parkPlace.getmLatitude());
+                                                double lon = Double.parseDouble(parkPlace.getmLongitude());
+                                                Log.e(TAG, "LATLON " + lat + " " + lon);
+                                                if (lat != 0 && lon != 0) {
+                                                    LatLng latLng = new LatLng(lat, lon);
+                                                    Log.e(TAG, "LATLON " + lat + " " + lon);
+                                                    MyItems item = new MyItems(latLng, parkPlace.getmParkPlaceTitle(), parkPlace.getmParkPlaceID());
+                                                    clusterManager.addItem(item);
+                                                    clusterManager.cluster();
+                                                }
+                                                // map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
+                                            }
+
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+
+
+
+
 
                                 }
 
                             }
+
+
+
+
+
+
                         }
 
                         @Override
