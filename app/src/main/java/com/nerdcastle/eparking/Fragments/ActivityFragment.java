@@ -15,19 +15,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.nerdcastle.eparking.PoJoClasses.ParkPlace;
+import com.nerdcastle.eparking.PoJoClasses.ParkingRequest;
 import com.nerdcastle.eparking.PoJoClasses.Process;
+import com.nerdcastle.eparking.PoJoClasses.Status;
 import com.nerdcastle.eparking.PoJoClasses.StatusOfConsumer;
 import com.nerdcastle.eparking.PoJoClasses.TempHolder;
 import com.nerdcastle.eparking.R;
+import com.squareup.picasso.Picasso;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,12 +53,14 @@ public class ActivityFragment extends Fragment {
     private TextView mAddressTV;
     private TextView mPhoneNumberTV;
     private TextView mDurationTV;
-
     private FirebaseAuth mAuth;
     private FirebaseDatabase mFirebaseInstance;
     private DatabaseReference mDatabaseProcess;
+    private DatabaseReference mUserCurrentActivityDB;
     private String mConsumerID;
     private Process mProcess;
+    private TextView mStatusTV;
+    private ImageView mParkPlaceImage;
 
     boolean isStarted = false;
     long mStartedTime;
@@ -70,6 +79,8 @@ public class ActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
+        View view = inflater.inflate(R.layout.fragment_activity, container, false);
+
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null)
         {
@@ -78,7 +89,7 @@ public class ActivityFragment extends Fragment {
         mFirebaseInstance = FirebaseDatabase.getInstance();
 
 
-        View view = inflater.inflate(R.layout.fragment_activity, container, false);
+       getUserCurrentActivity();
 
         mInfoText = view.findViewById(R.id.mInfoText);
 
@@ -88,12 +99,14 @@ public class ActivityFragment extends Fragment {
         mAddressTV = view.findViewById(R.id.addressTV);
         mPhoneNumberTV = view.findViewById(R.id.phoneNumberTV);
         mDurationTV = view.findViewById(R.id.durationTV);
+        mStatusTV=view.findViewById(R.id.status_id);
+        mParkPlaceImage=view.findViewById(R.id.placeImage);
 
-        if (TempHolder.mStatusOfConsuner != null)
+      /*  if (TempHolder.mStatusOfConsuner != null)
         {
             mPhoneNumberTV.setText(TempHolder.mStatusOfConsuner.getmProviderPhone());
             mAddressTV.setText(TempHolder.mStatusOfConsuner.getmProviderAddress());
-        }
+        }*/
 
 
         mCallButton.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +126,7 @@ public class ActivityFragment extends Fragment {
         });
 
 
+/*
 
 
         if (TempHolder.mStatusOfConsuner != null)
@@ -125,9 +139,63 @@ public class ActivityFragment extends Fragment {
             mCardView.setVisibility(View.GONE);
             mInfoText.setVisibility(View.VISIBLE);
         }
+*/
 
 
         return view;
+    }
+
+
+    private void getUserCurrentActivity() {
+        mUserCurrentActivityDB=mFirebaseInstance.getReference("ConsumerList/" + mConsumerID +"/Request/" );
+
+        mUserCurrentActivityDB.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+
+                    ParkingRequest parkingRequest = data.getValue(ParkingRequest.class);
+                    if (parkingRequest.getmStatus().equals(Status.PENDING) || parkingRequest.getmStatus().equals(Status.ACCEPTED) ||  parkingRequest.getmStatus().equals(Status.STARTED) )
+                    {
+                        mCardView.setVisibility(View.VISIBLE);
+                        mAddressTV.setText(parkingRequest.getmParkPlaceAddress());
+                        mPhoneNumberTV.setText(parkingRequest.getmProviderPhone());
+                        mStatusTV.setText(parkingRequest.getmStatus());
+                        if (parkingRequest.getmParkPlacePhotoUrl()!=null)
+                        Picasso.get().load(parkingRequest.getmParkPlacePhotoUrl()).placeholder(R.drawable.garage_picture).into(mParkPlaceImage);
+                    }
+                    else {
+                        mCardView.setVisibility(View.GONE);
+                        mInfoText.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        /*   mUserCurrentActivityDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+               *//* if (dataSnapshot.child("mStatus").getValue().toString().equals(Status.PENDING)
+                        || dataSnapshot.child("mStatus").getValue().toString().equals(Status.ACCEPTED)
+                        || dataSnapshot.child("mStatus").getValue().toString().equals(Status.STARTED)){*//*
+
+                    String address=dataSnapshot.child("mParkPlaceAddress").getValue().toString();
+                    mAddressTV.setText(address);
+                //}
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });*/
+
     }
 
 
@@ -144,7 +212,7 @@ public class ActivityFragment extends Fragment {
     }
 
 
-
+/*
     //----------------- Thread ------------------------
     final Runnable runnable = new Runnable() {
         public void run() {
@@ -171,11 +239,11 @@ public class ActivityFragment extends Fragment {
 
         }
 
-    };
+    };*/
 
 
 
-    public void getProcess ()
+   /* public void getProcess ()
     {
 
         String mProcessID = mConsumerID+"<<>>"+TempHolder.mStatusOfConsuner.getmProviderID();
@@ -225,7 +293,7 @@ public class ActivityFragment extends Fragment {
                 System.out.println("The to read event data: " + databaseError.getCode());
             }
         });
-    }
+    }*/
 
 
 

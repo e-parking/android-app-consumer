@@ -17,11 +17,12 @@ public class ParkingRequest {
     private String mParkPlaceLatitude;
     private String mParkPlaceLongitude;
     private String mStatus;
+    private String mParkPlacePhotoUrl;
 
     public ParkingRequest() {
     }
 
-    public ParkingRequest(String mConsumerID, String mProviderID, String mParkPlaceID, String mParkPlaceTitle, String mRequestID, String mConsumerName, String mConsumerPhone, String mConsumerVehicleNumber, String mProviderName, String mProviderPhone, String mParkPlaceAddress, String mParkPlaceLatitude, String mParkPlaceLongitude, String mStatus) {
+    public ParkingRequest(String mConsumerID, String mProviderID, String mParkPlaceID, String mParkPlaceTitle, String mRequestID, String mConsumerName, String mConsumerPhone, String mConsumerVehicleNumber, String mProviderName, String mProviderPhone, String mParkPlaceAddress, String mParkPlaceLatitude, String mParkPlaceLongitude, String mStatus,String mParkPlacePhotoUrl) {
         this.mConsumerID = mConsumerID;
         this.mProviderID = mProviderID;
         this.mParkPlaceID = mParkPlaceID;
@@ -36,6 +37,15 @@ public class ParkingRequest {
         this.mParkPlaceLatitude = mParkPlaceLatitude;
         this.mParkPlaceLongitude = mParkPlaceLongitude;
         this.mStatus = mStatus;
+        this.mParkPlacePhotoUrl=mParkPlacePhotoUrl;
+    }
+
+    public String getmParkPlacePhotoUrl() {
+        return mParkPlacePhotoUrl;
+    }
+
+    public void setmParkPlacePhotoUrl(String mParkPlacePhotoUrl) {
+        this.mParkPlacePhotoUrl = mParkPlacePhotoUrl;
     }
 
     public String getmStatus() {
