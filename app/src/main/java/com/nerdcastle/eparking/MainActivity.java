@@ -687,7 +687,7 @@ public class MainActivity extends AppCompatActivity implements
 
                                                     } else {
 
-                                                        Toast.makeText(MainActivity.this, "start Time: " + currentTime, Toast.LENGTH_SHORT).show();
+                                                        //Toast.makeText(MainActivity.this, "start Time: " + currentTime, Toast.LENGTH_SHORT).show();
 
                                                         parkPlaceList.add(parkPlace);
 

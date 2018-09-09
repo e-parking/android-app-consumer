@@ -158,6 +158,7 @@ public class ActivityFragment extends Fragment {
                     if (parkingRequest.getmStatus().equals(Status.PENDING) || parkingRequest.getmStatus().equals(Status.ACCEPTED) ||  parkingRequest.getmStatus().equals(Status.STARTED) )
                     {
                         mCardView.setVisibility(View.VISIBLE);
+                        mInfoText.setVisibility(View.GONE);
                         mAddressTV.setText(parkingRequest.getmParkPlaceAddress());
                         mPhoneNumberTV.setText(parkingRequest.getmProviderPhone());
                         mStatusTV.setText(parkingRequest.getmStatus());
