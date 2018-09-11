@@ -189,9 +189,17 @@ public class MainActivity extends AppCompatActivity implements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
+/*
         progressDialog = ProgressDialog.show(this, "Please wait.",
-                "We are Preparing your map.", true);
+                "We are Preparing your map.", true);*/
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setIcon(R.drawable.parking_logo);
+        progressDialog.setTitle("Please Wait...");
+        progressDialog.setMessage("We are Preparing your map.");
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+        progressDialog.isIndeterminate();
+        progressDialog.show();
 
 
         mInternetStatus = isNetworkAvailable();
@@ -999,7 +1007,7 @@ public class MainActivity extends AppCompatActivity implements
             mLoginPreference.setStatus(false);
             signOut();
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             finish();
             startActivity(intent);
         }
