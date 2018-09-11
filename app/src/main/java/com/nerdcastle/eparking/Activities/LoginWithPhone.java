@@ -278,7 +278,7 @@ public class LoginWithPhone extends AppCompatActivity {
         String mobile = etPhoneNo.getText().toString().trim();
 
 
-        if(mobile.isEmpty() || mobile.length() < 11){
+        if(mobile.isEmpty() || mobile.length() < 11 || mobile.length()>11){
             etPhoneNo.setError("Enter a valid mobile");
             etPhoneNo.requestFocus();
             return;

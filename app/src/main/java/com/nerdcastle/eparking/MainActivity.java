@@ -413,11 +413,17 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+        if (mInternetStatus) {
+            getAllParkOwnerFromFirebase();
+        }
+
         map = googleMap;
         clusterManager = new ClusterManager<MyItems>(this, map);
         mapWrapperLayout.init(map, getPixelsFromDp(this, 39 + 20));
         // We want to reuse the info window for all the markers,
         // so let's create only one class member instance
+
 
         this.infoWindow = (ViewGroup) getLayoutInflater().inflate(R.layout.info_window, null);
         this.mCurrentLocationWindowBox = (ViewGroup) getLayoutInflater().inflate(R.layout.dialog_current_location, null);
@@ -529,9 +535,7 @@ public class MainActivity extends AppCompatActivity implements
 
         //------------------------------------------------------------------------------------------
 
-        if (mInternetStatus) {
-            getAllParkOwnerFromFirebase();
-        }
+
 
         //getNearbyPlaces();
 

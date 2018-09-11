@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.WindowManager;
@@ -41,7 +42,7 @@ public class PasswordActivity extends AppCompatActivity {
     FrameLayout rootFrame;
 
     @BindView(R.id.etPass)
-    EditText etPass;
+    TextInputEditText etPass;
 
 
     //Firebase Section
@@ -128,6 +129,7 @@ public class PasswordActivity extends AppCompatActivity {
 
                             fabProgressCircle.hide();
                             Intent intent = new Intent(PasswordActivity.this, MainActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             startActivity(intent);
                             finish();
                         }
@@ -159,6 +161,7 @@ public class PasswordActivity extends AppCompatActivity {
 
                         fabProgressCircle.hide();
                         Intent intent = new Intent(PasswordActivity.this, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();
 

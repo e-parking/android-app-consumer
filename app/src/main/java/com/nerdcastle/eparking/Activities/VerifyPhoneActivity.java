@@ -164,6 +164,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                             intent.putExtra("user","new_user");
                             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(VerifyPhoneActivity.this);
                             startActivity(intent, options.toBundle());
+                            VerifyPhoneActivity.this.finish();
 
 
 
