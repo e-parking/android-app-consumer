@@ -190,10 +190,17 @@ public class MainActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
 
 
+        progressDialog = ProgressDialog.show(this, "Please wait.",
+                "We are Preparing your map.", true);
+
+
         mInternetStatus = isNetworkAvailable();
         if (!mInternetStatus) {
+            progressDialog.dismiss();
             showInternetDialogBox();
         }
+
+
         //-------------- Custom Dialog -------------------
         mGpsDialog = new Dialog(this);
         mInternetDialog = new Dialog(this);
@@ -614,10 +621,22 @@ public class MainActivity extends AppCompatActivity implements
     //----------------------------------------------------------------------------------------------
 
 
+    private Runnable changeMessage=new Runnable() {
+        @Override
+        public void run() {
+            progressDialog.setMessage("We are collecting Parking Owners.");
+        }
+    };
+
+
+
     public void getAllParkOwnerFromFirebase() {
-        mFirebaseDatabase = mFirebaseInstance.getReference("ProviderList");
+
+        mFirebaseDatabase = mFirebaseInstance.getReference("ProviderList");/*
         progressDialog = ProgressDialog.show(this, "Please wait.",
-                "We are collecting Parking Owners.", true);
+                "We are collecting Parking Owners.", true);*/
+        runOnUiThread(changeMessage);
+
         mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -1195,6 +1214,9 @@ public class MainActivity extends AppCompatActivity implements
 
 
     public void showInternetDialogBox() {
+
+
+
         mInternetDialog = new Dialog(this);
         mInternetDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         mInternetDialog.setContentView(R.layout.dialog_internet);
@@ -1227,10 +1249,12 @@ public class MainActivity extends AppCompatActivity implements
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            progressDialog.dismiss();
             showGPSDialogBox();
 
         }
     }
+
 
 
 }
