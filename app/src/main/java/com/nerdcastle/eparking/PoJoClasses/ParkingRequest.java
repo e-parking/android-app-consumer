@@ -18,11 +18,16 @@ public class ParkingRequest {
     private String mParkPlaceLongitude;
     private String mStatus;
     private String mParkPlacePhotoUrl;
+    private String mConsumerPhotoUrl;
+    private long mStartTime;
+    private long mEndTime;
+    private double mEstimatedCost;
+
 
     public ParkingRequest() {
     }
 
-    public ParkingRequest(String mConsumerID, String mProviderID, String mParkPlaceID, String mParkPlaceTitle, String mRequestID, String mConsumerName, String mConsumerPhone, String mConsumerVehicleNumber, String mProviderName, String mProviderPhone, String mParkPlaceAddress, String mParkPlaceLatitude, String mParkPlaceLongitude, String mStatus,String mParkPlacePhotoUrl) {
+    public ParkingRequest(String mConsumerID, String mProviderID, String mParkPlaceID, String mParkPlaceTitle, String mRequestID, String mConsumerName, String mConsumerPhone, String mConsumerVehicleNumber, String mProviderName, String mProviderPhone, String mParkPlaceAddress, String mParkPlaceLatitude, String mParkPlaceLongitude, String mStatus,String mParkPlacePhotoUrl,String mConsumerPhotoUrl, long mStartTime, long mEndTime, double mEstimatedCost) {
         this.mConsumerID = mConsumerID;
         this.mProviderID = mProviderID;
         this.mParkPlaceID = mParkPlaceID;
@@ -38,6 +43,11 @@ public class ParkingRequest {
         this.mParkPlaceLongitude = mParkPlaceLongitude;
         this.mStatus = mStatus;
         this.mParkPlacePhotoUrl=mParkPlacePhotoUrl;
+        this.mConsumerPhotoUrl=mConsumerPhotoUrl;
+        this.mStartTime=mStartTime;
+        this.mEndTime=mEndTime;
+        this.mEstimatedCost=mEstimatedCost;
+
     }
 
     public String getmParkPlacePhotoUrl() {
@@ -160,4 +170,36 @@ public class ParkingRequest {
         this.mConsumerVehicleNumber = mConsumerVehicleNumber;
     }
 
+
+    public String getmConsumerPhotoUrl() {
+        return mConsumerPhotoUrl;
+    }
+
+    public void setmConsumerPhotoUrl(String mConsumerPhotoUrl) {
+        this.mConsumerPhotoUrl = mConsumerPhotoUrl;
+    }
+
+    public long getmStartTime() {
+        return mStartTime;
+    }
+
+    public void setmStartTime(long mStartTime) {
+        this.mStartTime = mStartTime;
+    }
+
+    public long getmEndTime() {
+        return mEndTime;
+    }
+
+    public void setmEndTime(long mEndTime) {
+        this.mEndTime = mEndTime;
+    }
+
+    public double getmEstimatedCost() {
+        return mEstimatedCost;
+    }
+
+    public void setmEstimatedCost(double mEstimatedCost) {
+        this.mEstimatedCost = mEstimatedCost;
+    }
 }

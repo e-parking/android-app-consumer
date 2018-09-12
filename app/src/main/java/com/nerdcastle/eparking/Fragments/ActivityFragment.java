@@ -59,8 +59,10 @@ public class ActivityFragment extends Fragment {
     private DatabaseReference mUserCurrentActivityDB;
     private String mConsumerID;
     private Process mProcess;
-    private TextView mStatusTV;
+    private Button mStatusTV;
     private ImageView mParkPlaceImage;
+    private Button endButton;
+    private ParkingRequest parkingRequest;
 
     boolean isStarted = false;
     long mStartedTime;
@@ -101,12 +103,14 @@ public class ActivityFragment extends Fragment {
         mDurationTV = view.findViewById(R.id.durationTV);
         mStatusTV=view.findViewById(R.id.status_id);
         mParkPlaceImage=view.findViewById(R.id.placeImage);
+        endButton=view.findViewById(R.id.endButtonId);
 
       /*  if (TempHolder.mStatusOfConsuner != null)
         {
             mPhoneNumberTV.setText(TempHolder.mStatusOfConsuner.getmProviderPhone());
             mAddressTV.setText(TempHolder.mStatusOfConsuner.getmProviderAddress());
         }*/
+
 
 
         mCallButton.setOnClickListener(new View.OnClickListener() {
@@ -122,6 +126,31 @@ public class ActivityFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Toast.makeText(getActivity(), "Direction feature is not available yet.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        endButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseReference parkPlaceRequestDB=mFirebaseInstance.getReference("ProviderList/"+parkingRequest.getmProviderID()+"/ParkPlaceList/" + parkingRequest.getmParkPlaceID()+"/Request/"+parkingRequest.getmRequestID());
+                DatabaseReference consumerRequestDB=mFirebaseInstance.getReference("ConsumerList/"+parkingRequest.getmConsumerID()+"/Request/"+parkingRequest.getmRequestID());
+                DatabaseReference parkPlaceDB=mFirebaseInstance.getReference("ProviderList/"+parkingRequest.getmProviderID()+"/ParkPlaceList/" + parkingRequest.getmParkPlaceID());
+
+                parkPlaceRequestDB.child("mStatus").setValue(Status.ENDED, new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        Toast.makeText(getActivity(), Status.ENDED+" ", Toast.LENGTH_LONG).show();
+                    }
+                });
+                consumerRequestDB.child("mStatus").setValue(Status.ENDED);
+                consumerRequestDB.child("mEndTime").setValue(System.currentTimeMillis());
+                parkPlaceRequestDB.child("mEndTime").setValue(System.currentTimeMillis());
+                parkPlaceDB.child("mIsAvailable").setValue("true");
+
+                mStatusTV.setText(Status.ENDED);
+                endButton.setEnabled(false);
+                endButton.setVisibility(View.GONE);
+
             }
         });
 
@@ -154,7 +183,7 @@ public class ActivityFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
 
-                    ParkingRequest parkingRequest = data.getValue(ParkingRequest.class);
+                    parkingRequest = data.getValue(ParkingRequest.class);
                     if (parkingRequest.getmStatus().equals(Status.PENDING) || parkingRequest.getmStatus().equals(Status.ACCEPTED) ||  parkingRequest.getmStatus().equals(Status.STARTED) )
                     {
                         mCardView.setVisibility(View.VISIBLE);
@@ -164,6 +193,23 @@ public class ActivityFragment extends Fragment {
                         mStatusTV.setText(parkingRequest.getmStatus());
                         if (parkingRequest.getmParkPlacePhotoUrl()!=null)
                         Picasso.get().load(parkingRequest.getmParkPlacePhotoUrl()).placeholder(R.drawable.garage_picture).into(mParkPlaceImage);
+
+                        long startTime=parkingRequest.getmStartTime();
+
+                        if (startTime!=0){
+                            long currentTime=System.currentTimeMillis();
+                            long timeDistance=currentTime-startTime;
+                            int hour= (int) (timeDistance/3600000);
+                            timeDistance=timeDistance-(hour*3600000);
+                            int min= (int) (timeDistance/60000);
+                            timeDistance=timeDistance-(min*60000);
+                            int sec= (int) (timeDistance/1000);
+                            mDurationTV.setText(hour+":"+min+":"+sec);
+                        }
+
+
+
+
                     }
                     else {
                         mCardView.setVisibility(View.GONE);

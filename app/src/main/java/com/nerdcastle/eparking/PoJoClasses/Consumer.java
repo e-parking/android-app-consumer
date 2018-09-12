@@ -124,6 +124,8 @@ public class Consumer {
         this.mLongitude = mLongitude;
     }
 
+
+
     @Override
     public String toString() {
         return "Consumer{" +
