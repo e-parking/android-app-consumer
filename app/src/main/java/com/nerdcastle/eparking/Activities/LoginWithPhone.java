@@ -330,6 +330,8 @@ public class LoginWithPhone extends AppCompatActivity {
                     Provider provider = data.getValue(Provider.class);
                     System.out.println(provider);
                     providerList.add(provider);
+
+                    if (provider!=null && provider.getmPhone()!=null)
                     if (provider.getmPhone().contains(phoneNumber) || provider.getmPhone().equals("+88"+phoneNumber) )
                     {
 
@@ -378,6 +380,8 @@ public class LoginWithPhone extends AppCompatActivity {
                     Consumer consumer = data.getValue(Consumer.class);
                     System.out.println(consumer);
                     consumerList.add(consumer);
+
+                    if (consumer!=null && consumer.getmPhone()!=null)
                     if (consumer.getmPhone().contains(phoneNumber) || consumer.getmPhone().equals("+88"+phoneNumber) )
                     {
                         //Toast.makeText(LoginWithPhone.this, "Match Found", Toast.LENGTH_SHORT).show();

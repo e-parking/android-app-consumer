@@ -225,8 +225,8 @@ public class MainActivity extends AppCompatActivity implements
         //-------------------------- Firebase ----------------------------------------
 
         mFirebaseInstance = FirebaseDatabase.getInstance();
-        //mAuth = FirebaseAuth.getInstance();
-        mConsumerID = "mYPtMap4F6hpotDXEwGxdGkYEZF3";
+        mAuth = FirebaseAuth.getInstance();
+        mConsumerID = mAuth.getCurrentUser().getUid();
 
         getUserInformation();
 
