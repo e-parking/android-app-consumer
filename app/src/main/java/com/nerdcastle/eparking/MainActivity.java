@@ -58,10 +58,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -227,8 +225,8 @@ public class MainActivity extends AppCompatActivity implements
         //-------------------------- Firebase ----------------------------------------
 
         mFirebaseInstance = FirebaseDatabase.getInstance();
-        mAuth = FirebaseAuth.getInstance();
-        mConsumerID = mAuth.getUid();
+        //mAuth = FirebaseAuth.getInstance();
+        mConsumerID = "mYPtMap4F6hpotDXEwGxdGkYEZF3";
 
         getUserInformation();
 

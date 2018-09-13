@@ -25,12 +25,9 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan" >
-
-
+            android:windowSoftInputMode="adjustPan">
 
         </activity>
-
         <activity
             android:name=".Activities.LoggingInActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -41,9 +38,7 @@
         <activity
             android:name=".Activities.LoginActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".Activities.LoginWithPhone"
             android:label="@string/app_name"
@@ -52,30 +47,27 @@
             android:name=".Activities.PasswordActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
-
-
-
         <activity
             android:name=".Activities.AccountUpdateActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
-
-
         <activity
             android:name=".Activities.ResetPasswordActivity"
             android:label="@string/title_activity_reset_password"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Activities.ReportActivity" />
-        <activity android:name=".Activities.VerifyPhoneActivity"></activity>
-
+        <activity android:name=".Activities.VerifyPhoneActivity" />
         <activity
             android:name=".Activities.SplashActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".Activities.PaymentActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
     </application>
 
