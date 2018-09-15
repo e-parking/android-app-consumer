@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements
     private MapWrapperLayout mapWrapperLayout;
     private ViewGroup infoWindow;
     private ViewGroup mCurrentLocationWindowBox;
-    private TextView infoProviderName;
+    private TextView infoProviderName,hourlyRate;
     private TextView infoParkPlaceAddress;
     private TextView infoParkPlaceTitle;
     private TextView infoParkingType;
@@ -441,6 +441,7 @@ public class MainActivity extends AppCompatActivity implements
         this.infoWindow = (ViewGroup) getLayoutInflater().inflate(R.layout.info_window, null);
         this.mCurrentLocationWindowBox = (ViewGroup) getLayoutInflater().inflate(R.layout.dialog_current_location, null);
         this.infoProviderName = infoWindow.findViewById(R.id.providerName);
+        this.hourlyRate=infoWindow.findViewById(R.id.parkPlaceCost);
         this.infoParkPlaceAddress = infoWindow.findViewById(R.id.parkAddress);
         this.infoParkPlaceTitle = infoWindow.findViewById(R.id.parkPlaceTitle);
         this.infoParkingType = infoWindow.findViewById(R.id.parkingType);
@@ -514,14 +515,32 @@ public class MainActivity extends AppCompatActivity implements
                         return mCurrentLocationWindowBox;
                         //infoButtonListener.setMarker(marker);
                     } else {
+
+
+
+
                         //provider = getProviderByID(marker.getSnippet());
                         parkPlace = getParkPlaceByID(marker.getSnippet());
                         provider = getProviderByID(parkPlace.getmProviderID());
                         //currentProviderId = provider.getmProviderID();
+
+
+                        Location loc1=new Location("");
+                        loc1.setLatitude(latitude);
+                        loc1.setLongitude(longitude);
+                        Location loc2=new Location("");
+                        loc2.setLatitude(Double.parseDouble(parkPlace.getmLatitude()));
+                        loc2.setLongitude(Double.parseDouble(parkPlace.getmLongitude()));
+                        float distance=loc1.distanceTo(loc2);
+                        float distanceInKm=distance/1000;
+                        String mDistance=String.format("%.2f",distanceInKm);
+
+
                         infoProviderName.setText(provider.getmName());
                         infoParkPlaceAddress.setText(parkPlace.getmAddress());
-                        infoParkPlaceTitle.setText(parkPlace.getmParkPlaceTitle());
-                        infoParkingType.setText("1 " + parkPlace.getmParkingType());
+                        infoParkPlaceTitle.setText(parkPlace.getmParkPlaceTitle()+", 1 "+parkPlace.getmParkingType());
+                        infoParkingType.setText(mDistance+" km");
+                        hourlyRate.setText(parkPlace.getmParkingChargePerHour()+" TK/Hr");
 
                         if (parkPlace.getmParkPlacePhotoUrl().contains("https://")) {
                             Picasso.get().load(parkPlace.getmParkPlacePhotoUrl()).into(infoParkPlaceImage);

@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,9 +37,8 @@ public class ActivityFragment extends Fragment {
     private FirebaseDatabase mFirebaseInstance;
     private String mConsumerID;
     private DatabaseReference mUserCurrentActivityDB;
-
     private TextView mInfoText;
-
+    private ProgressBar progressBar;
     public interface  ActivityFragmentInterface {
         public void goToActivity ();
 
@@ -62,6 +62,7 @@ public class ActivityFragment extends Fragment {
 
 
         mInfoText = view.findViewById(R.id.mInfoText);
+        progressBar=view.findViewById(R.id.progressBarId);
 
         mActivityRecyclerView = (RecyclerView) view.findViewById(R.id.consumerActivityRecyclerView);
         llm = new LinearLayoutManager(view.getContext());
@@ -107,9 +108,11 @@ public class ActivityFragment extends Fragment {
 
     public void setNotifactionRecyclerView()
     {
-        if (requestList.size()!=0)
+        progressBar.setVisibility(View.GONE);
+        if (requestList.size()<1)
         {
-            mInfoText.setVisibility(View.INVISIBLE);
+            mInfoText.setVisibility(View.VISIBLE);
+
         }
         activityAdapter = new ActivityAdapter(requestList,getActivity());
         mActivityRecyclerView.setAdapter(activityAdapter);

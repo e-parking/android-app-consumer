@@ -1,6 +1,7 @@
 package com.nerdcastle.eparking.Activities;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -46,10 +48,38 @@ public class VerifyPhoneActivity extends AppCompatActivity {
     private DatabaseReference mFirebaseDatabase;
     private FirebaseDatabase mFirebaseInstance;
     private ProgressBar mProgressBar;
+    private TextView resendOTP,waitingTimeTV;
     String mPhoneNumber;
     String mEmail;
-
+    String mobile;
+    private Handler handler = new Handler();
     String mConsumerID;
+    private int waitingTime=15;
+
+
+
+    private Runnable timedTask = new Runnable() {
+        @Override
+        public void run() {
+
+
+            if (waitingTime>0)
+            {
+                waitingTime--;
+                waitingTimeTV.setText("Wait "+String.valueOf(waitingTime)+" Seconds for Resend");
+            }
+
+            if (waitingTime<1)
+            {
+                resendOTP.setVisibility(View.VISIBLE);
+                waitingTimeTV.setText("Don't get verification code ?");
+            }
+
+            handler.postDelayed(timedTask, 1000);
+        }
+    };
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +89,9 @@ public class VerifyPhoneActivity extends AppCompatActivity {
         setContentView(R.layout.activity_verify_phone);
 
 
-        mProgressBar = findViewById(R.id.progressbar);
+
+        handler.post(timedTask);
+
         //Firebase initialization
         mFirebaseInstance = FirebaseDatabase.getInstance();
         mFirebaseDatabase = mFirebaseInstance.getReference("ConsumerList");
@@ -68,14 +100,28 @@ public class VerifyPhoneActivity extends AppCompatActivity {
 
         //initializing objects
         editTextCode = findViewById(R.id.editTextCode);
+        resendOTP=findViewById(R.id.resend_code_id);
+        waitingTimeTV=findViewById(R.id.textView_id);
 
 
         //getting mobile number from the previous activity
         //and sending the verification code to the number
         Intent intent = getIntent();
-        String mobile = intent.getStringExtra("mobile");
+        mobile = intent.getStringExtra("mobile");
         mPhoneNumber = mobile;
         sendVerificationCode(mobile);
+
+
+        resendOTP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                sendVerificationCode(mobile);
+                resendOTP.setVisibility(View.GONE);
+                waitingTime=15;
+            }
+        });
+
 
 
         //if the automatic sms detection did not work, user can also enter the code manually

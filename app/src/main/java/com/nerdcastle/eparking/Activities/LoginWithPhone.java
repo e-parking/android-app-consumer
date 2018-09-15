@@ -103,7 +103,12 @@ public class LoginWithPhone extends AppCompatActivity {
 
     }
 
-  /*  private void setupWindowAnimations() {
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    /*  private void setupWindowAnimations() {
 
         ChangeBounds enterTransition = new ChangeBounds();
         enterTransition.setDuration(1000);

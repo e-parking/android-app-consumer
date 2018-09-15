@@ -36,7 +36,6 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
     public static FirebaseAuth auth;
     public static ProgressDialog progressDialog;
     public static List<ParkingRequest> requestList;
-    private ParkingRequest model;
     public static Context context;
 
     public static String mProviderID;
@@ -88,9 +87,8 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
     @Override
     public void onBindViewHolder(final Viewholder holder, int position) {
 
-        model = requestList.get(position);
+        final ParkingRequest model = requestList.get(position);
         holder.mParkAddress.setText(model.getmParkPlaceAddress());
-        holder.phoneNumberTV.setText(model.getmProviderPhone());
         Picasso.get().load(model.getmParkPlacePhotoUrl())
                 .placeholder(context.getResources().getDrawable(R.drawable.header_cover))
                 .error(context.getResources().getDrawable(R.drawable.header_cover))
@@ -98,7 +96,8 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
 
 
         final long startTime=model.getmStartTime();
-
+        final String number=model.getmProviderPhone();
+        holder.phoneNumberTV.setText(number);
 
         if (model.getmStatus().equals(Status.STARTED))
         {
@@ -156,6 +155,24 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
         }
 
 
+
+        holder.callButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(context, "You are calling "+number, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(Intent.ACTION_CALL);
+                intent.setData(Uri.parse("tel:" + number));
+                if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.CALL_PHONE}, 456);
+                    return;
+                }
+                if (intent.resolveActivity(context.getPackageManager()) != null) {
+                    context.startActivity(intent);
+                }
+            }
+        });
+
         // 3. set the requestList to your Views here
 
 
@@ -170,7 +187,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
                 parkPlaceRequestDB.child("mStatus").setValue(Status.ENDED, new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        Toast.makeText(context, Status.ENDED+" ", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, Status.ENDED+" service", Toast.LENGTH_LONG).show();
                         Intent intent=new Intent(context, PaymentActivity.class);
                         intent.putExtra("RequestId",model.getmRequestID());
                         intent.putExtra("mProviderId",model.getmProviderID());
@@ -192,22 +209,6 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
 
 
 
-        holder.callButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Toast.makeText(context, "You are calling "+model.getmConsumerPhone(), Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(Intent.ACTION_CALL);
-                intent.setData(Uri.parse("tel:" + model.getmConsumerPhone()));
-                if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.CALL_PHONE}, 456);
-                    return;
-                }
-                if (intent.resolveActivity(context.getPackageManager()) != null) {
-                    context.startActivity(intent);
-                }
-            }
-        });
 
     }
 
@@ -215,9 +216,6 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
     public int getItemCount() {
         return requestList.size();
     }
-
-
-
 
 
 
