@@ -66,13 +66,13 @@ public class VerifyPhoneActivity extends AppCompatActivity {
             if (waitingTime>0)
             {
                 waitingTime--;
-                waitingTimeTV.setText("Wait "+String.valueOf(waitingTime)+" Seconds for Resend");
+                waitingTimeTV.setText("Resend Code in "+String.valueOf(waitingTime)+" Second");
             }
 
             if (waitingTime<1)
             {
                 resendOTP.setVisibility(View.VISIBLE);
-                waitingTimeTV.setText("Don't get verification code ?");
+                waitingTimeTV.setVisibility(View.GONE);
             }
 
             handler.postDelayed(timedTask, 1000);
@@ -119,6 +119,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                 sendVerificationCode(mobile);
                 resendOTP.setVisibility(View.GONE);
                 waitingTime=15;
+                waitingTimeTV.setVisibility(View.VISIBLE);
             }
         });
 

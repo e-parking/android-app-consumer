@@ -2,8 +2,10 @@ package com.nerdcastle.eparking.Adapters;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,14 +41,15 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
     public static List<ParkingRequest> requestList;
     public static Context context;
 
-    public static String mProviderID;
+    public static String mConsumerID;
+
 
     public ActivityAdapter(List<ParkingRequest> requestList, Context context) {
         this.requestList = requestList;
         this.context = context;
         mFirebaseInstance = FirebaseDatabase.getInstance();
         auth = FirebaseAuth.getInstance();
-        mProviderID = auth.getCurrentUser().getUid();
+        mConsumerID = auth.getCurrentUser().getUid();
     }
 
     public static class Viewholder extends RecyclerView.ViewHolder {
@@ -56,6 +60,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
         public TextView mStatus;
         public TextView mDurationTV,phoneNumberTV;
         public Button mEndButton,callButton,mDirection;
+        public RatingBar ratingBar;
 
 
         public Viewholder(final View itemView) {
@@ -71,6 +76,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
             phoneNumberTV=(TextView)itemView.findViewById(R.id.phoneNumberTV);
             callButton=(Button)itemView.findViewById(R.id.callButton);
             mDirection=(Button)itemView.findViewById(R.id.mapButton);
+            ratingBar=itemView.findViewById(R.id.ratingBarId);
 
 
         }
@@ -94,7 +100,9 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
                 .error(context.getResources().getDrawable(R.drawable.header_cover))
                 .into(holder.mParkImage);
 
-
+        if (model.getmConsumerRatingValue()>0){
+            holder.ratingBar.setRating(model.getmConsumerRatingValue());
+        }
         final long startTime=model.getmStartTime();
         final String number=model.getmProviderPhone();
         holder.phoneNumberTV.setText(number);
@@ -110,7 +118,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
                 int min= (int) (timeDistance/60000);
                 timeDistance=timeDistance-(min*60000);
                 int sec= (int) (timeDistance/1000);
-                holder.mDurationTV.setText(hour+"h:"+min+"m:"+sec+"s ago");
+                holder.mDurationTV.setText(hour+"h:"+min+"m"+" ago");
             }
         }
         else if (model.getmStatus().equals(Status.ENDED))
@@ -123,11 +131,8 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
             int min= (int) (timeDistance/60000);
             timeDistance=timeDistance-(min*60000);
             int sec= (int) (timeDistance/1000);
-            holder.mDurationTV.setText("Total- "+hour+"h:"+min+"m:"+sec+"s");
+            holder.mDurationTV.setText(hour+"h:"+min+"m"+"\n"+model.getmEstimatedCost()+" TK");
         }
-
-
-
 
 
         String mStatus=model.getmStatus();
@@ -148,6 +153,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
         else if (mStatus.equals(Status.ENDED)){
             holder.mStatus.setText(Status.ENDED);
             holder.mEndButton.setVisibility(View.GONE);
+            holder.ratingBar.setVisibility(View.VISIBLE);
         }
         else if (mStatus.equals(Status.ACCEPTED)){
             holder.mStatus.setText(Status.ACCEPTED);
@@ -180,27 +186,59 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
             @Override
             public void onClick(View v) {
 
-                DatabaseReference parkPlaceRequestDB=mFirebaseInstance.getReference("ProviderList/"+mProviderID+"/ParkPlaceList/" + model.getmParkPlaceID()+"/Request/"+model.getmRequestID());
-                DatabaseReference consumerRequestDB=mFirebaseInstance.getReference("ConsumerList/"+model.getmConsumerID()+"/Request/"+model.getmRequestID());
-                DatabaseReference parkPlaceDB=mFirebaseInstance.getReference("ProviderList/"+mProviderID+"/ParkPlaceList/" + model.getmParkPlaceID());
+                final DatabaseReference parkPlaceRequestDB=mFirebaseInstance.getReference("ProviderList/"+model.getmProviderID()+"/ParkPlaceList/" + model.getmParkPlaceID()+"/Request/"+model.getmRequestID());
+                final DatabaseReference consumerRequestDB=mFirebaseInstance.getReference("ConsumerList/"+mConsumerID+"/Request/"+model.getmRequestID());
+                final DatabaseReference parkPlaceDB=mFirebaseInstance.getReference("ProviderList/"+model.getmProviderID()+"/ParkPlaceList/" + model.getmParkPlaceID());
 
-                parkPlaceRequestDB.child("mStatus").setValue(Status.ENDED, new DatabaseReference.CompletionListener() {
+
+                DialogInterface.OnClickListener onClickListener=new DialogInterface.OnClickListener() {
                     @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        Toast.makeText(context, Status.ENDED+" service", Toast.LENGTH_LONG).show();
-                        Intent intent=new Intent(context, PaymentActivity.class);
-                        intent.putExtra("RequestId",model.getmRequestID());
-                        intent.putExtra("mProviderId",model.getmProviderID());
-                        context.startActivity(intent);
-                    }
-                });
-                consumerRequestDB.child("mStatus").setValue(Status.ENDED);
-                consumerRequestDB.child("mEndTime").setValue(System.currentTimeMillis());
-                parkPlaceRequestDB.child("mEndTime").setValue(System.currentTimeMillis());
-                parkPlaceDB.child("mIsAvailable").setValue("true");
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+                                parkPlaceRequestDB.child("mStatus").setValue(Status.ENDED, new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
 
-                holder.mEndButton.setText(Status.ENDED);
-                holder.mEndButton.setEnabled(false);
+                                        Toast.makeText(context, Status.ENDED+" service", Toast.LENGTH_LONG).show();
+                                        Intent intent=new Intent(context, PaymentActivity.class);
+                                        intent.putExtra("RequestId",model.getmRequestID());
+                                        intent.putExtra("mProviderId",model.getmProviderID());
+                                        intent.putExtra("mStartTime",model.getmStartTime());
+                                        intent.putExtra("mProviderId",model.getmProviderID());
+                                        intent.putExtra("mParkPlaceId",model.getmParkPlaceID());
+                                        if (model.getmEndTime()>0){
+                                            intent.putExtra("mEndTime",model.getmEndTime());
+                                        }
+                                        else {
+                                            intent.putExtra("mEndTime",System.currentTimeMillis());
+                                        }
+                                        context.startActivity(intent);
+                                    }
+                                });
+                                consumerRequestDB.child("mStatus").setValue(Status.ENDED);
+                                consumerRequestDB.child("mEndTime").setValue(System.currentTimeMillis());
+                                parkPlaceRequestDB.child("mEndTime").setValue(System.currentTimeMillis());
+                                parkPlaceDB.child("mIsAvailable").setValue("true");
+
+                                holder.mEndButton.setText(Status.ENDED);
+                                holder.mEndButton.setEnabled(false);
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                dialog.dismiss();
+                                break;
+                        }
+                    }
+                };
+
+
+                AlertDialog.Builder builder=new AlertDialog.Builder(context);
+                builder.setTitle("Alert");
+                builder.setIcon(R.drawable.ic_add_alert_black_24dp);
+                builder.setMessage("Are you Sure? ").setPositiveButton("End Now",onClickListener)
+                        .setNegativeButton("Not Now",onClickListener).show();
+
 
             }
         });

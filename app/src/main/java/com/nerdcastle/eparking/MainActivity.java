@@ -596,7 +596,7 @@ public class MainActivity extends AppCompatActivity implements
                     consumer.getmPhone(), "DMC 5643 TA", provider.getmName(),
                     provider.getmPhone(), parkPlace.getmAddress(), parkPlace.getmLatitude(),
                     parkPlace.getmLongitude(), Status.PENDING, parkPlace.getmParkPlacePhotoUrl()
-                    ,consumer.getmPhoto(),0,0,0);
+                    ,consumer.getmPhoto(),0,0,0,0);
 
             //for update parking current status available or not
             providerRequestDb2 = mFirebaseInstance.getReference
