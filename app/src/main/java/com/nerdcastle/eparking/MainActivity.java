@@ -76,6 +76,7 @@ import com.nerdcastle.eparking.Activities.LoginActivity;
 import com.nerdcastle.eparking.Activities.SignUpActivity;
 import com.nerdcastle.eparking.CustomLayout.MapWrapperLayout;
 import com.nerdcastle.eparking.Fragments.ActivityFragment;
+import com.nerdcastle.eparking.Fragments.AddVehicleFragment;
 import com.nerdcastle.eparking.Fragments.PaymentFragment;
 import com.nerdcastle.eparking.OtherClasses.CustomClusterRenderer;
 import com.nerdcastle.eparking.OtherClasses.LoginPreferences;
@@ -108,7 +109,8 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener
         , OnMapReadyCallback
         , ActivityFragment.ActivityFragmentInterface
-        , PaymentFragment.PaymentFragmentInterface {
+        , PaymentFragment.PaymentFragmentInterface
+        ,AddVehicleFragment.AddVehicleFragmentInterface{
 
     private static final String TAG = "MainActivity";
     //------------Custom Dialogs ---------
@@ -1075,6 +1077,9 @@ public class MainActivity extends AppCompatActivity implements
         } else if (id == R.id.nav_map) {
             innitializeMap();
 
+        }else if (id == R.id.nav_add_vehicle) {
+            goToAddVehicle();
+
         } else if (id == R.id.nav_payments) {
             goToPayment();
         } else if (id == R.id.nav_logout) {
@@ -1171,6 +1176,15 @@ public class MainActivity extends AppCompatActivity implements
         PaymentFragment paymentFragment = new PaymentFragment();
         ft.replace(R.id.fragmentContainer, paymentFragment);
         ft.addToBackStack("goToPayment");
+        ft.commit();
+    }
+    @Override
+    public void goToAddVehicle() {
+        mHeaderMenu.setVisibility(View.GONE);
+        ft = fm.beginTransaction();
+        AddVehicleFragment addVehicleFragment = new AddVehicleFragment();
+        ft.replace(R.id.fragmentContainer, addVehicleFragment);
+        ft.addToBackStack("goToAddVehicle");
         ft.commit();
     }
 
