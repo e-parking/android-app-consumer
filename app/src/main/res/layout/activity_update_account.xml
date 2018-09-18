@@ -38,6 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_email"
+            android:fontFamily="@font/roboto_regular"
             android:inputType="textEmailAddress"
             android:maxLines="1"
             android:singleLine="true" />
@@ -47,6 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_new_email"
+            android:fontFamily="@font/roboto_regular"
             android:inputType="textEmailAddress"
             android:maxLines="1"
             android:singleLine="true" />
@@ -60,6 +62,7 @@
             android:imeActionId="@+id/login"
             android:imeOptions="actionUnspecified"
             android:inputType="textPassword"
+            android:fontFamily="@font/roboto_regular"
             android:maxLines="1"
             android:singleLine="true" />
 
@@ -69,6 +72,7 @@
             android:layout_height="wrap_content"
             android:focusableInTouchMode="true"
             android:hint="@string/new_pass"
+            android:fontFamily="@font/roboto_regular"
             android:imeActionId="@+id/login"
             android:imeOptions="actionUnspecified"
             android:inputType="textPassword"
@@ -83,6 +87,7 @@
             android:layout_marginTop="16dp"
             android:background="@color/colorPrimaryDark"
             android:text="@string/btn_change"
+            android:fontFamily="@font/roboto_regular"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
 
@@ -94,6 +99,7 @@
             android:layout_marginTop="16dp"
             android:background="@color/colorPrimaryDark"
             android:text="@string/btn_change"
+            android:fontFamily="@font/roboto_regular"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
 
@@ -105,6 +111,7 @@
             android:layout_marginTop="16dp"
             android:background="@color/colorPrimaryDark"
             android:text="@string/btn_send"
+            android:fontFamily="@font/roboto_regular"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
 
@@ -122,6 +129,7 @@
             android:layout_marginTop="16dp"
             android:background="@color/colorPrimaryDark"
             android:text="@string/btn_remove"
+            android:fontFamily="@font/roboto_regular"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
 
@@ -132,6 +140,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/change_email"
+            android:fontFamily="@font/roboto_regular"
             android:textStyle="bold" />
 
         <Button
@@ -141,6 +150,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/change_password"
+            android:fontFamily="@font/roboto_regular"
             android:textStyle="bold" />
 
         <Button
@@ -150,6 +160,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/send_password_reset_email"
+            android:fontFamily="@font/roboto_regular"
             android:textStyle="bold" />
 
         <Button
@@ -159,6 +170,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/remove_user"
+            android:fontFamily="@font/roboto_regular"
             android:textStyle="bold" />
 
         <Button
@@ -169,6 +181,7 @@
             android:layout_marginTop="16dp"
             android:background="@color/colorPrimary"
             android:text="@string/btn_sign_out"
+            android:fontFamily="@font/roboto_regular"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
 

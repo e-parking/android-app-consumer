@@ -25,9 +25,9 @@
         android:id="@+id/mUserName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/josefinsans_regular"
+        android:fontFamily="@font/roboto_regular"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text=""
+        android:text="No Name"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="#ffffff"
         android:textSize="18dp"
@@ -38,8 +38,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:fontFamily="@font/josefinsans_regular"
-        android:text=""
+        android:fontFamily="@font/roboto_regular"
+        android:text="example@gmail.com"
         android:textSize="14sp"
         android:textStyle="bold" />
 </LinearLayout>

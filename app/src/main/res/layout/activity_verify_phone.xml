@@ -40,7 +40,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="Wait 15 seconds for resend" />
+            android:text="Wait 15 seconds for resend"
+            android:fontFamily="@font/roboto_regular"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -65,7 +66,7 @@
             android:digits="0123456789"
             android:drawablePadding="10dp"
             android:gravity="center"
-            android:fontFamily="@font/josefinsans_regular"
+            android:fontFamily="@font/roboto_regular"
             android:hint="Enter verification code"
             android:inputType="phone"
             android:maxLength="10"
@@ -81,7 +82,7 @@
             android:layout_marginBottom="13dp"
             android:background="@drawable/all_side_border"
             android:text="Sign In"
-            android:fontFamily="@font/josefinsans_regular"
+            android:fontFamily="@font/roboto_regular"
             android:textColor="@color/white"
             android:textAllCaps="false" />
 

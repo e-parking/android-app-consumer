@@ -6,24 +6,24 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:fontFamily="@font/josefinsans_regular"
+            android:fontFamily="@font/roboto_regular"
             android:icon="@drawable/ic_myactivity_icon"
             android:title="My Activity" />
 
 
         <item
             android:id="@+id/nav_map"
-            android:fontFamily="@font/josefinsans_regular"
+            android:fontFamily="@font/roboto_regular"
             android:icon="@drawable/ic_mapsearch_icon"
             android:title="Search Near By" />
         <item
             android:id="@+id/nav_payments"
-            android:fontFamily="@font/josefinsans_regular"
+            android:fontFamily="@font/roboto_regular"
             android:icon="@drawable/ic_list_icon"
             android:title="Payments" />
         <item
             android:id="@+id/nav_add_vehicle"
-            android:fontFamily="@font/josefinsans_regular"
+            android:fontFamily="@font/roboto_regular"
             android:icon="@drawable/ic_add_box_black_24dp"
             android:title="Add Vehicle" />
     </group>
@@ -32,7 +32,7 @@
         <menu>
             <item
                 android:id="@+id/nav_logout"
-                android:fontFamily="@font/josefinsans_regular"
+                android:fontFamily="@font/roboto_regular"
                 android:icon="@drawable/ic_logout_icon"
                 android:title="Logout" />
         </menu>
