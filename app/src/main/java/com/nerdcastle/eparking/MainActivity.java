@@ -44,6 +44,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -63,6 +64,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -74,6 +76,7 @@ import com.nerdcastle.eparking.Activities.LoginActivity;
 import com.nerdcastle.eparking.Activities.SignUpActivity;
 import com.nerdcastle.eparking.CustomLayout.MapWrapperLayout;
 import com.nerdcastle.eparking.Fragments.ActivityFragment;
+import com.nerdcastle.eparking.Fragments.AddVehicleFragment;
 import com.nerdcastle.eparking.Fragments.PaymentFragment;
 import com.nerdcastle.eparking.OtherClasses.CustomClusterRenderer;
 import com.nerdcastle.eparking.OtherClasses.LoginPreferences;
@@ -81,9 +84,11 @@ import com.nerdcastle.eparking.OtherClasses.OnInfoWindowElemTouchListener;
 import com.nerdcastle.eparking.OtherClasses.TempData;
 import com.nerdcastle.eparking.PoJoClasses.Consumer;
 import com.nerdcastle.eparking.PoJoClasses.MyItems;
+import com.nerdcastle.eparking.PoJoClasses.Park;
 import com.nerdcastle.eparking.PoJoClasses.ParkPlace;
 import com.nerdcastle.eparking.PoJoClasses.Provider;
 import com.nerdcastle.eparking.PoJoClasses.ParkingRequest;
+import com.nerdcastle.eparking.PoJoClasses.ProviderRating;
 import com.nerdcastle.eparking.PoJoClasses.Request;
 import com.nerdcastle.eparking.PoJoClasses.SelfBook;
 import com.nerdcastle.eparking.PoJoClasses.Status;
@@ -104,7 +109,8 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener
         , OnMapReadyCallback
         , ActivityFragment.ActivityFragmentInterface
-        , PaymentFragment.PaymentFragmentInterface {
+        , PaymentFragment.PaymentFragmentInterface
+        ,AddVehicleFragment.AddVehicleFragmentInterface{
 
     private static final String TAG = "MainActivity";
     //------------Custom Dialogs ---------
@@ -149,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements
     private TextView infoParkPlaceAddress;
     private TextView infoParkPlaceTitle;
     private TextView infoParkingType;
+    private RatingBar ratingBar;
     private ImageView infoParkPlaceImage;
     // private String currentProviderId;
     private Provider provider;
@@ -166,6 +173,9 @@ public class MainActivity extends AppCompatActivity implements
 
     private List<Provider> providerList = new ArrayList<>();
     private List<ParkPlace> parkPlaceList = new ArrayList<>();
+    private List<String> ratingValue=new ArrayList<>();
+    private float totalProviderRatingValue=0;
+    private float averageProviderParkingValue=0;
     private String mRequestID;
     private String mConsumerID;
     private Request mRequest;
@@ -445,8 +455,10 @@ public class MainActivity extends AppCompatActivity implements
         this.infoParkPlaceAddress = infoWindow.findViewById(R.id.parkAddress);
         this.infoParkPlaceTitle = infoWindow.findViewById(R.id.parkPlaceTitle);
         this.infoParkingType = infoWindow.findViewById(R.id.parkingType);
+        this.ratingBar=infoWindow.findViewById(R.id.ratingBarId);
         this.infoParkPlaceImage = infoWindow.findViewById(R.id.parkPlaceImage);
         this.infoButton = infoWindow.findViewById(R.id.button);
+
 
 
         renderer = new CustomClusterRenderer(this, map, clusterManager);
@@ -540,6 +552,7 @@ public class MainActivity extends AppCompatActivity implements
                         infoParkPlaceAddress.setText(parkPlace.getmAddress());
                         infoParkPlaceTitle.setText(parkPlace.getmParkPlaceTitle()+", 1 "+parkPlace.getmParkingType());
                         infoParkingType.setText(mDistance+" km");
+                        ratingBar.setRating(parkPlace.getmProviderAvarageRating());
                         hourlyRate.setText(parkPlace.getmParkingChargePerHour()+" TK/Hr");
 
                         if (parkPlace.getmParkPlacePhotoUrl().contains("https://")) {
@@ -717,6 +730,37 @@ public class MainActivity extends AppCompatActivity implements
                                         && parkPlace.getmIsAvailable().equals("true")) {
 
 
+                                    //provider rating section
+                                    DatabaseReference ratingDB=FirebaseDatabase.getInstance().
+                                            getReference("ProviderList/" + parkPlace.getmProviderID() + "/ParkPlaceList/" + parkPlace.getmParkPlaceID()+ "/Request");
+
+                                    ratingDB.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.exists()){
+                                                totalProviderRatingValue=0;
+                                                ProviderRating providerRating;
+                                                int counter=0;
+                                                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                                    providerRating=data.getValue(ProviderRating.class);
+                                                    counter++;
+                                                    totalProviderRatingValue=totalProviderRatingValue+providerRating.getmConsumerRatingValue();
+                                                }
+                                                if (counter>0){
+                                                    averageProviderParkingValue=totalProviderRatingValue/counter;
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                    //End of rating section
+
+
+
                                     DatabaseReference dbReferenceS = FirebaseDatabase.getInstance().
                                             getReference("ProviderList/" + provider.getmProviderID() + "/ParkPlaceList/" + parkPlace.getmParkPlaceID()+ "/SelfBookList");
 
@@ -736,8 +780,10 @@ public class MainActivity extends AppCompatActivity implements
 
                                                     } else {
 
-                                                        //Toast.makeText(MainActivity.this, "start Time: " + currentTime, Toast.LENGTH_SHORT).show();
-
+                                                        if (averageProviderParkingValue>0){
+                                                            parkPlace.setmProviderAvarageRating(averageProviderParkingValue);
+                                                            //Toast.makeText(MainActivity.this, String.valueOf(parkPlace.getmProviderAvarageRating()), Toast.LENGTH_SHORT).show();
+                                                        }
                                                         parkPlaceList.add(parkPlace);
 
                                                         double lat = Double.parseDouble(parkPlace.getmLatitude());
@@ -757,6 +803,11 @@ public class MainActivity extends AppCompatActivity implements
                                                 }
                                         }
                                         else {
+
+                                                if (averageProviderParkingValue>0){
+                                                    parkPlace.setmProviderAvarageRating(averageProviderParkingValue);
+                                                    //Toast.makeText(MainActivity.this, String.valueOf(parkPlace.getmProviderAvarageRating()), Toast.LENGTH_SHORT).show();
+                                                }
                                                 parkPlaceList.add(parkPlace);
 
                                                 double lat = Double.parseDouble(parkPlace.getmLatitude());
@@ -781,19 +832,23 @@ public class MainActivity extends AppCompatActivity implements
                                         }
                                     });
 
-
-
-
-
-
                                 }
 
                             }
+                        }
 
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
 
-
-
-
+                        }
+                    });
+                }
+                //Provider rating section
+                for (ParkPlace parkPlaceForRating:parkPlaceList){
+                    DatabaseReference ratingDB=FirebaseDatabase.getInstance().getReference("ProviderList/" + parkPlaceForRating.getmProviderID() + "/ParkPlaceList/" + parkPlaceForRating.getmParkPlaceID()+ "/Request");
+                    ratingDB.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
 
                         }
 
@@ -803,6 +858,9 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     });
                 }
+
+                //End of Provider rating section
+
 
                 progressDialog.dismiss();
             }
@@ -1019,6 +1077,9 @@ public class MainActivity extends AppCompatActivity implements
         } else if (id == R.id.nav_map) {
             innitializeMap();
 
+        }else if (id == R.id.nav_add_vehicle) {
+            goToAddVehicle();
+
         } else if (id == R.id.nav_payments) {
             goToPayment();
         } else if (id == R.id.nav_logout) {
@@ -1115,6 +1176,15 @@ public class MainActivity extends AppCompatActivity implements
         PaymentFragment paymentFragment = new PaymentFragment();
         ft.replace(R.id.fragmentContainer, paymentFragment);
         ft.addToBackStack("goToPayment");
+        ft.commit();
+    }
+    @Override
+    public void goToAddVehicle() {
+        mHeaderMenu.setVisibility(View.GONE);
+        ft = fm.beginTransaction();
+        AddVehicleFragment addVehicleFragment = new AddVehicleFragment();
+        ft.replace(R.id.fragmentContainer, addVehicleFragment);
+        ft.addToBackStack("goToAddVehicle");
         ft.commit();
     }
 

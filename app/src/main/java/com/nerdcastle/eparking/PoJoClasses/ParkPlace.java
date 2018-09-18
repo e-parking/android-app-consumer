@@ -24,6 +24,7 @@ public class ParkPlace {
 
     // for checking parking is available or not
     private String mIsAvailable;
+    private float mProviderAvarageRating;
 
 
     public ParkPlace() {
@@ -40,7 +41,7 @@ public class ParkPlace {
     }
 
 
-    public ParkPlace(String mProviderID, String mParkPlaceID, String mParkPlaceTitle, String mParkingType, String mParkingStatus, String mParkedVehicle, String mParkingChargePerHour, String mAddress, String mLatitude, String mLongitude, String mParkingIsApproved, String mHouseNumber, String mRoadNumber, String mCityName, String mAreaName, String mParkPlacePhotoUrl, String mIsAvailable) {
+    public ParkPlace(String mProviderID, String mParkPlaceID, String mParkPlaceTitle, String mParkingType, String mParkingStatus, String mParkedVehicle, String mParkingChargePerHour, String mAddress, String mLatitude, String mLongitude, String mParkingIsApproved, String mHouseNumber, String mRoadNumber, String mCityName, String mAreaName, String mParkPlacePhotoUrl, String mIsAvailable,float mProviderAvarageRating) {
         this.mProviderID = mProviderID;
         this.mParkPlaceID = mParkPlaceID;
         this.mParkPlaceTitle = mParkPlaceTitle;
@@ -58,6 +59,7 @@ public class ParkPlace {
         this.mAreaName = mAreaName;
         this.mParkPlacePhotoUrl = mParkPlacePhotoUrl;
         this.mIsAvailable=mIsAvailable;
+        this.mProviderAvarageRating=mProviderAvarageRating;
     }
 
     public String getmProviderID() {
@@ -194,5 +196,14 @@ public class ParkPlace {
 
     public void setmIsAvailable(String mIsAvailable) {
         this.mIsAvailable = mIsAvailable;
+    }
+
+
+    public float getmProviderAvarageRating() {
+        return mProviderAvarageRating;
+    }
+
+    public void setmProviderAvarageRating(float mProviderAvarageRating) {
+        this.mProviderAvarageRating = mProviderAvarageRating;
     }
 }
