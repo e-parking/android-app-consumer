@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:id="@+id/layoutId"
         android:background="@drawable/all_side_border_main"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
@@ -21,56 +23,77 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:gravity="center"
             android:layout_marginTop="10dp">
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:padding="7dp"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:textColor="@color/white"
-                android:background="@drawable/all_side_border"
-                android:text="Upload Blue Book Image"
-                />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="5dp">
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_weight=".7"
+                android:background="#FFF"
+                app:cardCornerRadius="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_height="85dp">
+                <ImageView
+                    android:background="#FFF"
+                    android:id="@+id/blueBookImageShowId"
+                    android:layout_width="match_parent"
+                    android:scaleType="fitXY"
+                    android:layout_height="85dp" />
+            </android.support.v7.widget.CardView>
 
 
-            <EditText
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter Registration No"
-                android:layout_marginLeft="10dp"
-                android:gravity="center"
-                android:layout_marginRight="10dp"/>
+                android:orientation="vertical"
+                android:layout_weight=".3"
+                android:layout_marginTop="5dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:padding="7dp"
+                    android:id="@+id/uploadBlueBookId"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:textColor="@color/white"
+                    android:background="@drawable/all_side_border"
+                    android:text="Upload Blue Book Image"
+                    />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Registration No"
+                    android:layout_marginLeft="10dp"
+                    android:id="@+id/registrationNumberId"
+                    android:layout_marginRight="10dp"/>
 
 
+
+            </LinearLayout>
 
         </LinearLayout>
+
+
 
         <RadioGroup
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginTop="10dp"
+            android:id="@+id/radioGroupId"
             android:gravity="center">
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/carRadioButtonId"
                 android:layout_marginRight="40dp"
                 android:text="Car"/>
             <RadioButton
+                android:id="@+id/motorcycleRadioButtonId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Motorcycle"/>
@@ -83,6 +106,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
+            android:id="@+id/saveButtonId"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp"
             android:background="@color/colorPrimary"
@@ -112,10 +136,11 @@
 
 
         <android.support.v7.widget.CardView
-            android:id="@+id/vehicleCarId"
+            android:id="@+id/carCardViewId"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             app:cardCornerRadius="5dp"
+            android:visibility="gone"
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -123,32 +148,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:background="@drawable/all_side_border_main"
-                android:gravity="center">
+                android:background="@drawable/all_side_border_main">
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="70dp"
+                    android:layout_height="80dp"
                     android:layout_weight=".7"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
+                    android:id="@+id/carBlueBookId"
                     android:src="@drawable/header_cover"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight=".3"
-                    android:layout_marginLeft="5dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="10dp"
                     android:orientation="vertical">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="DHAKA METRO LA-11-9999"
+                        android:id="@+id/carNumberId"
                         android:textColor="@color/black"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Motorcycle"
-                        android:layout_marginLeft="50dp"
-                        android:textColor="@color/black"
-                        />
 
                 </LinearLayout>
 
@@ -158,10 +180,11 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
-            android:id="@+id/vehicleBikeId"
+            android:id="@+id/bikeCardViewId"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             app:cardCornerRadius="5dp"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <LinearLayout
@@ -170,32 +193,31 @@
             android:orientation="horizontal"
             android:layout_marginTop="5dp"
             android:background="@drawable/all_side_border_main"
-            android:gravity="center">
+           >
 
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="80dp"
                 android:layout_weight=".7"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:id="@+id/motorcycleBlueBookId"
                 android:src="@drawable/header_cover"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight=".3"
+                android:layout_gravity="center"
                 android:orientation="vertical">
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="DHAKA METRO HA-12-42399"
                     android:layout_marginLeft="10dp"
+                    android:id="@+id/motorCycleNumberId"
                     android:textColor="@color/black"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Car"
-                    android:layout_marginLeft="70dp"
-                    android:textColor="@color/black"
-                    />
+
 
             </LinearLayout>
         </LinearLayout>

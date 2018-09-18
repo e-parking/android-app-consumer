@@ -782,7 +782,7 @@ public class MainActivity extends AppCompatActivity implements
 
                                                         if (averageProviderParkingValue>0){
                                                             parkPlace.setmProviderAvarageRating(averageProviderParkingValue);
-                                                            Toast.makeText(MainActivity.this, String.valueOf(parkPlace.getmProviderAvarageRating()), Toast.LENGTH_SHORT).show();
+                                                            //Toast.makeText(MainActivity.this, String.valueOf(parkPlace.getmProviderAvarageRating()), Toast.LENGTH_SHORT).show();
                                                         }
                                                         parkPlaceList.add(parkPlace);
 
@@ -806,7 +806,7 @@ public class MainActivity extends AppCompatActivity implements
 
                                                 if (averageProviderParkingValue>0){
                                                     parkPlace.setmProviderAvarageRating(averageProviderParkingValue);
-                                                    Toast.makeText(MainActivity.this, String.valueOf(parkPlace.getmProviderAvarageRating()), Toast.LENGTH_SHORT).show();
+                                                    //Toast.makeText(MainActivity.this, String.valueOf(parkPlace.getmProviderAvarageRating()), Toast.LENGTH_SHORT).show();
                                                 }
                                                 parkPlaceList.add(parkPlace);
 
