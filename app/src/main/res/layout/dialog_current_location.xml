@@ -22,7 +22,7 @@
                android:layout_height="50dp"
                android:textSize="20sp"
                android:gravity="center"
-               android:fontFamily="@font/josefinsans_regular"
+               android:fontFamily="@font/roboto_regular"
                android:text="This is your current location."/>
 
 

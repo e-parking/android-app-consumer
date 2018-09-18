@@ -23,7 +23,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:textSize="18dp"
-            android:fontFamily="@font/josefinsans_regular"
+            android:fontFamily="@font/roboto_regular"
             android:textColor="@color/white"
             android:gravity="center|center_horizontal"
             android:background="@color/colorPrimaryDark"
@@ -41,7 +41,7 @@
             android:gravity="center|center_horizontal"
             android:background="@color/colorPrimaryDark"
             android:layout_weight="1"
-            android:fontFamily="@font/josefinsans_regular"
+            android:fontFamily="@font/roboto_regular"
             android:textColor="@color/white"
             android:text="Leaving \n 05:00 PM"/>
     </LinearLayout>

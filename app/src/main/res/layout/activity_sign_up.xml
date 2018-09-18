@@ -41,7 +41,7 @@
                 android:id="@+id/mProviderProfilePicker"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/josefinsans_regular"
+                android:fontFamily="@font/roboto_regular"
                 android:textColor="@color/white"
                 android:background="@color/colorPrimary"
                 android:text="choose profile picture" />
@@ -57,7 +57,7 @@
                     android:gravity="center_vertical"
                     android:textSize="18dp"
                     android:textStyle="bold"
-                    android:fontFamily="@font/josefinsans_regular"
+                    android:fontFamily="@font/roboto_regular"
                     android:text="Name: "/>
 
                 <EditText
@@ -66,7 +66,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="6"
                     android:gravity="center"
-                    android:fontFamily="@font/josefinsans_regular"
+                    android:fontFamily="@font/roboto_regular"
                     android:hint="Your Name" />
 
             </LinearLayout>
@@ -83,7 +83,7 @@
                     android:layout_weight="2"
                     android:gravity="center_vertical"
                     android:textSize="18dp"
-                    android:fontFamily="@font/josefinsans_regular"
+                    android:fontFamily="@font/roboto_regular"
                     android:textStyle="bold"
                     android:text="Email: "/>
 
@@ -93,7 +93,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="6"
                     android:gravity="center"
-                    android:fontFamily="@font/josefinsans_regular"
+                    android:fontFamily="@font/roboto_regular"
                     android:hint="Email Address" />
 
             </LinearLayout>
@@ -161,7 +161,7 @@
                     android:gravity="center_vertical"
                     android:textSize="18dp"
                     android:textStyle="bold"
-                    android:fontFamily="@font/josefinsans_regular"
+                    android:fontFamily="@font/roboto_regular"
                     android:text="Phone: "/>
 
                 <EditText
@@ -170,7 +170,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="6"
                     android:gravity="center"
-                    android:fontFamily="@font/josefinsans_regular"
+                    android:fontFamily="@font/roboto_regular"
                     android:hint="Phone Number" />
 
             </LinearLayout>
@@ -238,7 +238,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:gravity="center"
-                    android:fontFamily="@font/josefinsans_regular"
+                    android:fontFamily="@font/roboto_regular"
                     android:hint="National ID" />
 
             </LinearLayout>
@@ -252,7 +252,7 @@
                 android:textSize="18dp"
                 android:layout_marginTop="10dp"
                 android:textStyle="bold"
-                android:fontFamily="@font/josefinsans_regular"
+                android:fontFamily="@font/roboto_regular"
                 android:text="Update"/>
 
         </LinearLayout>
