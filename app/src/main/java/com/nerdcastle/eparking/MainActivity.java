@@ -27,6 +27,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.widget.CardView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -131,6 +132,7 @@ public class MainActivity extends AppCompatActivity implements
     private DatabaseReference mFirebaseRequestRef;
     private DatabaseReference mDatabaseConsumerStatus;
     private DatabaseReference consumerRequestDb;
+    private CardView vehicleSelection;
     private DatabaseReference providerRequestDb;
     private DatabaseReference providerRequestDb2;
     private FirebaseUser mCurrentUser;
@@ -197,6 +199,7 @@ public class MainActivity extends AppCompatActivity implements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
 /*
         progressDialog = ProgressDialog.show(this, "Please wait.",
                 "We are Preparing your map.", true);*/
@@ -231,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements
         mUserName = header.findViewById(R.id.mUserName);
         mUserEmailAddress = header.findViewById(R.id.mUserEmailAddress);
         mProfileImage = header.findViewById(R.id.circularImageView);
+        vehicleSelection=findViewById(R.id.vehicleSelection);
 
         //-------------------------- Firebase ----------------------------------------
 
@@ -395,6 +399,7 @@ public class MainActivity extends AppCompatActivity implements
                         if (isMapInitialized == false) {
                             isMapInitialized = true;
                             innitializeMap();
+
                         }
                         TempData.latitude = latitude;
                         TempData.longitude = longitude;
@@ -418,6 +423,22 @@ public class MainActivity extends AppCompatActivity implements
         getUserInformation();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+    }
+
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+    }
+
 
     //----------------------------------------------------------------------------------------------
     //--------------------------------------Map Section --------------------------------------------
@@ -425,6 +446,8 @@ public class MainActivity extends AppCompatActivity implements
 
 
     public void innitializeMap() {
+
+      //  vehicleSelection.setVisibility(View.VISIBLE);
         mGpsDialog.dismiss();
         options = new GoogleMapOptions();
         options.zoomControlsEnabled(true);
@@ -1038,6 +1061,8 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             super.onBackPressed();
         }
+
+        //vehicleSelection.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -1049,9 +1074,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -1073,15 +1096,22 @@ public class MainActivity extends AppCompatActivity implements
         if (id == R.id.nav_home) {
 
             goToActivity();
+            vehicleSelection.setVisibility(View.GONE);
 
         } else if (id == R.id.nav_map) {
             innitializeMap();
+            vehicleSelection.setVisibility(View.VISIBLE);
+
 
         }else if (id == R.id.nav_add_vehicle) {
             goToAddVehicle();
+            vehicleSelection.setVisibility(View.GONE);
+
 
         } else if (id == R.id.nav_payments) {
             goToPayment();
+            vehicleSelection.setVisibility(View.GONE);
+
         } else if (id == R.id.nav_logout) {
             mLoginPreference.setStatus(false);
             signOut();
@@ -1163,6 +1193,7 @@ public class MainActivity extends AppCompatActivity implements
     public void goToActivity() {
         mHeaderMenu.setVisibility(View.GONE);
         ft = fm.beginTransaction();
+        //vehicleSelection.setVisibility(View.GONE);
         ActivityFragment activityFragment = new ActivityFragment();
         ft.replace(R.id.fragmentContainer, activityFragment);
         ft.addToBackStack("goToNearBy");
@@ -1173,19 +1204,23 @@ public class MainActivity extends AppCompatActivity implements
     public void goToPayment() {
         mHeaderMenu.setVisibility(View.GONE);
         ft = fm.beginTransaction();
+       // vehicleSelection.setVisibility(View.GONE);
         PaymentFragment paymentFragment = new PaymentFragment();
         ft.replace(R.id.fragmentContainer, paymentFragment);
         ft.addToBackStack("goToPayment");
+
         ft.commit();
     }
     @Override
     public void goToAddVehicle() {
         mHeaderMenu.setVisibility(View.GONE);
         ft = fm.beginTransaction();
+        //vehicleSelection.setVisibility(View.GONE);
         AddVehicleFragment addVehicleFragment = new AddVehicleFragment();
         ft.replace(R.id.fragmentContainer, addVehicleFragment);
         ft.addToBackStack("goToAddVehicle");
         ft.commit();
+
     }
 
 
@@ -1250,44 +1285,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-    }
-
-
-    @Override
-    protected void onResume() {
-
-        /*
-        mAuth = FirebaseAuth.getInstance();
-
-        if (mAuth.getCurrentUser() != null)
-        {
-            mCurrentUser = mAuth.getCurrentUser();
-            mConsumerID = mCurrentUser.getUid();
-
-            if (mCurrentUser.getDisplayName() == null )
-            {
-                mUserName.setText("");
-            } else {
-                mUserName.setText(mCurrentUser.getDisplayName());
-            }
-
-            if (mCurrentUser.getEmail() == null)
-            {
-                mUserEmailAddress.setText("");
-            } else {
-
-                if (mCurrentUser.getEmail().contains("@mail.com"))
-                {
-                    mUserEmailAddress.setText("");
-                }
-            }
-        }
-        */
-        super.onResume();
-    }
 
 
     public void showGPSDialogBox() {
