@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements
     private TextView infoParkPlaceTitle;
     private TextView infoParkingType;
     private RatingBar ratingBar;
-    private ImageView infoParkPlaceImage;
+    private ImageView infoParkPlaceImage,bikeImage,carImage;
     // private String currentProviderId;
     private Provider provider;
     private Button infoButton;
@@ -235,6 +235,8 @@ public class MainActivity extends AppCompatActivity implements
         mUserEmailAddress = header.findViewById(R.id.mUserEmailAddress);
         mProfileImage = header.findViewById(R.id.circularImageView);
         vehicleSelection=findViewById(R.id.vehicleSelection);
+        bikeImage = findViewById(R.id.bikeImage);
+        carImage = findViewById(R.id.carImage);
 
         //-------------------------- Firebase ----------------------------------------
 
@@ -375,6 +377,21 @@ public class MainActivity extends AppCompatActivity implements
             }
         });
 
+        bikeImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bikeImage.setImageResource(R.drawable.bike_red);
+                carImage.setImageResource(R.drawable.car_ass);
+            }
+        });
+        carImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                bikeImage.setImageResource(R.drawable.bike);
+                carImage.setImageResource(R.drawable.car);
+            }
+        });
 
         //------------------------------------------------------------------------------------------
 
@@ -1055,10 +1072,16 @@ public class MainActivity extends AppCompatActivity implements
     //----------------------------------------------------------------------------------------------
     @Override
     public void onBackPressed() {
+        int backStackCount=getSupportFragmentManager().getBackStackEntryCount();
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } else if (backStackCount==1){
+            super.onBackPressed();
+            vehicleSelection.setVisibility(View.VISIBLE);
+        }
+        else {
             super.onBackPressed();
         }
 
