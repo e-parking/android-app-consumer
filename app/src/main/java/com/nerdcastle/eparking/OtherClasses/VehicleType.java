@@ -6,5 +6,5 @@ package com.nerdcastle.eparking.OtherClasses;
 
 public class VehicleType {
     public static final String Car = "Car";
-    public static final String MotorCycle = "Motorcycle";
+    public static final String MotorCycle = "Bike";
 }

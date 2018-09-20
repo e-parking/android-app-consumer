@@ -83,6 +83,7 @@ import com.nerdcastle.eparking.OtherClasses.CustomClusterRenderer;
 import com.nerdcastle.eparking.OtherClasses.LoginPreferences;
 import com.nerdcastle.eparking.OtherClasses.OnInfoWindowElemTouchListener;
 import com.nerdcastle.eparking.OtherClasses.TempData;
+import com.nerdcastle.eparking.OtherClasses.VehicleType;
 import com.nerdcastle.eparking.PoJoClasses.Consumer;
 import com.nerdcastle.eparking.PoJoClasses.MyItems;
 import com.nerdcastle.eparking.PoJoClasses.Park;
@@ -91,10 +92,12 @@ import com.nerdcastle.eparking.PoJoClasses.Provider;
 import com.nerdcastle.eparking.PoJoClasses.ParkingRequest;
 import com.nerdcastle.eparking.PoJoClasses.ProviderRating;
 import com.nerdcastle.eparking.PoJoClasses.Request;
+import com.nerdcastle.eparking.PoJoClasses.Schedule;
 import com.nerdcastle.eparking.PoJoClasses.SelfBook;
 import com.nerdcastle.eparking.PoJoClasses.Status;
 import com.nerdcastle.eparking.PoJoClasses.StatusOfConsumer;
 import com.nerdcastle.eparking.PoJoClasses.TempHolder;
+import com.nerdcastle.eparking.PoJoClasses.Vehicle;
 import com.nerdcastle.eparking.WebApis.WebApi;
 import com.squareup.picasso.Picasso;
 
@@ -124,7 +127,6 @@ public class MainActivity extends AppCompatActivity implements
     private CircleImageView mProfileImage;
     //-------------------------------------------
 
-
     private FirebaseAuth mAuth;
     private FirebaseDatabase mFirebaseInstance;
     private DatabaseReference mFirebaseDatabase;
@@ -150,6 +152,8 @@ public class MainActivity extends AppCompatActivity implements
     private Boolean isMapInitialized = false;
 
 
+    private long currentTimeInMilli;
+
     private MapWrapperLayout mapWrapperLayout;
     private ViewGroup infoWindow;
     private ViewGroup mCurrentLocationWindowBox;
@@ -161,8 +165,9 @@ public class MainActivity extends AppCompatActivity implements
     private ImageView infoParkPlaceImage,bikeImage,carImage;
     // private String currentProviderId;
     private Provider provider;
+    private List<Vehicle> vehicleList=new ArrayList<>();
     private Button infoButton;
-    String formattedCurrentDate;
+    String formattedCurrentDay;
     private OnInfoWindowElemTouchListener infoButtonListener;
 
     private FrameLayout fragmentContainer;
@@ -183,6 +188,8 @@ public class MainActivity extends AppCompatActivity implements
     private Request mRequest;
     private Boolean mInternetStatus;
     LoginPreferences mLoginPreference;
+    private String requestVehicleType;
+    private boolean isCar=true;
 
     //------------- Time Picking -----------------
     private Calendar calendar;
@@ -246,37 +253,12 @@ public class MainActivity extends AppCompatActivity implements
 
         getUserInformation();
 
-        /*
-        if (mAuth.getCurrentUser() != null)
-        {
-            mCurrentUser = mAuth.getCurrentUser();
-            mConsumerID = mCurrentUser.getUid();
-
-            if (mCurrentUser.getDisplayName() == null )
-            {
-                mUserName.setText("");
-            } else {
-                mUserName.setText(mCurrentUser.getDisplayName());
-            }
-
-            if (mCurrentUser.getEmail() == null)
-            {
-                mUserEmailAddress.setText("");
-            } else {
-
-                if (mCurrentUser.getEmail().contains("@mail.com"))
-                {
-                    mUserEmailAddress.setText("");
-                }
-            }
-        }
-        */
-
         //get current date
         Date date=Calendar.getInstance().getTime();
-        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("dd-MMM-yyyy");
-        formattedCurrentDate=simpleDateFormat.format(date);
+        SimpleDateFormat simpleDateFormat=new SimpleDateFormat("E");
+        formattedCurrentDay=simpleDateFormat.format(date);
 
+        //Toast.makeText(this, formattedCurrentDate, Toast.LENGTH_SHORT).show();
 
 
 
@@ -381,15 +363,48 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 bikeImage.setImageResource(R.drawable.bike_red);
-                carImage.setImageResource(R.drawable.car_ass);
+                carImage.setImageResource(R.drawable.car_white);
+                requestVehicleType=VehicleType.MotorCycle;
+                clusterManager.clearItems();
+
+                for (ParkPlace parkPlace : parkPlaceList) {
+                    if (parkPlace.getmParkingType().equals(VehicleType.MotorCycle)){
+
+                        double lat = Double.parseDouble(parkPlace.getmLatitude());
+                        double lon = Double.parseDouble(parkPlace.getmLongitude());
+                        if (lat != 0 && lon != 0) {
+                            LatLng latLng = new LatLng(lat, lon);
+                            MyItems item = new MyItems(latLng, parkPlace.getmParkPlaceTitle(), parkPlace.getmParkPlaceID());
+                            clusterManager.addItem(item);
+                            clusterManager.cluster();
+                        }
+                    }
+                }
+
+
             }
         });
         carImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                bikeImage.setImageResource(R.drawable.bike_white);
+                carImage.setImageResource(R.drawable.car_red);
+                requestVehicleType=VehicleType.Car;
+                clusterManager.clearItems();
 
-                bikeImage.setImageResource(R.drawable.bike);
-                carImage.setImageResource(R.drawable.car);
+                for (ParkPlace parkPlace : parkPlaceList) {
+                    if (parkPlace.getmParkingType().equals(VehicleType.Car)){
+
+                        double lat = Double.parseDouble(parkPlace.getmLatitude());
+                        double lon = Double.parseDouble(parkPlace.getmLongitude());
+                        if (lat != 0 && lon != 0) {
+                            LatLng latLng = new LatLng(lat, lon);
+                            MyItems item = new MyItems(latLng, parkPlace.getmParkPlaceTitle(), parkPlace.getmParkPlaceID());
+                            clusterManager.addItem(item);
+                            clusterManager.cluster();
+                        }
+                    }
+                }
             }
         });
 
@@ -432,7 +447,14 @@ public class MainActivity extends AppCompatActivity implements
         getDeviceCurrentLocation();
         getLocationUpdates();
 
+        GetVehicle();
+
     }
+
+    //End of onCreat Method
+
+
+
 
     @Override
     protected void onStart() {
@@ -517,16 +539,6 @@ public class MainActivity extends AppCompatActivity implements
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLocation, 15));
 
 
-
-
-
-        /*clusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<MyItems>() {
-            @Override
-            public boolean onClusterItemClick(MyItems item) {
-                Toast.makeText(MainActivity.this, "You Clicked "+item.getTitle(), Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });*/
 
 
         //------------------------------------------------------------------------------------------
@@ -621,10 +633,42 @@ public class MainActivity extends AppCompatActivity implements
         //------------------------------------------------------------------------------------------
 
 
-
         //getNearbyPlaces();
 
     }
+
+
+
+    public void GetVehicle(){
+        DatabaseReference vehicleDB=FirebaseDatabase.getInstance().getReference("ConsumerList/"+mConsumerID+"/Vehicle");
+        vehicleDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+
+                        Vehicle vehicle = data.getValue(Vehicle.class);
+                        vehicleList.add(vehicle);
+
+                    }
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "Please Add a Vehicle Details", Toast.LENGTH_SHORT).show();
+                    //goToAddVehicle();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+
 
     public static Bitmap decodeBase64(String input) {
         byte[] decodedBytes = Base64.decode(input, 0);
@@ -632,40 +676,144 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void sendRequest(ParkPlace parkPlace) {
-        providerRequestDb = mFirebaseInstance.getReference
-                ("ProviderList/" + provider.getmProviderID() + "/ParkPlaceList/" + parkPlace.getmParkPlaceID() + "/Request/");
-        mRequestID = providerRequestDb.push().getKey();
-        String mSenderUID = mAuth.getCurrentUser().getUid();
-        String mSenderName = mAuth.getCurrentUser().getDisplayName();
+        boolean success=false;
 
-        if (TempHolder.mConsumer != null) {
-            mRequest = new Request(mRequestID, mSenderUID, TempHolder.mConsumer.getmName(),
-                    TempHolder.mConsumer.getmPhone(),
-                    TempHolder.mConsumer.getmPhoto(), "DMC 5643 TA");
-            Consumer consumer = TempHolder.mConsumer;
-            ParkingRequest providerRequest = new ParkingRequest(consumer.getmComsumerID(), provider.getmProviderID(),
-                    parkPlace.getmParkPlaceID(),
-                    parkPlace.getmParkPlaceTitle(), mRequestID, consumer.getmName(),
-                    consumer.getmPhone(), "DMC 5643 TA", provider.getmName(),
-                    provider.getmPhone(), parkPlace.getmAddress(), parkPlace.getmLatitude(),
-                    parkPlace.getmLongitude(), Status.PENDING, parkPlace.getmParkPlacePhotoUrl()
-                    ,consumer.getmPhoto(),0,0,0,0);
+        if (vehicleList.size()>0){
 
-            //for update parking current status available or not
-            providerRequestDb2 = mFirebaseInstance.getReference
-                    ("ProviderList/" + provider.getmProviderID() + "/ParkPlaceList/" + parkPlace.getmParkPlaceID());
-            providerRequestDb2.child("mIsAvailable").setValue("false");
-            //end
+            if (requestVehicleType.equals(VehicleType.Car)){
+                for (Vehicle vehicle : vehicleList) {
+                    if (vehicle.getmVehicleType().equals(VehicleType.Car)){
 
-            consumerRequestDb = mFirebaseInstance.getReference
-                    ("ConsumerList/" + consumer.getmComsumerID() + "/Request/");
+                        providerRequestDb = mFirebaseInstance.getReference
+                                ("ProviderList/" + provider.getmProviderID() + "/ParkPlaceList/" + parkPlace.getmParkPlaceID() + "/Request/");
+                        mRequestID = providerRequestDb.push().getKey();
+                        String mSenderUID = mAuth.getCurrentUser().getUid();
+                        String mSenderName = mAuth.getCurrentUser().getDisplayName();
 
-            providerRequestDb.child(mRequestID).setValue(providerRequest);
-            consumerRequestDb.child(mRequestID).setValue(providerRequest);
+                        if (TempHolder.mConsumer != null) {
+                            mRequest = new Request(mRequestID, mSenderUID, TempHolder.mConsumer.getmName(),
+                                    TempHolder.mConsumer.getmPhone(),
+                                    TempHolder.mConsumer.getmPhoto(),
+                                    "DMC 5643 TA");
+                            Consumer consumer = TempHolder.mConsumer;
+
+                            ParkingRequest providerRequest = new ParkingRequest(consumer.getmComsumerID(),
+                                    provider.getmProviderID(),
+                                    parkPlace.getmParkPlaceID(),
+                                    parkPlace.getmParkPlaceTitle(),
+                                    mRequestID,
+                                    consumer.getmName(),
+                                    consumer.getmPhone(),
+                                    vehicle.getmVehicleNumber(),
+                                    provider.getmName(),
+                                    provider.getmPhone(),
+                                    parkPlace.getmAddress(),
+                                    parkPlace.getmLatitude(),
+                                    parkPlace.getmLongitude(),
+                                    Status.PENDING,
+                                    parkPlace.getmParkPlacePhotoUrl()
+                                    ,consumer.getmPhoto(),
+                                    0,
+                                    0,
+                                    0,
+                                    0);
+
+                            //for update parking current status available or not
+                            providerRequestDb2 = mFirebaseInstance.getReference
+                                    ("ProviderList/" + provider.getmProviderID() + "/ParkPlaceList/" + parkPlace.getmParkPlaceID());
+                            providerRequestDb2.child("mIsAvailable").setValue("false");
+                            //end
+
+                            consumerRequestDb = mFirebaseInstance.getReference
+                                    ("ConsumerList/" + consumer.getmComsumerID() + "/Request/");
+
+                            providerRequestDb.child(mRequestID).setValue(providerRequest);
+                            consumerRequestDb.child(mRequestID).setValue(providerRequest);
+                        }
+
+
+                        addRequestChangeListener();
+                        success=true;
+                    }
+
+                }
+                if (success==false){
+                    Toast.makeText(this, "Please add a Car Details for Sending Request", Toast.LENGTH_SHORT).show();
+                    goToAddVehicle();
+                }
+            }
+            else if (requestVehicleType.equals(VehicleType.MotorCycle)){
+                for (Vehicle vehicle : vehicleList) {
+                    if (vehicle.getmVehicleType().equals(VehicleType.MotorCycle)){
+
+
+                        providerRequestDb = mFirebaseInstance.getReference
+                                ("ProviderList/" + provider.getmProviderID() + "/ParkPlaceList/" + parkPlace.getmParkPlaceID() + "/Request/");
+                        mRequestID = providerRequestDb.push().getKey();
+                        String mSenderUID = mAuth.getCurrentUser().getUid();
+                        String mSenderName = mAuth.getCurrentUser().getDisplayName();
+
+                        if (TempHolder.mConsumer != null) {
+                            mRequest = new Request(mRequestID, mSenderUID, TempHolder.mConsumer.getmName(),
+                                    TempHolder.mConsumer.getmPhone(),
+                                    TempHolder.mConsumer.getmPhoto(),
+                                    "DMC 5643 TA");
+                            Consumer consumer = TempHolder.mConsumer;
+
+                            ParkingRequest providerRequest = new ParkingRequest(consumer.getmComsumerID(),
+                                    provider.getmProviderID(),
+                                    parkPlace.getmParkPlaceID(),
+                                    parkPlace.getmParkPlaceTitle(),
+                                    mRequestID,
+                                    consumer.getmName(),
+                                    consumer.getmPhone(),
+                                    vehicle.getmVehicleNumber(),
+                                    provider.getmName(),
+                                    provider.getmPhone(),
+                                    parkPlace.getmAddress(),
+                                    parkPlace.getmLatitude(),
+                                    parkPlace.getmLongitude(),
+                                    Status.PENDING,
+                                    parkPlace.getmParkPlacePhotoUrl()
+                                    ,consumer.getmPhoto(),
+                                    0,
+                                    0,
+                                    0,
+                                    0);
+
+                            //for update parking current status available or not
+                            providerRequestDb2 = mFirebaseInstance.getReference
+                                    ("ProviderList/" + provider.getmProviderID() + "/ParkPlaceList/" + parkPlace.getmParkPlaceID());
+                            providerRequestDb2.child("mIsAvailable").setValue("false");
+                            //end
+
+                            consumerRequestDb = mFirebaseInstance.getReference
+                                    ("ConsumerList/" + consumer.getmComsumerID() + "/Request/");
+
+                            providerRequestDb.child(mRequestID).setValue(providerRequest);
+                            consumerRequestDb.child(mRequestID).setValue(providerRequest);
+                        }
+
+
+                        addRequestChangeListener();
+
+                        success=true;
+                    }
+
+                }
+                if (success==false){
+                    Toast.makeText(this, "Please add a Bike Details for Sending Request", Toast.LENGTH_SHORT).show();
+                    goToAddVehicle();
+                }
+            }
+
+
+        }
+        else {
+            Toast.makeText(this, "Please Add a vehicle Details for Sending Request", Toast.LENGTH_SHORT).show();
+            goToAddVehicle();
         }
 
-
-        addRequestChangeListener();
     }
 
 
@@ -683,8 +831,11 @@ public class MainActivity extends AppCompatActivity implements
                 if (providerRequest == null) {
                     Log.e(TAG, "New Request is null!");
                     return;
-                } else
+                } else{
+                    vehicleSelection.setVisibility(View.GONE);
                     Toast.makeText(MainActivity.this, "Request Sent  ", Toast.LENGTH_SHORT).show();
+                }
+
             }
 
             @Override
@@ -735,18 +886,6 @@ public class MainActivity extends AppCompatActivity implements
                             && provider.getmLongitude() != null) {
 
                         providerList.add(provider);
-
-                   /*     System.out.println(">>>>>>>>>>>>>>>>>>>>>> " + provider.getmName());
-                        double lat = Double.parseDouble(provider.getmLatitude());
-                        double lon = Double.parseDouble(provider.getmLongitude());
-
-                        if (lat != 0 && lon != 0) {
-                            LatLng restaurant = new LatLng(lat, lon);
-                            MyItems item = new MyItems(restaurant, provider.getmName(), provider.getmProviderID());
-                            clusterManager.addItem(item);
-                            clusterManager.cluster();
-                        }
-                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));*/
 
                     }
 
@@ -802,10 +941,9 @@ public class MainActivity extends AppCompatActivity implements
 
 
                                     DatabaseReference dbReferenceS = FirebaseDatabase.getInstance().
-                                            getReference("ProviderList/" + provider.getmProviderID() + "/ParkPlaceList/" + parkPlace.getmParkPlaceID()+ "/SelfBookList");
+                                            getReference("ProviderList/" + provider.getmProviderID() + "/ParkPlaceList/" + parkPlace.getmParkPlaceID()+ "/Schedule");
 
-                                    Query query=dbReferenceS.orderByChild("date").equalTo(formattedCurrentDate);
-                                    dbReferenceS.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    dbReferenceS.addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -813,54 +951,46 @@ public class MainActivity extends AppCompatActivity implements
                                             {
                                                 for (DataSnapshot data : dataSnapshot.getChildren()) {
 
-                                                    SelfBook selfBook = data.getValue(SelfBook.class);
-                                                    long currentTime = System.currentTimeMillis();
+                                                    Schedule schedule = data.getValue(Schedule.class);
 
-                                                    if (selfBook.getStartTime() < currentTime && selfBook.getEndTime() > currentTime) {
+                                                    if (schedule.getmDay().equals(formattedCurrentDay) && schedule.getmIsForRent().equals("true")){
 
-                                                    } else {
+                                                        Calendar cal = Calendar.getInstance();
+                                                        cal.get(Calendar.HOUR_OF_DAY);
+                                                        cal.get(Calendar.MINUTE);
 
-                                                        if (averageProviderParkingValue>0){
-                                                            parkPlace.setmProviderAvarageRating(averageProviderParkingValue);
-                                                            //Toast.makeText(MainActivity.this, String.valueOf(parkPlace.getmProviderAvarageRating()), Toast.LENGTH_SHORT).show();
+                                                        long currentTime = cal.getTimeInMillis();
+
+                                                        if (schedule.getmFromTime() < currentTime && schedule.getmToTime() > currentTime) {
+
+                                                            if (averageProviderParkingValue>0){
+                                                                parkPlace.setmProviderAvarageRating(averageProviderParkingValue);
+                                                            }
+
+                                                            parkPlaceList.add(parkPlace);
+
+                                                            if (parkPlace.getmParkingType().equals(VehicleType.Car)){
+
+                                                                double lat = Double.parseDouble(parkPlace.getmLatitude());
+                                                                double lon = Double.parseDouble(parkPlace.getmLongitude());
+                                                                if (lat != 0 && lon != 0) {
+                                                                    LatLng latLng = new LatLng(lat, lon);
+                                                                    MyItems item = new MyItems(latLng, parkPlace.getmParkPlaceTitle(), parkPlace.getmParkPlaceID());
+                                                                    clusterManager.addItem(item);
+                                                                    clusterManager.cluster();
+                                                                }
+                                                            }
+
+
+                                                            // map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
+                                                        } else {
+
                                                         }
-                                                        parkPlaceList.add(parkPlace);
-
-                                                        double lat = Double.parseDouble(parkPlace.getmLatitude());
-                                                        double lon = Double.parseDouble(parkPlace.getmLongitude());
-                                                        Log.e(TAG, "LATLON " + lat + " " + lon);
-                                                        if (lat != 0 && lon != 0) {
-                                                            LatLng latLng = new LatLng(lat, lon);
-                                                            Log.e(TAG, "LATLON " + lat + " " + lon);
-                                                            MyItems item = new MyItems(latLng, parkPlace.getmParkPlaceTitle(), parkPlace.getmParkPlaceID());
-                                                            clusterManager.addItem(item);
-                                                            clusterManager.cluster();
-                                                        }
-                                                        // map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
                                                     }
-
 
                                                 }
                                         }
                                         else {
-
-                                                if (averageProviderParkingValue>0){
-                                                    parkPlace.setmProviderAvarageRating(averageProviderParkingValue);
-                                                    //Toast.makeText(MainActivity.this, String.valueOf(parkPlace.getmProviderAvarageRating()), Toast.LENGTH_SHORT).show();
-                                                }
-                                                parkPlaceList.add(parkPlace);
-
-                                                double lat = Double.parseDouble(parkPlace.getmLatitude());
-                                                double lon = Double.parseDouble(parkPlace.getmLongitude());
-                                                Log.e(TAG, "LATLON " + lat + " " + lon);
-                                                if (lat != 0 && lon != 0) {
-                                                    LatLng latLng = new LatLng(lat, lon);
-                                                    Log.e(TAG, "LATLON " + lat + " " + lon);
-                                                    MyItems item = new MyItems(latLng, parkPlace.getmParkPlaceTitle(), parkPlace.getmParkPlaceID());
-                                                    clusterManager.addItem(item);
-                                                    clusterManager.cluster();
-                                                }
-                                                // map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
                                             }
 
 
@@ -883,23 +1013,6 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     });
                 }
-                //Provider rating section
-                for (ParkPlace parkPlaceForRating:parkPlaceList){
-                    DatabaseReference ratingDB=FirebaseDatabase.getInstance().getReference("ProviderList/" + parkPlaceForRating.getmProviderID() + "/ParkPlaceList/" + parkPlaceForRating.getmParkPlaceID()+ "/Request");
-                    ratingDB.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-                }
-
-                //End of Provider rating section
 
 
                 progressDialog.dismiss();
@@ -913,47 +1026,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
-    public void getAllParkingPlaces() {
-        mFirebaseDatabase = mFirebaseInstance.getReference("ProviderList");
-        progressDialog = ProgressDialog.show(this, "Please wait.",
-                "We are collecting Parking Owners.", true);
-        mFirebaseDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                //Event event = dataSnapshot.getValue(Event.class);
-                LatLng myLocation = new LatLng(TempData.getLatitude(), TempData.getLongitude());
-                providerList.clear();
-                clusterManager.clearItems();
-                System.out.println(dataSnapshot.getValue(Provider.class));
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-
-                    Provider provider = data.getValue(Provider.class);
-                    if (provider != null && provider.getmName() != null && provider.getmLatitude() != null && provider.getmLongitude() != null) {
-
-                        providerList.add(provider);
-                        System.out.println(">>>>>>>>>>>>>>>>>>>>>> " + provider.getmName());
-                        double lat = Double.parseDouble(provider.getmLatitude());
-                        double lon = Double.parseDouble(provider.getmLongitude());
-
-                        if (lat != 0 && lon != 0) {
-                            LatLng restaurant = new LatLng(lat, lon);
-                            MyItems item = new MyItems(restaurant, provider.getmName(), provider.getmProviderID());
-                            clusterManager.addItem(item);
-                            clusterManager.cluster();
-                        }
-                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 14));
-                    }
-
-                }
-                progressDialog.dismiss();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                System.out.println("The to read event data: " + databaseError.getCode());
-            }
-        });
-    }
 
 
     public void getStatus() {
@@ -1019,57 +1091,6 @@ public class MainActivity extends AppCompatActivity implements
 
 
 
-
-
-   /* private void getNearbyPlaces() {
-
-        //------------------------------------------------------------------------------------------
-        mWebApi = GoogleMapRetrofitClient.getRetrofitClient().create(WebApi.class);
-        //------------------------------------------------------------------------------------------
-        String key = getString(R.string.API_KEY);
-        String urlString = String.format("place/nearbysearch/json?location=%f,%f&radius=500&type=resturent&key=%s",TempData.getLatitude(),TempData.getLongitude(),key);
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> "+urlString);
-        Call<NearbyPlaceResponse>call = mWebApi.getNearbyPlaces(urlString);
-        call.enqueue(new Callback<NearbyPlaceResponse>() {
-            @Override
-            public void onResponse(Call<NearbyPlaceResponse> call, Response<NearbyPlaceResponse> response) {
-                if(response.code() == 200){
-                    LatLng myLocation = new LatLng(TempData.getLatitude(),TempData.getLongitude());
-                    NearbyPlaceResponse nearbyPlaceResponse = response.body();
-                    List<Result> results = nearbyPlaceResponse.getResults();
-                    for(int i = 0; i < results.size(); i++){
-                        double lat = results.get(i).getGeometry().getLocation().getLat();
-                        double lon = results.get(i).getGeometry().getLocation().getLng();
-                        LatLng restaurant = new LatLng(lat,lon);
-                        //map.addMarker(new MarkerOptions().position(restaurant));
-                        MyItems item = new MyItems(restaurant,results.get(i).getName(),results.get(i).getVicinity());
-
-
-                        *//*map.addMarker(new MarkerOptions()
-                                .title(item.getTitle())
-                                .snippet(item.getSnippet())
-                                .position(item.getPosition()));*//*
-
-                        clusterManager.addItem(item);
-                        clusterManager.cluster();
-
-
-                        map.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation,14));
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<NearbyPlaceResponse> call, Throwable t) {
-                Toast.makeText(MainActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }*/
-
-
-    //----------------------------------------------------------------------------------------------
-    //--------------------------------------Navigation Draware Initials-----------------------------
-    //----------------------------------------------------------------------------------------------
     @Override
     public void onBackPressed() {
         int backStackCount=getSupportFragmentManager().getBackStackEntryCount();
@@ -1216,7 +1237,7 @@ public class MainActivity extends AppCompatActivity implements
     public void goToActivity() {
         mHeaderMenu.setVisibility(View.GONE);
         ft = fm.beginTransaction();
-        //vehicleSelection.setVisibility(View.GONE);
+        vehicleSelection.setVisibility(View.GONE);
         ActivityFragment activityFragment = new ActivityFragment();
         ft.replace(R.id.fragmentContainer, activityFragment);
         ft.addToBackStack("goToNearBy");
@@ -1227,7 +1248,7 @@ public class MainActivity extends AppCompatActivity implements
     public void goToPayment() {
         mHeaderMenu.setVisibility(View.GONE);
         ft = fm.beginTransaction();
-       // vehicleSelection.setVisibility(View.GONE);
+        vehicleSelection.setVisibility(View.GONE);
         PaymentFragment paymentFragment = new PaymentFragment();
         ft.replace(R.id.fragmentContainer, paymentFragment);
         ft.addToBackStack("goToPayment");
@@ -1238,7 +1259,7 @@ public class MainActivity extends AppCompatActivity implements
     public void goToAddVehicle() {
         mHeaderMenu.setVisibility(View.GONE);
         ft = fm.beginTransaction();
-        //vehicleSelection.setVisibility(View.GONE);
+        vehicleSelection.setVisibility(View.GONE);
         AddVehicleFragment addVehicleFragment = new AddVehicleFragment();
         ft.replace(R.id.fragmentContainer, addVehicleFragment);
         ft.addToBackStack("goToAddVehicle");
@@ -1259,9 +1280,11 @@ public class MainActivity extends AppCompatActivity implements
 
     public ParkPlace getParkPlaceByID(String ID) {
         for (ParkPlace parkPlace : parkPlaceList) {
-            if (parkPlace.getmParkPlaceID().equals(ID)) {
+
+            if (parkPlace.getmParkPlaceID().equals(ID)){
                 return parkPlace;
             }
+
         }
         return null;
     }

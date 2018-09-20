@@ -84,18 +84,25 @@ public class ActivityFragment extends Fragment {
         mUserCurrentActivityDB.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    ParkingRequest parkingRequest = data.getValue(ParkingRequest.class);
+                if (dataSnapshot.exists()){
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                        ParkingRequest parkingRequest = data.getValue(ParkingRequest.class);
 
-                    if (parkingRequest.getmStatus().equals(Status.PENDING)
-                            || parkingRequest.getmStatus().equals(Status.ACCEPTED)
-                            || parkingRequest.getmStatus().equals(Status.STARTED)
-                            || parkingRequest.getmStatus().equals(Status.REJECTED)
-                            || parkingRequest.getmStatus().equals(Status.ENDED)) {
-                        requestList.add(parkingRequest);
-                        setNotifactionRecyclerView();
+                        if (parkingRequest.getmStatus().equals(Status.PENDING)
+                                || parkingRequest.getmStatus().equals(Status.ACCEPTED)
+                                || parkingRequest.getmStatus().equals(Status.STARTED)
+                                || parkingRequest.getmStatus().equals(Status.REJECTED)
+                                || parkingRequest.getmStatus().equals(Status.ENDED)) {
+                            requestList.add(parkingRequest);
+                            setNotifactionRecyclerView();
+
+                        }
                     }
                 }
+                else {
+                    setNotifactionRecyclerView();
+                }
+
             }
 
             @Override
