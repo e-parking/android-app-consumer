@@ -101,6 +101,7 @@ import com.nerdcastle.eparking.PoJoClasses.Vehicle;
 import com.nerdcastle.eparking.WebApis.WebApi;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -126,6 +127,13 @@ public class MainActivity extends AppCompatActivity implements
     private TextView mUserEmailAddress;
     private CircleImageView mProfileImage;
     //-------------------------------------------
+
+
+
+    Calendar cal = Calendar.getInstance();
+    SimpleDateFormat parser=new SimpleDateFormat("hh:mm aa");
+    Date userDate;
+    Date timeFrom,timeTo;
 
     private FirebaseAuth mAuth;
     private FirebaseDatabase mFirebaseInstance;
@@ -275,6 +283,20 @@ public class MainActivity extends AppCompatActivity implements
         ft = fm.beginTransaction();
 
 
+
+
+        cal.get(Calendar.HOUR_OF_DAY);
+        cal.get(Calendar.MINUTE);
+        try {
+            userDate=parser.parse(parser.format(cal.getTime()));
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -384,6 +406,8 @@ public class MainActivity extends AppCompatActivity implements
 
             }
         });
+
+
         carImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -953,15 +977,20 @@ public class MainActivity extends AppCompatActivity implements
 
                                                     Schedule schedule = data.getValue(Schedule.class);
 
+
                                                     if (schedule.getmDay().equals(formattedCurrentDay) && schedule.getmIsForRent().equals("true")){
 
-                                                        Calendar cal = Calendar.getInstance();
-                                                        cal.get(Calendar.HOUR_OF_DAY);
-                                                        cal.get(Calendar.MINUTE);
 
-                                                        long currentTime = cal.getTimeInMillis();
+                                                        try {
+                                                            timeFrom=parser.parse(schedule.getmFromTime());
+                                                            timeTo=parser.parse(schedule.getmToTime());
+                                                        } catch (ParseException e) {
+                                                            Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_LONG).show();
+                                                            //e.printStackTrace();
+                                                        }
 
-                                                        if (schedule.getmFromTime() < currentTime && schedule.getmToTime() > currentTime) {
+
+                                                        if (userDate.after(timeFrom) && userDate.before(timeTo)) {
 
                                                             if (averageProviderParkingValue>0){
                                                                 parkPlace.setmProviderAvarageRating(averageProviderParkingValue);

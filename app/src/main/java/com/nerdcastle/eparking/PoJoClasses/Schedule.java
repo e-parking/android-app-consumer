@@ -7,14 +7,15 @@ package com.nerdcastle.eparking.PoJoClasses;
 public class Schedule {
 
     private String mDay;
-    private long mFromTime;
-    private long mToTime;
+    private String mFromTime;
+    private String mToTime;
     private String mIsForRent;
 
     public Schedule() {
     }
 
-    public Schedule(String mDay, long mFromTime, long mToTime, String mIsForRent) {
+
+    public Schedule(String mDay, String mFromTime, String mToTime, String mIsForRent) {
         this.mDay = mDay;
         this.mFromTime = mFromTime;
         this.mToTime = mToTime;
@@ -29,19 +30,19 @@ public class Schedule {
         this.mDay = mDay;
     }
 
-    public long getmFromTime() {
+    public String getmFromTime() {
         return mFromTime;
     }
 
-    public void setmFromTime(long mFromTime) {
+    public void setmFromTime(String mFromTime) {
         this.mFromTime = mFromTime;
     }
 
-    public long getmToTime() {
+    public String getmToTime() {
         return mToTime;
     }
 
-    public void setmToTime(long mToTime) {
+    public void setmToTime(String mToTime) {
         this.mToTime = mToTime;
     }
 
