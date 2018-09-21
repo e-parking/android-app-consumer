@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -42,7 +43,8 @@ public class VerifyPhoneActivity extends AppCompatActivity {
 
     //The edittext to input the code
     private EditText editTextCode;
-
+    private ProgressBar progressBar;
+    private Button signIn;
     //Firebase Section
     private FirebaseAuth mAuth;
     private DatabaseReference mFirebaseDatabase;
@@ -50,6 +52,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
     private ProgressBar mProgressBar;
     private TextView resendOTP,waitingTimeTV;
     String mPhoneNumber;
+    String mUserType;
     String mEmail;
     String mobile;
     private Handler handler = new Handler();
@@ -102,12 +105,15 @@ public class VerifyPhoneActivity extends AppCompatActivity {
         editTextCode = findViewById(R.id.editTextCode);
         resendOTP=findViewById(R.id.resend_code_id);
         waitingTimeTV=findViewById(R.id.textView_id);
+        progressBar = findViewById(R.id.progressBar_cyclic);
+        signIn= findViewById(R.id.buttonSignIn);
 
 
         //getting mobile number from the previous activity
         //and sending the verification code to the number
         Intent intent = getIntent();
         mobile = intent.getStringExtra("mobile");
+        mUserType = intent.getStringExtra("user");
         mPhoneNumber = mobile;
         sendVerificationCode(mobile);
 
@@ -127,7 +133,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
 
         //if the automatic sms detection did not work, user can also enter the code manually
         //so adding a click listener to the button
-        findViewById(R.id.buttonSignIn).setOnClickListener(new View.OnClickListener() {
+        signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String code = editTextCode.getText().toString().trim();
@@ -144,9 +150,6 @@ public class VerifyPhoneActivity extends AppCompatActivity {
 
     }
 
-    //the method is sending verification code
-    //the country id is concatenated
-    //you can take the country id as user input as well
     private void sendVerificationCode(String mobile) {
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 "+88" + mobile,
@@ -156,8 +159,6 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                 mCallbacks);
     }
 
-
-    //the callback to detect the verification status
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
         @Override
         public void onVerificationCompleted(PhoneAuthCredential phoneAuthCredential) {
@@ -192,7 +193,8 @@ public class VerifyPhoneActivity extends AppCompatActivity {
 
 
     private void verifyVerificationCode(String code) {
-        //creating the credential
+        progressBar.setVisibility(View.VISIBLE);
+        signIn.setVisibility(View.INVISIBLE);
         PhoneAuthCredential credential = PhoneAuthProvider.getCredential(mVerificationId, code);
 
         //signing the user
@@ -206,9 +208,10 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             //verification successful we will start the profile activity
 
-                            Intent intent = new Intent(VerifyPhoneActivity.this, PasswordActivity.class);
+                            Intent intent = new Intent(VerifyPhoneActivity.this, MainActivity.class);
                             intent.putExtra("mobile",mPhoneNumber);
                             intent.putExtra("user","new_user");
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(VerifyPhoneActivity.this);
                             startActivity(intent, options.toBundle());
                             VerifyPhoneActivity.this.finish();
@@ -221,46 +224,34 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                                 public void run() {
                                     if (mAuth !=null)
                                     {
-                                        FirebaseUser user = mAuth.getCurrentUser();
-                                        user.updateEmail(mPhoneNumber+"@mail.com").addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
+                                        if(mUserType.equals("new_user")){
+                                            FirebaseUser user = mAuth.getCurrentUser();
+                                            user.updateEmail(mPhoneNumber).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
 
-                                            }
-                                        });
-                                        mConsumerID = mAuth.getUid();
+                                                }
+                                            });
+                                            mConsumerID = mAuth.getUid();
 
-                                        Consumer consumer = new Consumer(mConsumerID,"","","","",mPhoneNumber,"","","", "0", "0");
-                                        mFirebaseDatabase.child(mConsumerID).setValue(consumer);
+                                            Consumer consumer = new Consumer(mConsumerID,"","","","",mPhoneNumber,"","","", "0", "0");
+                                            mFirebaseDatabase.child(mConsumerID).setValue(consumer);
+                                        }
+                                        else {
+                                            Toast.makeText(VerifyPhoneActivity.this, "Welcome Back", Toast.LENGTH_SHORT).show();
+
+                                        }
+
                                     }
                                 }
                             }, 2000);
 
 
-
-
-                            /*Intent intent = new Intent(VerifyPhoneActivity.this, MainActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);*/
-
                         } else {
+                            progressBar.setVisibility(View.INVISIBLE);
+                            signIn.setVisibility(View.VISIBLE);
+                            Toast.makeText(VerifyPhoneActivity.this, "Invalid OTP Code", Toast.LENGTH_SHORT).show();
 
-                            //verification unsuccessful.. display an error message
-
-                            String message = "Somthing is wrong, we will fix it soon...";
-                            
-                            if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
-                                message = "Invalid code entered...";
-                            }
-
-                            /*Snackbar snackbar = Snackbar.make(findViewById(R.id.parent), message, Snackbar.LENGTH_LONG);
-                            snackbar.setAction("Dismiss", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-
-                                }
-                            });
-                            snackbar.show();*/
                         }
                     }
                 });

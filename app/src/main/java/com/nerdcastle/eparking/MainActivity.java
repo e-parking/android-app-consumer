@@ -1,6 +1,7 @@
 package com.nerdcastle.eparking;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -8,6 +9,7 @@ import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -74,6 +76,7 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.clustering.ClusterManager;
 import com.nerdcastle.eparking.Activities.LoginActivity;
+import com.nerdcastle.eparking.Activities.PaymentActivity;
 import com.nerdcastle.eparking.Activities.SignUpActivity;
 import com.nerdcastle.eparking.CustomLayout.MapWrapperLayout;
 import com.nerdcastle.eparking.Fragments.ActivityFragment;
@@ -196,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements
     private Request mRequest;
     private Boolean mInternetStatus;
     LoginPreferences mLoginPreference;
-    private String requestVehicleType;
+    private String requestVehicleType=VehicleType.Car;
     private boolean isCar=true;
 
     //------------- Time Picking -----------------
@@ -214,12 +217,8 @@ public class MainActivity extends AppCompatActivity implements
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-/*
-        progressDialog = ProgressDialog.show(this, "Please wait.",
-                "We are Preparing your map.", true);*/
         progressDialog = new ProgressDialog(this);
-        progressDialog.setIcon(R.drawable.parking_logo);
+        //progressDialog.setIcon(R.drawable.parking_logo);
         progressDialog.setTitle("Please Wait...");
         progressDialog.setMessage("We are Preparing your map.");
         progressDialog.setCanceledOnTouchOutside(false);
@@ -384,26 +383,7 @@ public class MainActivity extends AppCompatActivity implements
         bikeImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bikeImage.setImageResource(R.drawable.bike_red);
-                carImage.setImageResource(R.drawable.car_white);
-                requestVehicleType=VehicleType.MotorCycle;
-                clusterManager.clearItems();
-
-                for (ParkPlace parkPlace : parkPlaceList) {
-                    if (parkPlace.getmParkingType().equals(VehicleType.MotorCycle)){
-
-                        double lat = Double.parseDouble(parkPlace.getmLatitude());
-                        double lon = Double.parseDouble(parkPlace.getmLongitude());
-                        if (lat != 0 && lon != 0) {
-                            LatLng latLng = new LatLng(lat, lon);
-                            MyItems item = new MyItems(latLng, parkPlace.getmParkPlaceTitle(), parkPlace.getmParkPlaceID());
-                            clusterManager.addItem(item);
-                            clusterManager.cluster();
-                        }
-                    }
-                }
-
-
+                BikeSelect();
             }
         });
 
@@ -411,24 +391,7 @@ public class MainActivity extends AppCompatActivity implements
         carImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bikeImage.setImageResource(R.drawable.bike_white);
-                carImage.setImageResource(R.drawable.car_red);
-                requestVehicleType=VehicleType.Car;
-                clusterManager.clearItems();
-
-                for (ParkPlace parkPlace : parkPlaceList) {
-                    if (parkPlace.getmParkingType().equals(VehicleType.Car)){
-
-                        double lat = Double.parseDouble(parkPlace.getmLatitude());
-                        double lon = Double.parseDouble(parkPlace.getmLongitude());
-                        if (lat != 0 && lon != 0) {
-                            LatLng latLng = new LatLng(lat, lon);
-                            MyItems item = new MyItems(latLng, parkPlace.getmParkPlaceTitle(), parkPlace.getmParkPlaceID());
-                            clusterManager.addItem(item);
-                            clusterManager.cluster();
-                        }
-                    }
-                }
+              CarSelect();
             }
         });
 
@@ -475,7 +438,51 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    private void CarSelect() {
+        bikeImage.setImageResource(R.drawable.bike_white);
+        carImage.setImageResource(R.drawable.car_red);
+        requestVehicleType=VehicleType.Car;
+        clusterManager.clearItems();
+
+        for (ParkPlace parkPlace : parkPlaceList) {
+            if (parkPlace.getmParkingType().equals(VehicleType.Car)){
+
+                double lat = Double.parseDouble(parkPlace.getmLatitude());
+                double lon = Double.parseDouble(parkPlace.getmLongitude());
+                if (lat != 0 && lon != 0) {
+                    LatLng latLng = new LatLng(lat, lon);
+                    MyItems item = new MyItems(latLng, parkPlace.getmParkPlaceTitle(), parkPlace.getmParkPlaceID());
+                    clusterManager.addItem(item);
+                    clusterManager.cluster();
+                }
+            }
+        }
+    }
+
+    private void BikeSelect() {
+
+        bikeImage.setImageResource(R.drawable.bike_red);
+        carImage.setImageResource(R.drawable.car_white);
+        requestVehicleType=VehicleType.MotorCycle;
+        clusterManager.clearItems();
+
+        for (ParkPlace parkPlace : parkPlaceList) {
+            if (parkPlace.getmParkingType().equals(VehicleType.MotorCycle)){
+
+                double lat = Double.parseDouble(parkPlace.getmLatitude());
+                double lon = Double.parseDouble(parkPlace.getmLongitude());
+                if (lat != 0 && lon != 0) {
+                    LatLng latLng = new LatLng(lat, lon);
+                    MyItems item = new MyItems(latLng, parkPlace.getmParkPlaceTitle(), parkPlace.getmParkPlaceID());
+                    clusterManager.addItem(item);
+                    clusterManager.cluster();
+                }
+            }
+        }
+    }
+
     //End of onCreat Method
+
 
 
 
@@ -662,6 +669,21 @@ public class MainActivity extends AppCompatActivity implements
     }
 
 
+    DialogInterface.OnClickListener onClickListener=new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    goToAddVehicle();
+                    dialog.dismiss();
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    dialog.dismiss();
+                    break;
+
+            }
+        }
+    };
 
     public void GetVehicle(){
         DatabaseReference vehicleDB=FirebaseDatabase.getInstance().getReference("ConsumerList/"+mConsumerID+"/Vehicle");
@@ -762,8 +784,12 @@ public class MainActivity extends AppCompatActivity implements
 
                 }
                 if (success==false){
-                    Toast.makeText(this, "Please add a Car Details for Sending Request", Toast.LENGTH_SHORT).show();
-                    goToAddVehicle();
+
+                    AlertDialog.Builder builder=new AlertDialog.Builder(this);
+                    builder.setMessage("You have no Car Information ").setPositiveButton("OK",onClickListener)
+                            .setNegativeButton("No Thanks",onClickListener).show();
+
+
                 }
             }
             else if (requestVehicleType.equals(VehicleType.MotorCycle)){
@@ -826,8 +852,9 @@ public class MainActivity extends AppCompatActivity implements
 
                 }
                 if (success==false){
-                    Toast.makeText(this, "Please add a Bike Details for Sending Request", Toast.LENGTH_SHORT).show();
-                    goToAddVehicle();
+                    AlertDialog.Builder builder=new AlertDialog.Builder(this);
+                    builder.setMessage("You have no Bike Information ").setPositiveButton("OK",onClickListener)
+                            .setNegativeButton("No Thanks",onClickListener).show();
                 }
             }
 
@@ -1129,6 +1156,7 @@ public class MainActivity extends AppCompatActivity implements
             drawer.closeDrawer(GravityCompat.START);
         } else if (backStackCount==1){
             super.onBackPressed();
+            CarSelect();
             vehicleSelection.setVisibility(View.VISIBLE);
         }
         else {
@@ -1173,6 +1201,8 @@ public class MainActivity extends AppCompatActivity implements
 
         } else if (id == R.id.nav_map) {
             innitializeMap();
+            bikeImage.setImageResource(R.drawable.bike_white);
+            carImage.setImageResource(R.drawable.car_red);
             vehicleSelection.setVisibility(View.VISIBLE);
 
 

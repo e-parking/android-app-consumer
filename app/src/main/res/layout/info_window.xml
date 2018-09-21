@@ -6,7 +6,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="270dp"
         android:background="@drawable/all_side_border_main"
         android:orientation="vertical"
         android:padding="5dp">
@@ -14,7 +14,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight=".17"
+            android:layout_weight=".20"
             android:orientation="vertical">
 
             <ImageView
@@ -106,12 +106,14 @@
             android:id="@+id/button"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="right"
-            android:layout_weight=".83"
+            android:layout_weight=".80"
             android:background="@drawable/round_but_red_sel"
             android:fontFamily="@font/roboto_regular"
             android:padding="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
             android:text="Send Request"
+            android:layout_marginBottom="10dp"
             android:textColor="@color/white" />
 
     </LinearLayout>
