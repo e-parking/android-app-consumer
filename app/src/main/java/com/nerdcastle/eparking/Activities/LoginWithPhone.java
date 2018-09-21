@@ -93,7 +93,6 @@ public class LoginWithPhone extends AppCompatActivity {
 
         mFirebaseInstance = FirebaseDatabase.getInstance();
         mFirebaseRefConsumer = mFirebaseInstance.getReference("ConsumerList");
-        mFirebaseRefProvider = mFirebaseInstance.getReference("ProviderList");
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -291,7 +290,7 @@ public class LoginWithPhone extends AppCompatActivity {
 
         phoneNumber = etPhoneNo.getText().toString();
         isProvider = false;
-        getAllProvider();
+        getAllConsumer();
 
 
 
@@ -320,59 +319,6 @@ public class LoginWithPhone extends AppCompatActivity {
     }
 
 
-
-
-
-    public void getAllProvider()
-    {
-
-        status = false;
-        mFirebaseRefProvider.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                for(DataSnapshot data:dataSnapshot.getChildren()){
-                    Provider provider = data.getValue(Provider.class);
-                    System.out.println(provider);
-                    providerList.add(provider);
-
-                    if (provider!=null && provider.getmPhone()!=null)
-                    if (provider.getmPhone().contains(phoneNumber) || provider.getmPhone().equals("+88"+phoneNumber) )
-                    {
-
-                        isProvider = true;
-                        etPhoneNo.setText("");
-                        showInternetDialogBox ();
-
-                        etPhoneNo.setCursorVisible(true);
-                        rootFrame.setAlpha(1.0f);
-                        fabProgressCircle.hide();
-
-                        break;
-                    }
-                }
-
-
-
-                if (isProvider == false)
-                {
-                    getAllConsumer();
-                }
-
-
-
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(LoginWithPhone.this, "We cant read.", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-
-
     public void getAllConsumer()
     {
 
@@ -398,16 +344,19 @@ public class LoginWithPhone extends AppCompatActivity {
                 if (status)
                 {
                     fabProgressCircle.hide();
-                    Intent intent = new Intent(LoginWithPhone.this, PasswordActivity.class);
+                    Intent intent = new Intent(LoginWithPhone.this, VerifyPhoneActivity.class);
                     intent.putExtra("user","old_user");
                     intent.putExtra("mobile",phoneNumber);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(LoginWithPhone.this);
                     startActivity(intent, options.toBundle());
                 }else
                 {
                     fabProgressCircle.hide();
                     Intent intent = new Intent(LoginWithPhone.this, VerifyPhoneActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.putExtra("mobile", phoneNumber);
+                    intent.putExtra("user", "new_user");
                     startActivity(intent);
                 }
 
