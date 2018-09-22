@@ -11,6 +11,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="API_KEY">AIzaSyAh7_ccZixU4rYJo5aKprA_Y-auyaQNw8U</string>
 
+    <string name="next">NEXT</string>
+    <string name="skip">SKIP</string>
+    <string name="start">GOT IT</string>
 
     <string name="action_sign_in_short">Register</string>
     <string name="email">Email</string>

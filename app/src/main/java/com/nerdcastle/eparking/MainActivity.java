@@ -268,6 +268,9 @@ public class MainActivity extends AppCompatActivity implements
         //Toast.makeText(this, formattedCurrentDate, Toast.LENGTH_SHORT).show();
 
 
+        //Send notification test
+        //setNotification("this is for test","hlw");
+
 
         //final MapFragment mapFragment = (MapFragment)getFragmentManager().findFragmentById(R.id.fragmentContainer);
         mapWrapperLayout = (MapWrapperLayout) findViewById(R.id.map_relative_layout);
