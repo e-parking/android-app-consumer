@@ -47,11 +47,12 @@
 
                 <TextView
                     android:id="@+id/parkAddress"
-                    android:layout_width="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_regular"
                     android:text="dhanmondi"
-                    android:maxLines="1"
+                    android:maxLines="2"
                     android:textAlignment="center"
                     android:textColor="@color/black"
                     android:textSize="14sp"
@@ -59,8 +60,9 @@
 
                 <TextView
                     android:id="@+id/parkPlaceTitle"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:textAlignment="center"
                     android:fontFamily="@font/roboto_regular"
                     android:text="CCTV Camera"

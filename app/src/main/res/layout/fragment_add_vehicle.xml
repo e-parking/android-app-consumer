@@ -55,6 +55,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:padding="7dp"
+                    android:drawableTint="@color/white"
+                    android:drawableLeft="@drawable/ic_attach_file_black_24dp"
                     android:id="@+id/uploadBlueBookId"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"

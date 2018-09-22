@@ -12,89 +12,85 @@
     android:clickable="true"
     app:cardBackgroundColor="@color/CardColor">
 
-    <android.support.constraint.ConstraintLayout
+
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/mGPS_icon"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="70dp"
             android:background="@color/internet"
             android:foregroundGravity="center"
-            android:src="@drawable/ic_no_internet"
-
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:src="@drawable/ic_no_internet" />
 
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="84dp"
+            android:fontFamily="@font/roboto_regular"
             android:text="No internet connection"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:fontFamily="@font/roboto_regular"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/mGPS_icon"
-            app:layout_constraintVertical_bias="0.0" />
+            android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/textView3"
-            android:layout_width="214dp"
-            android:layout_height="45dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/roboto_regular"
-            android:text="You are offline, please check your internet connection and retry."
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/mTurnOnSetting"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2"
-            app:layout_constraintVertical_bias="0.0" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/mTurnOnInternet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="120dp"
-            android:gravity="right"
-            android:text="Refresh"
-            android:fontFamily="@font/roboto_regular"
-            android:textAllCaps="true"
-            android:textColor="@color/gps_red"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/textView3"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_weight=".4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <android.support.constraint.Guideline
-            android:id="@+id/guideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="20dp" />
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:maxLines="3"
+                    android:minLines="3"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="You are offline, Check your internet connection and retry." />
+            </LinearLayout>
 
-    </android.support.constraint.ConstraintLayout>
+            <TextView
+                android:id="@+id/mTurnOnInternet"
+                android:layout_weight=".6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|bottom"
+                android:layout_marginBottom="8dp"
+                android:gravity="right|bottom"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Refresh"
+                android:maxLines="1"
+                android:textAllCaps="true"
+                android:textColor="@color/gps_red"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
+
+        </LinearLayout>
+
+
+
+
+
+        <!--  <android.support.constraint.Guideline
+              android:id="@+id/guideline"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              app:layout_constraintGuide_begin="20dp" />-->
+
+    </LinearLayout>
 
 </android.support.v7.widget.CardView>

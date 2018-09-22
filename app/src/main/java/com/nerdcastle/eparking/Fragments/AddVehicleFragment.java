@@ -139,7 +139,12 @@ public class AddVehicleFragment extends Fragment {
                             carRadioButton.setVisibility(View.GONE);
                             carVehicleId=data.getKey();
                             car.add(vehicle);
-                            Picasso.get().load(vehicle.getmBlueBookImage()).into(carBlueBookImageView);
+                            if (vehicle.getmBlueBookImage()==null || vehicle.getmBlueBookImage().equals(null)| vehicle.getmBlueBookImage().isEmpty()){
+                            }
+                            else {
+                                Picasso.get().load(vehicle.getmBlueBookImage()).placeholder(R.drawable.default_parking_logo_verti).error(R.drawable.default_parking_logo_verti).into(carBlueBookImageView);
+                            }
+
                             carNumber.setText(vehicle.getmVehicleNumber()+"\n"+vehicle.getmVehicleType());
                         }
                         else if (vehicle.getmVehicleType().equals(VehicleType.MotorCycle))
@@ -148,7 +153,11 @@ public class AddVehicleFragment extends Fragment {
                             motorCycleRadioButton.setVisibility(View.GONE);
                             motorBikeVehicleId=data.getKey();
                             motorByke.add(vehicle);
-                            Picasso.get().load(vehicle.getmBlueBookImage()).into(motorCycleBlueBookImageView);
+                            if (vehicle.getmBlueBookImage()==null || vehicle.getmBlueBookImage().equals(null)| vehicle.getmBlueBookImage().isEmpty()){
+                            }
+                            else {
+                                Picasso.get().load(vehicle.getmBlueBookImage()).into(motorCycleBlueBookImageView);
+                            }
                             motorCycleNumber.setText(vehicle.getmVehicleNumber()+"\n"+vehicle.getmVehicleType());
                         }
                     }
@@ -182,10 +191,10 @@ public class AddVehicleFragment extends Fragment {
                         vehicleType=VehicleType.MotorCycle;
                     if (vehicleNumber==null||vehicleNumber.equals(null) || vehicleNumber.isEmpty()){
                         Toast.makeText(getContext().getApplicationContext(), "Add a vehicle Number", Toast.LENGTH_SHORT).show();
-                    }
+                    }/*
                     else if (mParkPlacePhotoUrl.equals(null)||mParkPlacePhotoUrl==null || mParkPlacePhotoUrl.isEmpty()){
                         Toast.makeText(getActivity().getApplicationContext(), "Add a Blue Book Image", Toast.LENGTH_SHORT).show();
-                    }
+                    }*/
                     else if (vehicleType==null||vehicleType.equals(null)||vehicleType.isEmpty()){
                         Toast.makeText(getActivity().getApplicationContext(), "Select Vehicle Type", Toast.LENGTH_SHORT).show();
                     }
@@ -215,10 +224,13 @@ public class AddVehicleFragment extends Fragment {
                 carRadioButton.setChecked(true);
                 mParkPlacePhotoUrl=car.get(0).getmBlueBookImage();
                 vehicleNumberInpur.setText(car.get(0).getmVehicleNumber());
-                Picasso.get().load(car.get(0).getmBlueBookImage()).into(blueBookImageShow);
 
-
-
+                if (car.get(0).getmBlueBookImage()==null || car.get(0).getmBlueBookImage().equals(null)| car.get(0).getmBlueBookImage().isEmpty()){
+                    blueBookImageShow.setImageResource(R.drawable.default_parking_logo_hori);
+                }
+                else {
+                    Picasso.get().load(car.get(0).getmBlueBookImage()).into(blueBookImageShow);
+                }
 
             }
         });
@@ -235,7 +247,13 @@ public class AddVehicleFragment extends Fragment {
                 carRadioButton.setVisibility(View.GONE);
                 mParkPlacePhotoUrl=motorByke.get(0).getmBlueBookImage();
                 motorCycleRadioButton.setChecked(true);
-                Picasso.get().load(motorByke.get(0).getmBlueBookImage()).into(blueBookImageShow);
+                if (car.get(0).getmBlueBookImage()==null || car.get(0).getmBlueBookImage().equals(null)| car.get(0).getmBlueBookImage().isEmpty()){
+                    blueBookImageShow.setImageResource(R.drawable.default_parking_logo_hori);
+                }
+                else {
+                    Picasso.get().load(motorByke.get(0).getmBlueBookImage()).into(blueBookImageShow);
+                }
+
 
             }
         });

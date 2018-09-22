@@ -10,6 +10,7 @@ public class Vehicle {
     private String mBlueBookImage;
 
     public Vehicle() {
+
     }
 
     public Vehicle(String mVehicleNumber, String mVehicleType, String mBlueBookImage) {

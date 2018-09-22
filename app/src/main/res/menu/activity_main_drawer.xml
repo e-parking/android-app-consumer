@@ -16,8 +16,10 @@
             android:fontFamily="@font/roboto_regular"
             android:icon="@drawable/ic_mapsearch_icon"
             android:title="Search Near By" />
+
         <item
             android:id="@+id/nav_payments"
+            android:visible="false"
             android:fontFamily="@font/roboto_regular"
             android:icon="@drawable/ic_list_icon"
             android:title="Payments" />
