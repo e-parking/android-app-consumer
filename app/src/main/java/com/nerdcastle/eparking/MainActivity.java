@@ -1211,7 +1211,7 @@ public class MainActivity extends AppCompatActivity implements
             vehicleSelection.setVisibility(View.GONE);
 
 
-        } else if (id == R.id.nav_payments) {
+        } else if (id == R.id.nav_tutorials) {
             goToPayment();
             vehicleSelection.setVisibility(View.GONE);
 
