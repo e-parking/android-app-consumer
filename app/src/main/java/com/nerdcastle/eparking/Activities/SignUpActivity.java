@@ -290,7 +290,7 @@ public class SignUpActivity extends AppCompatActivity {
         mProviderAddress.setText("");
         mProviderNID.setText("");
         progressDialog.dismiss();
-        Toast.makeText(SignUpActivity.this, "Profile successfully updated.",    Toast.LENGTH_SHORT).show();
+        Toast.makeText(SignUpActivity.this, "Profile successfully updated",    Toast.LENGTH_SHORT).show();
         //startActivity(new Intent(SignUpActivity.this, MainActivity.class));
         finish();
 
@@ -356,7 +356,7 @@ public class SignUpActivity extends AppCompatActivity {
                     mProviderAddress.setText("");
                     mProviderNID.setText("");
                     progressDialog.dismiss();
-                    Toast.makeText(SignUpActivity.this, "Profile successfully updated.",    Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignUpActivity.this, "Profile successfully updated",    Toast.LENGTH_SHORT).show();
                     //startActivity(new Intent(SignUpActivity.this, MainActivity.class));
                     finish();
                     //reload();
@@ -383,7 +383,7 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 progressDialog.dismiss();
-                Toast.makeText(SignUpActivity.this, "Picture uploaded.",    Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignUpActivity.this, "Picture uploaded",    Toast.LENGTH_SHORT).show();
                 /*startActivity(new Intent(SignUpActivity.this, MainActivity.class));
                 finish();*/
 
@@ -410,7 +410,7 @@ public class SignUpActivity extends AppCompatActivity {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 mProfileURL = taskSnapshot.getDownloadUrl().toString();
                 mFirebaseUserInformation.child("mPhoto").setValue(mProfileURL);
-                Toast.makeText(SignUpActivity.this, "Profile picture added successfully.",    Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignUpActivity.this, "Profile picture added successfully",    Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -625,7 +625,7 @@ public class SignUpActivity extends AppCompatActivity {
 
             if (!TempHolder.mConsumer.getmPhoto().equals(""))
             {
-                Picasso.get().load(TempHolder.mConsumer.getmPhoto()).into(mProviderProfilePicture);
+                Picasso.get().load(TempHolder.mConsumer.getmPhoto()).placeholder(R.drawable.profile).error(R.drawable.profile).into(mProviderProfilePicture);
             }else
             {
                 mProviderProfilePicture.setImageResource(R.drawable.profile);

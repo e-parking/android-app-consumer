@@ -75,7 +75,7 @@ public class PasswordActivity extends AppCompatActivity {
                 mTitleTV.setText("Welcome back, sign in to continue");
             }else if (mUserType.equals("new_user"))
             {
-                mTitleTV.setText("Please give a password, to sign in.");
+                mTitleTV.setText("Please enter password to sign in");
             }
             //Toast.makeText(this, mPhoneNumber, Toast.LENGTH_SHORT).show();
         }
@@ -125,7 +125,7 @@ public class PasswordActivity extends AppCompatActivity {
 
                         if (etPass.getText().toString().length()<6)
                         {
-                            Toast.makeText(PasswordActivity.this, "Minimum 6 Characters", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(PasswordActivity.this, "Password should be minimum 6 Characters", Toast.LENGTH_SHORT).show();
                         }
                         else {
                             mFirebaseDatabase.child(mAuth.getUid()).child("mPassword").setValue(etPass.getText().toString());
