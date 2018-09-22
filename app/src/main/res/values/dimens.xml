@@ -7,5 +7,7 @@
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="logo_w_h">200dp</dimen>
+    <dimen name="dots_height">30dp</dimen>
+    <dimen name="dots_margin_bottom">20dp</dimen>
 
 </resources>
