@@ -29,10 +29,14 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.nerdcastle.eparking.MainActivity;
 import com.nerdcastle.eparking.PoJoClasses.Consumer;
 import com.nerdcastle.eparking.R;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class VerifyPhoneActivity extends AppCompatActivity {
@@ -223,6 +227,12 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                                 public void run() {
                                     if (mAuth !=null)
                                     {
+                                        FirebaseFirestore mFireStore=FirebaseFirestore.getInstance();
+                                        String token_id= FirebaseInstanceId.getInstance().getToken();
+                                        mConsumerID = mAuth.getUid();
+                                        Map<String,Object>userMap=new HashMap<>();
+                                        userMap.put("token_id",token_id);
+
                                         if(mUserType.equals("new_user")){
                                             FirebaseUser user = mAuth.getCurrentUser();
                                             user.updateEmail(mPhoneNumber).addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -231,12 +241,18 @@ public class VerifyPhoneActivity extends AppCompatActivity {
 
                                                 }
                                             });
-                                            mConsumerID = mAuth.getUid();
 
                                             Consumer consumer = new Consumer(mConsumerID,"","","","",mPhoneNumber,"","","", "0", "0");
                                             mFirebaseDatabase.child(mConsumerID).setValue(consumer);
+
+                                            //fireStore
+                                            mFireStore.collection("Users").document(mConsumerID).set(userMap);
+
                                         }
                                         else {
+
+                                            mFireStore.collection("Users").document(mConsumerID).update(userMap);
+                                            
                                             Toast.makeText(VerifyPhoneActivity.this, "Welcome Back", Toast.LENGTH_SHORT).show();
 
                                         }
