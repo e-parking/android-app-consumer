@@ -23,7 +23,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight=".65"
                 android:scaleType="fitCenter"
-                android:src="@drawable/sample" />
+                android:src="@drawable/ic_park_false" />
 
 
             <LinearLayout

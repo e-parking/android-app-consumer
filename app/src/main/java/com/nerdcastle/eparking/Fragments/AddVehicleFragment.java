@@ -190,7 +190,7 @@ public class AddVehicleFragment extends Fragment {
                     if (motorCycleRadioButton.isChecked())
                         vehicleType=VehicleType.MotorCycle;
                     if (vehicleNumber==null||vehicleNumber.equals(null) || vehicleNumber.isEmpty()){
-                        Toast.makeText(getContext().getApplicationContext(), "Add a vehicle number", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext().getApplicationContext(), "Add vehicle number", Toast.LENGTH_SHORT).show();
                     }/*
                     else if (mParkPlacePhotoUrl.equals(null)||mParkPlacePhotoUrl==null || mParkPlacePhotoUrl.isEmpty()){
                         Toast.makeText(getActivity().getApplicationContext(), "Add a Blue Book Image", Toast.LENGTH_SHORT).show();
@@ -226,7 +226,7 @@ public class AddVehicleFragment extends Fragment {
                 vehicleNumberInpur.setText(car.get(0).getmVehicleNumber());
 
                 if (car.get(0).getmBlueBookImage()==null || car.get(0).getmBlueBookImage().equals(null)| car.get(0).getmBlueBookImage().isEmpty()){
-                    blueBookImageShow.setImageResource(R.drawable.default_parking_logo_hori);
+                    blueBookImageShow.setImageResource(R.drawable.book);
                 }
                 else {
                     Picasso.get().load(car.get(0).getmBlueBookImage()).placeholder(R.drawable.book).error(R.drawable.book).into(blueBookImageShow);
@@ -248,7 +248,7 @@ public class AddVehicleFragment extends Fragment {
                 mParkPlacePhotoUrl=motorByke.get(0).getmBlueBookImage();
                 motorCycleRadioButton.setChecked(true);
                 if (car.get(0).getmBlueBookImage()==null || car.get(0).getmBlueBookImage().equals(null)| car.get(0).getmBlueBookImage().isEmpty()){
-                    blueBookImageShow.setImageResource(R.drawable.default_parking_logo_hori);
+                    blueBookImageShow.setImageResource(R.drawable.book);
                 }
                 else {
                     Picasso.get().load(motorByke.get(0).getmBlueBookImage()).placeholder(R.drawable.book).error(R.drawable.book).into(blueBookImageShow);
