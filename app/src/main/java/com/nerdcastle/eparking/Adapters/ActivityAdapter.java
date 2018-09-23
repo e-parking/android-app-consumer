@@ -99,8 +99,8 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
         final ParkingRequest model = requestList.get(position);
         holder.mParkAddress.setText(model.getmParkPlaceAddress());
         Picasso.get().load(model.getmParkPlacePhotoUrl())
-                .placeholder(context.getResources().getDrawable(R.drawable.header_cover))
-                .error(context.getResources().getDrawable(R.drawable.header_cover))
+                .placeholder(context.getResources().getDrawable(R.drawable.ic_park_false))
+                .error(context.getResources().getDrawable(R.drawable.ic_park_false))
                 .into(holder.mParkImage);
 
         if (model.getmConsumerRatingValue()>0){
