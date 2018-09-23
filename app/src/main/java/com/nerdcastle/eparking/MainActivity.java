@@ -348,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements
                             AM_PM = " PM";
                         }
                         mArivalTime.setText("Ariving \n at " + selectedHour + ":" + selectedMinute + AM_PM);
-                        Toast.makeText(MainActivity.this, "dfsdf", Toast.LENGTH_SHORT).show();
+
                     }
                 }, hour, minute, true);//Yes 24 hour time
                 mTimePicker.setTitle("Select Time");
@@ -702,7 +702,7 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 }
                 else {
-                    Toast.makeText(MainActivity.this, "Please Add a Vehicle Details", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Please add vehicle details", Toast.LENGTH_SHORT).show();
                     //goToAddVehicle();
                 }
 
@@ -864,7 +864,7 @@ public class MainActivity extends AppCompatActivity implements
 
         }
         else {
-            Toast.makeText(this, "Please Add a vehicle Details for Sending Request", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Please add vehicle details for sending request", Toast.LENGTH_SHORT).show();
             goToAddVehicle();
         }
 
@@ -883,11 +883,11 @@ public class MainActivity extends AppCompatActivity implements
                 goToActivity();
                 // Check for null
                 if (providerRequest == null) {
-                    Log.e(TAG, "New Request is null!");
+                    Log.e(TAG, "New request is null!");
                     return;
                 } else{
                     vehicleSelection.setVisibility(View.GONE);
-                    Toast.makeText(MainActivity.this, "Request Sent  ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Request sent to parking owner ", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -1169,7 +1169,7 @@ public class MainActivity extends AppCompatActivity implements
         //vehicleSelection.setVisibility(View.VISIBLE);
     }
 
-    @Override
+  /*  @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
@@ -1189,7 +1189,7 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -1214,7 +1214,7 @@ public class MainActivity extends AppCompatActivity implements
             vehicleSelection.setVisibility(View.GONE);
 
 
-        } else if (id == R.id.nav_payments) {
+        } else if (id == R.id.nav_tutorials) {
             goToPayment();
             vehicleSelection.setVisibility(View.GONE);
 
