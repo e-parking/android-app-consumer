@@ -74,6 +74,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.maps.android.clustering.ClusterManager;
 import com.nerdcastle.eparking.Activities.LoginActivity;
 import com.nerdcastle.eparking.Activities.PaymentActivity;
@@ -109,7 +110,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -743,7 +746,7 @@ public class MainActivity extends AppCompatActivity implements
                             mRequest = new Request(mRequestID, mSenderUID, TempHolder.mConsumer.getmName(),
                                     TempHolder.mConsumer.getmPhone(),
                                     TempHolder.mConsumer.getmPhoto(),
-                                    "DMC 5643 TA");
+                                    vehicle.getmVehicleNumber());
                             Consumer consumer = TempHolder.mConsumer;
 
                             ParkingRequest providerRequest = new ParkingRequest(consumer.getmComsumerID(),
@@ -767,6 +770,9 @@ public class MainActivity extends AppCompatActivity implements
                                     0,
                                     0);
 
+
+
+
                             //for update parking current status available or not
                             providerRequestDb2 = mFirebaseInstance.getReference
                                     ("ProviderList/" + provider.getmProviderID() + "/ParkPlaceList/" + parkPlace.getmParkPlaceID());
@@ -778,6 +784,17 @@ public class MainActivity extends AppCompatActivity implements
 
                             providerRequestDb.child(mRequestID).setValue(providerRequest);
                             consumerRequestDb.child(mRequestID).setValue(providerRequest);
+
+
+                            //for notification
+                            FirebaseFirestore mFireStore=FirebaseFirestore.getInstance();
+                            Map<String,Object> notificationMap=new HashMap<>();
+                            notificationMap.put("message",consumer.getmName()+" wants to park "+vehicle.getmVehicleType()+" ("+vehicle.getmVehicleNumber()+")");
+                            notificationMap.put("consumer",mConsumerID);
+
+                            mFireStore.collection("Users").document(provider.getmProviderID()).collection("Notifications").add(notificationMap);
+
+
                         }
 
 
@@ -845,6 +862,20 @@ public class MainActivity extends AppCompatActivity implements
 
                             providerRequestDb.child(mRequestID).setValue(providerRequest);
                             consumerRequestDb.child(mRequestID).setValue(providerRequest);
+
+
+
+
+                            //for notification
+                            FirebaseFirestore mFireStore=FirebaseFirestore.getInstance();
+                            Map<String,Object> notificationMap=new HashMap<>();
+                            notificationMap.put("message",consumer.getmName()+" wants to park "+vehicle.getmVehicleType()+" ("+vehicle.getmVehicleNumber()+")");
+                            notificationMap.put("consumer",mConsumerID);
+
+                            mFireStore.collection("Users").document(provider.getmProviderID()).collection("Notifications").add(notificationMap);
+
+
+
                         }
 
 

@@ -24,13 +24,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.nerdcastle.eparking.Activities.PaymentActivity;
 import com.nerdcastle.eparking.PoJoClasses.ParkingRequest;
 import com.nerdcastle.eparking.PoJoClasses.Status;
 import com.nerdcastle.eparking.R;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewholder> {
@@ -223,6 +226,20 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
 
                                 holder.mEndButton.setText(Status.ENDED);
                                 holder.mEndButton.setEnabled(false);
+
+
+                                FirebaseFirestore mFireStore=FirebaseFirestore.getInstance();
+                                Map<String,Object> notificationMap=new HashMap<>();
+                                notificationMap.put("message", model.getmParkPlaceTitle()+" is now free.");
+                                notificationMap.put("consumer",mConsumerID);
+
+                                mFireStore.collection("Users").document(model.getmProviderID()).collection("Notifications").add(notificationMap);
+
+
+
+
+
+
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:

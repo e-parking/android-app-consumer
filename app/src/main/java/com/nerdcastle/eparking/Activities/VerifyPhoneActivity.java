@@ -232,6 +232,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                                         mConsumerID = mAuth.getUid();
                                         Map<String,Object>userMap=new HashMap<>();
                                         userMap.put("token_id",token_id);
+                                        userMap.put("name","Nipon Roy");
 
                                         if(mUserType.equals("new_user")){
                                             FirebaseUser user = mAuth.getCurrentUser();
@@ -251,8 +252,8 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                                         }
                                         else {
 
-                                            mFireStore.collection("Users").document(mConsumerID).update(userMap);
-                                            
+                                            mFireStore.collection("Users").document(mConsumerID).set(userMap);
+
                                             Toast.makeText(VerifyPhoneActivity.this, "Welcome Back", Toast.LENGTH_SHORT).show();
 
                                         }
