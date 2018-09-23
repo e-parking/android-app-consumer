@@ -53,6 +53,7 @@ public class ActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_activity, container, false);
 
+        requestList.clear();
         mAuth = FirebaseAuth.getInstance();
         if (mAuth.getCurrentUser() != null)
         {

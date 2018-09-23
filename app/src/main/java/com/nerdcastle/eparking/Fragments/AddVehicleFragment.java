@@ -142,7 +142,7 @@ public class AddVehicleFragment extends Fragment {
                             if (vehicle.getmBlueBookImage()==null || vehicle.getmBlueBookImage().equals(null)| vehicle.getmBlueBookImage().isEmpty()){
                             }
                             else {
-                                Picasso.get().load(vehicle.getmBlueBookImage()).placeholder(R.drawable.default_parking_logo_verti).error(R.drawable.default_parking_logo_verti).into(carBlueBookImageView);
+                                Picasso.get().load(vehicle.getmBlueBookImage()).placeholder(R.drawable.book).error(R.drawable.book).into(carBlueBookImageView);
                             }
 
                             carNumber.setText(vehicle.getmVehicleNumber()+"\n"+vehicle.getmVehicleType());
@@ -156,7 +156,7 @@ public class AddVehicleFragment extends Fragment {
                             if (vehicle.getmBlueBookImage()==null || vehicle.getmBlueBookImage().equals(null)| vehicle.getmBlueBookImage().isEmpty()){
                             }
                             else {
-                                Picasso.get().load(vehicle.getmBlueBookImage()).into(motorCycleBlueBookImageView);
+                                Picasso.get().load(vehicle.getmBlueBookImage()).placeholder(R.drawable.book).error(R.drawable.book).into(motorCycleBlueBookImageView);
                             }
                             motorCycleNumber.setText(vehicle.getmVehicleNumber()+"\n"+vehicle.getmVehicleType());
                         }
@@ -190,13 +190,13 @@ public class AddVehicleFragment extends Fragment {
                     if (motorCycleRadioButton.isChecked())
                         vehicleType=VehicleType.MotorCycle;
                     if (vehicleNumber==null||vehicleNumber.equals(null) || vehicleNumber.isEmpty()){
-                        Toast.makeText(getContext().getApplicationContext(), "Add a vehicle Number", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext().getApplicationContext(), "Add a vehicle number", Toast.LENGTH_SHORT).show();
                     }/*
                     else if (mParkPlacePhotoUrl.equals(null)||mParkPlacePhotoUrl==null || mParkPlacePhotoUrl.isEmpty()){
                         Toast.makeText(getActivity().getApplicationContext(), "Add a Blue Book Image", Toast.LENGTH_SHORT).show();
                     }*/
                     else if (vehicleType==null||vehicleType.equals(null)||vehicleType.isEmpty()){
-                        Toast.makeText(getActivity().getApplicationContext(), "Select Vehicle Type", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity().getApplicationContext(), "Select vehicle type", Toast.LENGTH_SHORT).show();
                     }
                     else {
 
@@ -204,7 +204,7 @@ public class AddVehicleFragment extends Fragment {
                     }
                 }
                 else {
-                    Toast.makeText(getActivity().getApplicationContext(), "you cann't add more then two vehicle", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "You cann't add more then two vehicle", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -229,7 +229,7 @@ public class AddVehicleFragment extends Fragment {
                     blueBookImageShow.setImageResource(R.drawable.default_parking_logo_hori);
                 }
                 else {
-                    Picasso.get().load(car.get(0).getmBlueBookImage()).into(blueBookImageShow);
+                    Picasso.get().load(car.get(0).getmBlueBookImage()).placeholder(R.drawable.book).error(R.drawable.book).into(blueBookImageShow);
                 }
 
             }
@@ -251,7 +251,7 @@ public class AddVehicleFragment extends Fragment {
                     blueBookImageShow.setImageResource(R.drawable.default_parking_logo_hori);
                 }
                 else {
-                    Picasso.get().load(motorByke.get(0).getmBlueBookImage()).into(blueBookImageShow);
+                    Picasso.get().load(motorByke.get(0).getmBlueBookImage()).placeholder(R.drawable.book).error(R.drawable.book).into(blueBookImageShow);
                 }
 
 
@@ -279,7 +279,7 @@ public class AddVehicleFragment extends Fragment {
 
                     if (task.isSuccessful()) {
 
-                        Toast.makeText(getActivity().getApplicationContext(), "Vehicle Added successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity().getApplicationContext(), "Vehicle added successfully", Toast.LENGTH_SHORT).show();
                         if (vehicleType.equals(VehicleType.Car)){
                             carCardView.setVisibility(View.VISIBLE);
                             showCarDetails();
@@ -305,7 +305,7 @@ public class AddVehicleFragment extends Fragment {
 
                     if (task.isSuccessful()) {
 
-                        Toast.makeText(getActivity().getApplicationContext(), "Vehicle Added successfully", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity().getApplicationContext(), "Vehicle added successfully", Toast.LENGTH_SHORT).show();
                         if (vehicleType.equals(VehicleType.Car)){
                             carCardView.setVisibility(View.VISIBLE);
                             showCarDetails();

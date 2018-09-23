@@ -4,25 +4,18 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_home"
-            android:fontFamily="@font/roboto_regular"
-            android:icon="@drawable/ic_myactivity_icon"
-            android:title="My Activity" />
-
 
         <item
             android:id="@+id/nav_map"
             android:fontFamily="@font/roboto_regular"
             android:icon="@drawable/ic_mapsearch_icon"
             android:title="Search Near By" />
-
         <item
-            android:id="@+id/nav_payments"
-            android:visible="false"
+            android:id="@+id/nav_home"
             android:fontFamily="@font/roboto_regular"
-            android:icon="@drawable/ic_list_icon"
-            android:title="Payments" />
+            android:icon="@drawable/ic_myactivity_icon"
+            android:title="My Activity" />
+
         <item
             android:id="@+id/nav_add_vehicle"
             android:fontFamily="@font/roboto_regular"
@@ -32,6 +25,12 @@
 
     <item android:title="">
         <menu>
+
+            <item
+                android:id="@+id/nav_tutorials"
+                android:icon="@drawable/tutorial"
+                android:title="Tutorial" />
+
             <item
                 android:id="@+id/nav_logout"
                 android:fontFamily="@font/roboto_regular"
