@@ -57,6 +57,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
@@ -64,6 +65,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -75,9 +78,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.clustering.ClusterManager;
+import com.nerdcastle.eparking.Activities.LaunchActivity;
 import com.nerdcastle.eparking.Activities.LoginActivity;
 import com.nerdcastle.eparking.Activities.PaymentActivity;
 import com.nerdcastle.eparking.Activities.SignUpActivity;
+import com.nerdcastle.eparking.Activities.TutorialActivity;
 import com.nerdcastle.eparking.CustomLayout.MapWrapperLayout;
 import com.nerdcastle.eparking.Fragments.ActivityFragment;
 import com.nerdcastle.eparking.Fragments.AddVehicleFragment;
@@ -101,6 +106,8 @@ import com.nerdcastle.eparking.PoJoClasses.Status;
 import com.nerdcastle.eparking.PoJoClasses.StatusOfConsumer;
 import com.nerdcastle.eparking.PoJoClasses.TempHolder;
 import com.nerdcastle.eparking.PoJoClasses.Vehicle;
+import com.nerdcastle.eparking.WebApis.DirectionResponse;
+import com.nerdcastle.eparking.WebApis.DirectionService;
 import com.nerdcastle.eparking.WebApis.WebApi;
 import com.squareup.picasso.Picasso;
 
@@ -112,6 +119,11 @@ import java.util.Date;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener
@@ -119,6 +131,13 @@ public class MainActivity extends AppCompatActivity implements
         , ActivityFragment.ActivityFragmentInterface
         , PaymentFragment.PaymentFragmentInterface
         ,AddVehicleFragment.AddVehicleFragmentInterface{
+
+    private static final String DISTANCE_BASE_URL = "https://maps.googleapis.com/maps/api/directions/";
+    private DirectionService directionService;
+    private String origin="23.830971,90.42442489999999";
+    private String destination=" 23.9998649,90.424532";
+    private Polyline polyline = null;
+    private List<Polyline> polylineList = new ArrayList<>();
 
     private static final String TAG = "MainActivity";
     //------------Custom Dialogs ---------
@@ -226,6 +245,11 @@ public class MainActivity extends AppCompatActivity implements
         progressDialog.isIndeterminate();
         progressDialog.show();
 
+        Retrofit retrofitDistance = new Retrofit.Builder()
+                .baseUrl(DISTANCE_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        directionService = retrofitDistance.create(DirectionService.class);
 
         mInternetStatus = isNetworkAvailable();
         if (!mInternetStatus) {
@@ -533,11 +557,13 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
+
         if (mInternetStatus) {
             getAllParkOwnerFromFirebase();
         }
 
         map = googleMap;
+
         clusterManager = new ClusterManager<MyItems>(this, map);
         mapWrapperLayout.init(map, getPixelsFromDp(this, 39 + 20));
         // We want to reuse the info window for all the markers,
@@ -569,6 +595,7 @@ public class MainActivity extends AppCompatActivity implements
         map.setMyLocationEnabled(true);
 
         mCurrentLocation = new LatLng(TempData.getLatitude(), TempData.getLongitude());
+
         //map.addMarker(new MarkerOptions().position(mCurrentLocation).title("My Current Location").snippet("Mirpur DOHS, Avenue 9").icon(BitmapDescriptorFactory.fromResource(R.drawable.current_location)));
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLocation, 15));
 
@@ -670,6 +697,52 @@ public class MainActivity extends AppCompatActivity implements
         //getNearbyPlaces();
 
     }
+
+  /*  private void getDirection() {
+       String api_key = getString(R.string.DIRECTION_API_KEY);
+       String url = String.format("json?origin=%s,&destination=%s,&key=%s",origin,destination,api_key);
+
+        Call<DirectionResponse> directionResponseCall = directionService.getAllDistances(url);
+        directionResponseCall.enqueue(new Callback<DirectionResponse>() {
+            @Override
+            public void onResponse(Call<DirectionResponse> call, Response<DirectionResponse> response) {
+
+                if(response.code()==200){
+
+                    DirectionResponse directionResponse = response.body();
+                    LatLng focusArea = new LatLng(directionResponse.getRoutes().get(0).getLegs().get(0).getSteps().get(0).getStartLocation().getLat(),
+                            directionResponse.getRoutes().get(0).getLegs().get(0).getSteps().get(0).getStartLocation().getLat());
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(focusArea,12));
+                    List<DirectionResponse.Step>steps = directionResponse.getRoutes().get(0).getLegs().get(0).getSteps();
+                    for(int i = 0; i < steps.size(); i++){
+
+                        double startLat = steps.get(i).getStartLocation().getLat();
+                        double startLng = steps.get(i).getStartLocation().getLng();
+                        double endLat = steps.get(i).getEndLocation().getLat();
+                        double endLng =steps.get(i).getEndLocation().getLng();
+
+                        LatLng start= new LatLng(startLat,startLng);
+                        LatLng end = new LatLng(endLat,endLng);
+
+                        polyline = map.addPolyline(new PolylineOptions()
+                                .add(start)
+                                .add(end)
+                                .width(10)
+                                .color(Color.BLUE)
+                                .clickable(true));
+                       // polylineList.add(polyline);
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<DirectionResponse> call, Throwable t) {
+
+            }
+        });
+
+    }*/
 
 
     DialogInterface.OnClickListener onClickListener=new DialogInterface.OnClickListener() {
@@ -1215,7 +1288,8 @@ public class MainActivity extends AppCompatActivity implements
 
 
         } else if (id == R.id.nav_tutorials) {
-            goToPayment();
+            Intent intent = new Intent(MainActivity.this, TutorialActivity.class);
+            startActivity(intent);
             vehicleSelection.setVisibility(View.GONE);
 
         } else if (id == R.id.nav_logout) {

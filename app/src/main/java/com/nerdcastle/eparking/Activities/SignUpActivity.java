@@ -106,6 +106,8 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
+
+
         progressDialog = new ProgressDialog(SignUpActivity.this);
         //-----------------firebase initializations------------------------
         mAuth = FirebaseAuth.getInstance();
@@ -254,9 +256,6 @@ public class SignUpActivity extends AppCompatActivity {
             UserProfileChangeRequest mProfilePhotoUrl = new UserProfileChangeRequest.Builder().setPhotoUri(Uri.parse(mProfileURL)).build();
             user.updateProfile(mProfilePhotoUrl);
         }
-
-
-
 
         mFirebaseUserInformation.child("mName").setValue(name);
         mFirebaseUserInformation.child("mAddress").setValue(address);

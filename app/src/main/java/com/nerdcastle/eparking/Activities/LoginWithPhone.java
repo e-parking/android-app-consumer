@@ -347,14 +347,12 @@ public class LoginWithPhone extends AppCompatActivity {
                     Intent intent = new Intent(LoginWithPhone.this, VerifyPhoneActivity.class);
                     intent.putExtra("user","old_user");
                     intent.putExtra("mobile",phoneNumber);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(LoginWithPhone.this);
                     startActivity(intent, options.toBundle());
                 }else
                 {
                     fabProgressCircle.hide();
                     Intent intent = new Intent(LoginWithPhone.this, VerifyPhoneActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.putExtra("mobile", phoneNumber);
                     intent.putExtra("user", "new_user");
                     startActivity(intent);
