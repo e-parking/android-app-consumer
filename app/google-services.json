@@ -15,6 +15,38 @@
       },
       "oauth_client": [
         {
+          "client_id": "441510923974-9g2mf93mh6j66or4fnd5161b04i9foh6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "admin.eparkingbd.com.eparkingadmin",
+            "certificate_hash": "1fa063e591d8365d9d8bb3e43257e054bb43327f"
+          }
+        },
+        {
+          "client_id": "441510923974-8bbl8mova9u7a15f6eh85pjid6o6k8q9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "admin.eparkingbd.com.eparkingadmin",
+            "certificate_hash": "424f9dfe12ba1e56f0341300fd6583d490c59922"
+          }
+        },
+        {
+          "client_id": "441510923974-ltupiifhjq4t8mgouqqlqnc0qedauj1p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "admin.eparkingbd.com.eparkingadmin",
+            "certificate_hash": "1368e04b3c9233e6bb1be30193f52755e67615db"
+          }
+        },
+        {
+          "client_id": "441510923974-0th44cls6uvepoct0hkdn5mh0qpr5air.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "admin.eparkingbd.com.eparkingadmin",
+            "certificate_hash": "6d55ccaaefccbfcdf41735306d5e1a4516ef4372"
+          }
+        },
+        {
           "client_id": "441510923974-kfer4sqojge5tq3e847jo85585fficm3.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +61,57 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "441510923974-kfer4sqojge5tq3e847jo85585fficm3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:441510923974:android:a6320e73a2aa095f",
+        "android_client_info": {
+          "package_name": "bd.com.universal.eparking.seeker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "441510923974-l5ektbn98vfgl5urjfavtpo74ai5cj3g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "bd.com.universal.eparking.seeker",
+            "certificate_hash": "1368e04b3c9233e6bb1be30193f52755e67615db"
+          }
+        },
+        {
+          "client_id": "441510923974-kfer4sqojge5tq3e847jo85585fficm3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDsiq7ZtVcmwbnjxzPgnTQ651NzpbZkzo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "441510923974-kfer4sqojge5tq3e847jo85585fficm3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
@@ -46,19 +127,27 @@
       },
       "oauth_client": [
         {
-          "client_id": "441510923974-1bnnft7r4sidvd85tk5bvsdcp9qtigqv.apps.googleusercontent.com",
+          "client_id": "441510923974-6khs0fkuqtids4g4ovegijvam5odkn5l.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.nerdcastle.eparking",
-            "certificate_hash": "d5d65b4f9b6b1610ea3ca82e51b58ebe27f2cd8c"
+            "certificate_hash": "1368e04b3c9233e6bb1be30193f52755e67615db"
           }
         },
         {
-          "client_id": "441510923974-chq8268om0bdkciom3hnm9gi51qcr2eq.apps.googleusercontent.com",
+          "client_id": "441510923974-gumstjt59in8q5putk3pnvoeb3l584t5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.nerdcastle.eparking",
-            "certificate_hash": "288a848902e7d8d1a99564bbcbb466da8950c736"
+            "certificate_hash": "5c997c9a77a2afe5c4f5018e67cb4bd6af392a33"
+          }
+        },
+        {
+          "client_id": "441510923974-7its3cbvhiivhlt0h8b77mut6m7bi6n3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nerdcastle.eparking",
+            "certificate_hash": "424f9dfe12ba1e56f0341300fd6583d490c59922"
           }
         },
         {
@@ -70,11 +159,27 @@
           }
         },
         {
-          "client_id": "441510923974-7its3cbvhiivhlt0h8b77mut6m7bi6n3.apps.googleusercontent.com",
+          "client_id": "441510923974-chq8268om0bdkciom3hnm9gi51qcr2eq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.nerdcastle.eparking",
-            "certificate_hash": "424f9dfe12ba1e56f0341300fd6583d490c59922"
+            "certificate_hash": "288a848902e7d8d1a99564bbcbb466da8950c736"
+          }
+        },
+        {
+          "client_id": "441510923974-1bnnft7r4sidvd85tk5bvsdcp9qtigqv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nerdcastle.eparking",
+            "certificate_hash": "d5d65b4f9b6b1610ea3ca82e51b58ebe27f2cd8c"
+          }
+        },
+        {
+          "client_id": "441510923974-m86fvf0j5047occrmjdvnm3adtn10mlv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nerdcastle.eparking",
+            "certificate_hash": "6d55ccaaefccbfcdf41735306d5e1a4516ef4372"
           }
         },
         {
@@ -135,6 +240,30 @@
           "android_info": {
             "package_name": "com.nerdcastle.eparkingprovider",
             "certificate_hash": "424f9dfe12ba1e56f0341300fd6583d490c59922"
+          }
+        },
+        {
+          "client_id": "441510923974-jdngld6det29vj31tgtrjikbcagp5c1n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nerdcastle.eparkingprovider",
+            "certificate_hash": "5c997c9a77a2afe5c4f5018e67cb4bd6af392a33"
+          }
+        },
+        {
+          "client_id": "441510923974-roph4pf1k2ui4b3o1bmljqhuh6469bjb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nerdcastle.eparkingprovider",
+            "certificate_hash": "1368e04b3c9233e6bb1be30193f52755e67615db"
+          }
+        },
+        {
+          "client_id": "441510923974-knh8iakp32v8ocl9do9mrtu50cm45uj1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nerdcastle.eparkingprovider",
+            "certificate_hash": "6d55ccaaefccbfcdf41735306d5e1a4516ef4372"
           }
         },
         {

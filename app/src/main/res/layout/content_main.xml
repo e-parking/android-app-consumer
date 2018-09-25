@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/app_bar_main"
-    tools:context=".MainActivity">
+    tools:context="bd.com.universal.eparking.seeker.MainActivity">
 
 
     <LinearLayout
@@ -46,12 +46,12 @@
             android:text="Leaving \n 05:00 PM"/>
     </LinearLayout>
 
-    <com.nerdcastle.eparking.CustomLayout.MapWrapperLayout
+    <bd.com.universal.eparking.seeker.CustomLayout.MapWrapperLayout
         android:id="@+id/map_relative_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/headerMenu"
-        tools:context=".MainActivity">
+        tools:context="bd.com.universal.eparking.seeker.MainActivity">
 
         <FrameLayout
             android:id="@+id/fragmentContainer"
@@ -113,7 +113,7 @@
 
         </android.support.v7.widget.CardView>
 
-    </com.nerdcastle.eparking.CustomLayout.MapWrapperLayout>
+    </bd.com.universal.eparking.seeker.CustomLayout.MapWrapperLayout>
 
 
 </RelativeLayout>

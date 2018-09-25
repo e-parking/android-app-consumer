@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="5dp"
-    tools:context=".Activities.SignUpActivity">
+    tools:context="bd.com.universal.eparking.seeker.Activities.SignUpActivity">
 
     <ScrollView
         android:layout_width="match_parent"
