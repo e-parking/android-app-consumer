@@ -1321,7 +1321,6 @@ public class MainActivity extends AppCompatActivity implements
         } else if (id == R.id.nav_tutorials) {
             Intent intent = new Intent(MainActivity.this, TutorialActivity.class);
             startActivity(intent);
-            vehicleSelection.setVisibility(View.GONE);
 
         } else if (id == R.id.nav_logout) {
             mLoginPreference.setStatus(false);
