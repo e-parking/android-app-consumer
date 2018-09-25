@@ -39,7 +39,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -57,7 +56,6 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMapOptions;
@@ -66,22 +64,17 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.maps.android.clustering.ClusterManager;
-import com.nerdcastle.eparking.Activities.LaunchActivity;
 import com.nerdcastle.eparking.Activities.LoginActivity;
-import com.nerdcastle.eparking.Activities.PaymentActivity;
 import com.nerdcastle.eparking.Activities.SignUpActivity;
 import com.nerdcastle.eparking.Activities.TutorialActivity;
 import com.nerdcastle.eparking.CustomLayout.MapWrapperLayout;
@@ -95,19 +88,16 @@ import com.nerdcastle.eparking.OtherClasses.TempData;
 import com.nerdcastle.eparking.OtherClasses.VehicleType;
 import com.nerdcastle.eparking.PoJoClasses.Consumer;
 import com.nerdcastle.eparking.PoJoClasses.MyItems;
-import com.nerdcastle.eparking.PoJoClasses.Park;
 import com.nerdcastle.eparking.PoJoClasses.ParkPlace;
 import com.nerdcastle.eparking.PoJoClasses.Provider;
 import com.nerdcastle.eparking.PoJoClasses.ParkingRequest;
 import com.nerdcastle.eparking.PoJoClasses.ProviderRating;
 import com.nerdcastle.eparking.PoJoClasses.Request;
 import com.nerdcastle.eparking.PoJoClasses.Schedule;
-import com.nerdcastle.eparking.PoJoClasses.SelfBook;
 import com.nerdcastle.eparking.PoJoClasses.Status;
 import com.nerdcastle.eparking.PoJoClasses.StatusOfConsumer;
 import com.nerdcastle.eparking.PoJoClasses.TempHolder;
 import com.nerdcastle.eparking.PoJoClasses.Vehicle;
-import com.nerdcastle.eparking.WebApis.DirectionResponse;
 import com.nerdcastle.eparking.WebApis.DirectionService;
 import com.nerdcastle.eparking.WebApis.WebApi;
 import com.squareup.picasso.Picasso;
@@ -122,9 +112,6 @@ import java.util.List;
 import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -180,12 +167,9 @@ public class MainActivity extends AppCompatActivity implements
     private GoogleMap map;
     private GoogleMapOptions options;
     private LatLng mCurrentLocation;
-    private WebApi mWebApi;
     private CustomClusterRenderer renderer;
     private Boolean isMapInitialized = false;
 
-
-    private long currentTimeInMilli;
 
     private MapWrapperLayout mapWrapperLayout;
     private ViewGroup infoWindow;
@@ -240,7 +224,6 @@ public class MainActivity extends AppCompatActivity implements
         setSupportActionBar(toolbar);
 
         progressDialog = new ProgressDialog(this);
-        //progressDialog.setIcon(R.drawable.parking_logo);
         progressDialog.setTitle("Please Wait...");
         progressDialog.setMessage("We are Preparing your map.");
         progressDialog.setCanceledOnTouchOutside(false);
@@ -248,23 +231,38 @@ public class MainActivity extends AppCompatActivity implements
         progressDialog.isIndeterminate();
         progressDialog.show();
 
+
+        //-------------------------- Firebase ----------------------------------------
+
+        mFirebaseInstance = FirebaseDatabase.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+        mConsumerID = mAuth.getCurrentUser().getUid();
+
+
+
         Retrofit retrofitDistance = new Retrofit.Builder()
                 .baseUrl(DISTANCE_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         directionService = retrofitDistance.create(DirectionService.class);
 
+
+        //-------------- Custom Dialog -------------------
+        mGpsDialog = new Dialog(this);
+        mInternetDialog = new Dialog(this);
+
+
         mInternetStatus = isNetworkAvailable();
         if (!mInternetStatus) {
             progressDialog.dismiss();
             showInternetDialogBox();
         }
+        else {
+            statusCheck();
+        }
 
 
-        //-------------- Custom Dialog -------------------
-        mGpsDialog = new Dialog(this);
-        mInternetDialog = new Dialog(this);
-        statusCheck();
+
         //-------------------------------------------------
         mLoginPreference = new LoginPreferences(this);
         //---------------------------Navigation --------------------------------
@@ -279,11 +277,7 @@ public class MainActivity extends AppCompatActivity implements
         bikeImage = findViewById(R.id.bikeImage);
         carImage = findViewById(R.id.carImage);
 
-        //-------------------------- Firebase ----------------------------------------
 
-        mFirebaseInstance = FirebaseDatabase.getInstance();
-        mAuth = FirebaseAuth.getInstance();
-        mConsumerID = mAuth.getCurrentUser().getUid();
 
         getUserInformation();
 
@@ -292,22 +286,12 @@ public class MainActivity extends AppCompatActivity implements
         SimpleDateFormat simpleDateFormat=new SimpleDateFormat("E");
         formattedCurrentDay=simpleDateFormat.format(date);
 
-        //Toast.makeText(this, formattedCurrentDate, Toast.LENGTH_SHORT).show();
-
-
-        //Send notification test
-        //setNotification("this is for test","hlw");
-
-
-        //final MapFragment mapFragment = (MapFragment)getFragmentManager().findFragmentById(R.id.fragmentContainer);
         mapWrapperLayout = (MapWrapperLayout) findViewById(R.id.map_relative_layout);
         mArivalTime = findViewById(R.id.arivingTime);
         mLeavingTime = findViewById(R.id.leavingTime);
         mHeaderMenu = findViewById(R.id.headerMenu);
-        //mHeaderMenu.setVisibility(View.VISIBLE);
 
         fragmentContainer = findViewById(R.id.fragmentContainer);
-
         fm = getSupportFragmentManager();
         ft = fm.beginTransaction();
 
@@ -322,7 +306,6 @@ public class MainActivity extends AppCompatActivity implements
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
 
 
 
@@ -348,8 +331,9 @@ public class MainActivity extends AppCompatActivity implements
                 startActivity(new Intent(MainActivity.this, SignUpActivity.class));
             }
         });
-        //----------------------------------- Picking Time   --------------------------------------
 
+
+        //----------------------------------- Picking Time   --------------------------------------
         calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
@@ -466,7 +450,8 @@ public class MainActivity extends AppCompatActivity implements
 
         GetVehicle();
 
-    }
+
+    }  //End of onCreat Method
 
     private void CarSelect() {
         bikeImage.setImageResource(R.drawable.bike_white);
@@ -511,7 +496,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    //End of onCreat Method
 
 
 
@@ -701,6 +685,7 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+
   /*  private void getDirection() {
        String api_key = getString(R.string.DIRECTION_API_KEY);
        String url = String.format("json?origin=%s,&destination=%s,&key=%s",origin,destination,api_key);
@@ -778,7 +763,7 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 }
                 else {
-                    Toast.makeText(MainActivity.this, "Please add vehicle details", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Please add vehicle details first", Toast.LENGTH_LONG).show();
                     //goToAddVehicle();
                 }
 
