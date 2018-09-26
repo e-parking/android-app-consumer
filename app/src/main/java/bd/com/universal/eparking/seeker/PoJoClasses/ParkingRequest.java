@@ -23,12 +23,13 @@ public class ParkingRequest {
     private long mEndTime;
     private double mEstimatedCost;
     private float mConsumerRatingValue;
+    private long mRequestTime;
 
 
     public ParkingRequest() {
     }
 
-    public ParkingRequest(String mConsumerID, String mProviderID, String mParkPlaceID, String mParkPlaceTitle, String mRequestID, String mConsumerName, String mConsumerPhone, String mConsumerVehicleNumber, String mProviderName, String mProviderPhone, String mParkPlaceAddress, String mParkPlaceLatitude, String mParkPlaceLongitude, String mStatus,String mParkPlacePhotoUrl,String mConsumerPhotoUrl, long mStartTime, long mEndTime, double mEstimatedCost, float mConsumerRatingValue) {
+    public ParkingRequest(String mConsumerID, String mProviderID, String mParkPlaceID, String mParkPlaceTitle, String mRequestID, String mConsumerName, String mConsumerPhone, String mConsumerVehicleNumber, String mProviderName, String mProviderPhone, String mParkPlaceAddress, String mParkPlaceLatitude, String mParkPlaceLongitude, String mStatus,String mParkPlacePhotoUrl,String mConsumerPhotoUrl, long mStartTime, long mEndTime, double mEstimatedCost, float mConsumerRatingValue,long mRequestTime) {
         this.mConsumerID = mConsumerID;
         this.mProviderID = mProviderID;
         this.mParkPlaceID = mParkPlaceID;
@@ -49,6 +50,7 @@ public class ParkingRequest {
         this.mEndTime=mEndTime;
         this.mEstimatedCost=mEstimatedCost;
         this.mConsumerRatingValue=mConsumerRatingValue;
+        this.mRequestTime=mRequestTime;
 
     }
 
@@ -211,5 +213,13 @@ public class ParkingRequest {
 
     public void setmConsumerRatingValue(float mConsumerRatingValue) {
         this.mConsumerRatingValue = mConsumerRatingValue;
+    }
+
+    public long getmRequestTime() {
+        return mRequestTime;
+    }
+
+    public void setmRequestTime(long mRequestTime) {
+        this.mRequestTime = mRequestTime;
     }
 }

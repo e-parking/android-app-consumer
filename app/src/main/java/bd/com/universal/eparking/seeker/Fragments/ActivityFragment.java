@@ -16,6 +16,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import bd.com.universal.eparking.seeker.Adapters.ActivityAdapter;
 import bd.com.universal.eparking.seeker.PoJoClasses.ParkingRequest;
@@ -82,6 +83,7 @@ public class ActivityFragment extends Fragment {
     private void getUserCurrentActivity() {
         mUserCurrentActivityDB = mFirebaseInstance.getReference("ConsumerList/" + mConsumerID + "/Request/");
 
+        Query query=mUserCurrentActivityDB.orderByChild("mRequestTime");
         mUserCurrentActivityDB.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
