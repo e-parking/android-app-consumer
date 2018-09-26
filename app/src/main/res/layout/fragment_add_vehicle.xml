@@ -75,15 +75,33 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Registration Number"/>
-                <EditText
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Dhaka Metro HA 123452"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:layout_marginLeft="10dp"
-                    android:id="@+id/registrationNumberId"
-                    android:layout_marginRight="10dp"/>
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+                    <AutoCompleteTextView
+                        android:id="@+id/autoCompleteNumber"
+                        android:layout_width="match_parent"
+                        android:layout_weight=".5"
+                        android:layout_marginLeft="10dp"
+                        android:hint="Dhaka Metro"
+                        android:textSize="16sp"
+                        android:maxLines="1"
+                        android:fontFamily="@font/roboto_regular"
+                        android:layout_height="wrap_content" />
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".5"
+                        android:hint="HA 123452"
+                        android:maxLines="1"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/roboto_regular"
+                        android:id="@+id/registrationNumberId"
+                        android:layout_marginRight="10dp"/>
+                </LinearLayout>
+
 
 
 
@@ -104,10 +122,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/carRadioButtonId"
-                android:layout_marginRight="40dp"
                 android:textSize="16sp"
                 android:fontFamily="@font/roboto_regular"
                 android:text="Car"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="40dp"
+                android:textColor="#000"
+                android:id="@+id/microbusTV"
+                android:fontFamily="@font/roboto_regular"
+                android:text="/Microbus"/>
             <RadioButton
                 android:id="@+id/motorcycleRadioButtonId"
                 android:layout_width="wrap_content"

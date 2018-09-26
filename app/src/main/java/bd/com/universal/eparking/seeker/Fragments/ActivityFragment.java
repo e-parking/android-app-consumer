@@ -24,6 +24,7 @@ import bd.com.universal.eparking.seeker.PoJoClasses.Status;
 import bd.com.universal.eparking.seeker.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ActivityFragment extends Fragment {
@@ -83,8 +84,8 @@ public class ActivityFragment extends Fragment {
     private void getUserCurrentActivity() {
         mUserCurrentActivityDB = mFirebaseInstance.getReference("ConsumerList/" + mConsumerID + "/Request/");
 
-        Query query=mUserCurrentActivityDB.orderByChild("mRequestTime");
-        mUserCurrentActivityDB.addListenerForSingleValueEvent(new ValueEventListener() {
+        Query query=mUserCurrentActivityDB.orderByChild("mRequestTime").limitToLast(7);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
@@ -95,7 +96,8 @@ public class ActivityFragment extends Fragment {
                                 || parkingRequest.getmStatus().equals(Status.ACCEPTED)
                                 || parkingRequest.getmStatus().equals(Status.STARTED)
                                 || parkingRequest.getmStatus().equals(Status.REJECTED)
-                                || parkingRequest.getmStatus().equals(Status.ENDED)) {
+                                || parkingRequest.getmStatus().equals(Status.ENDED)
+                                || parkingRequest.getmStatus().equals(Status.CANCELLED)) {
                             requestList.add(parkingRequest);
                             setNotifactionRecyclerView();
 
@@ -124,6 +126,7 @@ public class ActivityFragment extends Fragment {
             mInfoText.setVisibility(View.VISIBLE);
 
         }
+        Collections.reverse(requestList);
         activityAdapter = new ActivityAdapter(requestList,getActivity());
         mActivityRecyclerView.setAdapter(activityAdapter);
     }

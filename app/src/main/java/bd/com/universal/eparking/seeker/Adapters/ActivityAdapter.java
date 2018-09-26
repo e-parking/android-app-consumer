@@ -63,7 +63,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
         public TextView mParkAddress;
         public TextView mStatus;
         public TextView mDurationTV,phoneNumberTV;
-        public Button mEndButton,callButton,mDirection;
+        public Button mEndButton,callButton,mDirection,mCancleButton;
         public RatingBar ratingBar;
 
 
@@ -81,6 +81,8 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
             callButton=(Button)itemView.findViewById(R.id.callButton);
             mDirection=(Button)itemView.findViewById(R.id.mapButton);
             ratingBar=itemView.findViewById(R.id.ratingBarId);
+            mCancleButton=itemView.findViewById(R.id.cancleButtonId);
+
 
 
         }
@@ -148,6 +150,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
         else if (mStatus.equals(Status.PENDING)){
             holder.mStatus.setText(Status.PENDING);
             holder.mEndButton.setVisibility(View.GONE);
+            holder.mCancleButton.setVisibility(View.VISIBLE);
 
         }
         else if (mStatus.equals(Status.REJECTED)){
@@ -163,6 +166,45 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
             holder.mStatus.setText(Status.ACCEPTED);
             holder.mEndButton.setVisibility(View.GONE);
         }
+        else if (mStatus.equals(Status.CANCELLED)){
+            holder.mStatus.setText(Status.CANCELLED);
+            holder.mEndButton.setVisibility(View.GONE);
+        }
+
+
+
+        holder.mCancleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                DatabaseReference parkPlaceRequestDB=mFirebaseInstance.getReference("ProviderList/"+model.getmProviderID()+"/ParkPlaceList/" + model.getmParkPlaceID()+"/Request/"+model.getmRequestID());
+                DatabaseReference consumerRequestDB=mFirebaseInstance.getReference("ConsumerList/"+mConsumerID+"/Request/"+model.getmRequestID());
+                DatabaseReference parkPlaceDB=mFirebaseInstance.getReference("ProviderList/"+model.getmProviderID()+"/ParkPlaceList/" + model.getmParkPlaceID());
+
+                parkPlaceRequestDB.child("mStatus").setValue(Status.CANCELLED,new DatabaseReference.CompletionListener() {
+                    @Override
+                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                        Toast.makeText(context, Status.CANCELLED+" Successfully !", Toast.LENGTH_LONG).show();
+                    }
+                });
+                consumerRequestDB.child("mStatus").setValue(Status.CANCELLED);
+                parkPlaceDB.child("mIsAvailable").setValue("true");
+
+                holder.mStatus.setText(Status.CANCELLED);
+                holder.mCancleButton.setEnabled(false);
+
+
+                FirebaseFirestore mFireStore=FirebaseFirestore.getInstance();
+                Map<String,Object> notificationMap=new HashMap<>();
+                notificationMap.put("message",model.getmConsumerName()+" has Cancel request.");
+                notificationMap.put("consumer",mConsumerID);
+
+                mFireStore.collection("Users").document(model.getmProviderID()).collection("Notifications").add(notificationMap);
+
+
+
+            }
+        });
 
 
 

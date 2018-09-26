@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -57,7 +60,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class AddVehicleFragment extends Fragment {
 
-    private TextView carNumber,motorCycleNumber,blueBookImageUpload;
+    private TextView carNumber,motorCycleNumber,blueBookImageUpload,microbusTV;
     private RadioButton carRadioButton, motorCycleRadioButton;
     private EditText vehicleNumberInpur;
     private Button saveButton;
@@ -87,7 +90,8 @@ public class AddVehicleFragment extends Fragment {
     private boolean edit=false;
     private String carVehicleId,motorBikeVehicleId,currentVehicleId;
     private LinearLayout linearLayout;
-
+    private String[] rNumberFormat={"Dhaka Metro","Chotta Metro"};
+    private AutoCompleteTextView autoCompleteNumber;
 
     public interface  AddVehicleFragmentInterface {
         public void goToAddVehicle ();
@@ -115,7 +119,15 @@ public class AddVehicleFragment extends Fragment {
         motorCycleBlueBookImageView=view.findViewById(R.id.motorcycleBlueBookId);
         blueBookImageShow=view.findViewById(R.id.blueBookImageShowId);
         linearLayout=view.findViewById(R.id.layoutId);
+        autoCompleteNumber=view.findViewById(R.id.autoCompleteNumber);
+        microbusTV=view.findViewById(R.id.microbusTV);
         progressDialog = new ProgressDialog(getActivity());
+        autoCompleteNumber.setDropDownBackgroundDrawable(new ColorDrawable(getActivity().getApplicationContext().getResources().getColor(R.color.colorPrimary)));
+
+        ArrayAdapter adapter = new
+                ArrayAdapter(getActivity().getApplicationContext(),android.R.layout.simple_list_item_1,rNumberFormat);
+        autoCompleteNumber.setAdapter(adapter);
+        autoCompleteNumber.setThreshold(1);
 
         getCameraPermission();
 
@@ -138,6 +150,7 @@ public class AddVehicleFragment extends Fragment {
                         if (vehicle.getmVehicleType().equals(VehicleType.Car)){
                             carCardView.setVisibility(View.VISIBLE);
                             carRadioButton.setVisibility(View.GONE);
+                            microbusTV.setVisibility(View.GONE);
                             carVehicleId=data.getKey();
                             car.add(vehicle);
                             if (vehicle.getmBlueBookImage()==null || vehicle.getmBlueBookImage().equals(null)| vehicle.getmBlueBookImage().isEmpty()){
@@ -154,7 +167,7 @@ public class AddVehicleFragment extends Fragment {
                             motorCycleRadioButton.setVisibility(View.GONE);
                             motorBikeVehicleId=data.getKey();
                             motorByke.add(vehicle);
-                            if (vehicle.getmBlueBookImage()==null || vehicle.getmBlueBookImage().equals(null)| vehicle.getmBlueBookImage().isEmpty()){
+                            if (vehicle.getmBlueBookImage()==null || vehicle.getmBlueBookImage().equals(null)|| vehicle.getmBlueBookImage().isEmpty()){
                             }
                             else {
                                 Picasso.get().load(vehicle.getmBlueBookImage()).placeholder(R.drawable.bike_red).error(R.drawable.bike_red).into(motorCycleBlueBookImageView);
@@ -221,16 +234,17 @@ public class AddVehicleFragment extends Fragment {
                 count=0;
                 currentVehicleId=carVehicleId;
                 carRadioButton.setVisibility(View.VISIBLE);
+                microbusTV.setVisibility(View.VISIBLE);
                 motorCycleRadioButton.setVisibility(View.GONE);
                 carRadioButton.setChecked(true);
                 mParkPlacePhotoUrl=car.get(0).getmBlueBookImage();
                 vehicleNumberInpur.setText(car.get(0).getmVehicleNumber());
 
-                if (car.get(0).getmBlueBookImage()==null || car.get(0).getmBlueBookImage().equals(null)| car.get(0).getmBlueBookImage().isEmpty()){
-                    blueBookImageShow.setImageResource(R.drawable.car_red);
+                if (car.get(0).getmBlueBookImage()!=null && !car.get(0).getmBlueBookImage().equals(null) && !car.get(0).getmBlueBookImage().isEmpty()){
+                    Picasso.get().load(car.get(0).getmBlueBookImage()).placeholder(R.drawable.car_red).error(R.drawable.car).into(blueBookImageShow);
                 }
                 else {
-                    Picasso.get().load(car.get(0).getmBlueBookImage()).placeholder(R.drawable.car_red).error(R.drawable.car).into(blueBookImageShow);
+                    blueBookImageShow.setImageResource(R.drawable.car_red);
                 }
 
             }
@@ -246,13 +260,14 @@ public class AddVehicleFragment extends Fragment {
                 vehicleNumberInpur.setText(motorByke.get(0).getmVehicleNumber());
                 motorCycleRadioButton.setVisibility(View.VISIBLE);
                 carRadioButton.setVisibility(View.GONE);
+                microbusTV.setVisibility(View.GONE);
                 mParkPlacePhotoUrl=motorByke.get(0).getmBlueBookImage();
                 motorCycleRadioButton.setChecked(true);
-                if (car.get(0).getmBlueBookImage()==null || car.get(0).getmBlueBookImage().equals(null)| car.get(0).getmBlueBookImage().isEmpty()){
-                    blueBookImageShow.setImageResource(R.drawable.bike_red);
+                if (motorByke.get(0).getmBlueBookImage()!=null && !motorByke.get(0).getmBlueBookImage().equals(null) && !motorByke.get(0).getmBlueBookImage().isEmpty()){
+                    Picasso.get().load(motorByke.get(0).getmBlueBookImage()).placeholder(R.drawable.bike_red).error(R.drawable.bike_red).into(blueBookImageShow);
                 }
                 else {
-                    Picasso.get().load(motorByke.get(0).getmBlueBookImage()).placeholder(R.drawable.bike_red).error(R.drawable.bike_red).into(blueBookImageShow);
+                    blueBookImageShow.setImageResource(R.drawable.bike_red);
                 }
 
 
@@ -410,7 +425,7 @@ public class AddVehicleFragment extends Fragment {
                 mParkPlacePhotoUrl = taskSnapshot.getDownloadUrl().toString();
                 blueBookImageShow.setImageBitmap(mBitmapImage4);
                 //Picasso.get().load(mParkPlacePhotoUrl).into(blueBookImageShow);
-                Toast.makeText(getActivity(), "Blue Book picture added successfully.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "picture added successfully.", Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
             }
         }).addOnFailureListener(new OnFailureListener() {

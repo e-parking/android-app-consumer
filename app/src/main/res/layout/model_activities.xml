@@ -82,8 +82,8 @@
 
                     <Button
                         android:id="@+id/mapButton"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:backgroundTint="@color/white"
                         android:background="@drawable/ic_map_icon"
                         android:layout_gravity="center" />
@@ -117,8 +117,8 @@
                         android:text="017xxxxxxxx"/>
                     <Button
                         android:id="@+id/callButton"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:background="@drawable/ic_call_icon"
                         android:backgroundTint="@color/white"
                         android:layout_gravity="center" />
@@ -133,6 +133,7 @@
                         android:id="@+id/ratingBarId"
                         android:numStars="5"
                         android:layout_gravity="center"
+                        android:progressBackgroundTint="@color/white"
                         android:visibility="gone"
                         style="?android:attr/ratingBarStyleSmall"
                         android:layout_width="wrap_content"
@@ -150,6 +151,22 @@
                         android:textStyle="bold"
                         android:layout_gravity="center_vertical"
                         android:text="End Now"
+                        android:visibility="gone"
+                        android:textColor="@color/white"
+                        android:background="@color/red"
+                        />
+
+                    <Button
+                        android:id="@+id/cancleButtonId"
+                        android:layout_width="wrap_content"
+                        android:layout_height="25dp"
+                        android:textSize="10sp"
+                        android:maxLines="1"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginLeft="5dp"
+                        android:textStyle="bold"
+                        android:layout_gravity="center_vertical"
+                        android:text="Cancel"
                         android:visibility="gone"
                         android:textColor="@color/white"
                         android:background="@color/red"
