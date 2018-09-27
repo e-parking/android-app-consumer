@@ -296,8 +296,8 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
                 AlertDialog.Builder builder=new AlertDialog.Builder(context);
                 builder.setTitle("Alert");
                 builder.setIcon(R.drawable.ic_add_alert_black_24dp);
-                builder.setMessage("Are you Sure? ").setPositiveButton("End Now",onClickListener)
-                        .setNegativeButton("Not Now",onClickListener).show();
+                builder.setMessage("Do you want to end this parking session?").setPositiveButton("YES",onClickListener)
+                        .setNegativeButton("NO",onClickListener).show();
 
 
             }

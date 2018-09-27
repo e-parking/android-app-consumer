@@ -70,7 +70,7 @@ public class AddVehicleFragment extends Fragment {
     private TextView carNumber,motorCycleNumber,blueBookImageUpload,microbusTV;
     private RadioButton carRadioButton, motorCycleRadioButton;
     private EditText vehicleNumberInpur;
-    private Button saveButton;
+    private Button saveButton,addnew;
     private CardView carCardView,motorCycleCardView;
     private RadioGroup radioGroup;
     private ImageView carBlueBookImageView, motorCycleBlueBookImageView,blueBookImageShow;
@@ -92,7 +92,7 @@ public class AddVehicleFragment extends Fragment {
     private String mImageName4 = "null";
     private StorageReference mStorageForProfile;
     private String vehicleType;
-    private String vehicleNumber;
+    private String vehicleNumber,vehicleNumberPrefix;
     private int count=0;
     private boolean edit=false;
     private String carVehicleId,motorBikeVehicleId,currentVehicleId;
@@ -101,6 +101,7 @@ public class AddVehicleFragment extends Fragment {
     private AutoCompleteTextView autoCompleteNumber;
     private Dialog mUserAlertDialog;
     Boolean internetstatus;
+    public Vehicle vehicle;
 
     public interface  AddVehicleFragmentInterface {
         public void goToAddVehicle ();
@@ -110,7 +111,7 @@ public class AddVehicleFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
 
         final View view = inflater.inflate(R.layout.fragment_add_vehicle, container, false);
 
@@ -124,6 +125,7 @@ public class AddVehicleFragment extends Fragment {
         motorCycleCardView=view.findViewById(R.id.bikeCardViewId);
         carBlueBookImageView=view.findViewById(R.id.carBlueBookId);
         saveButton=view.findViewById(R.id.saveButtonId);
+        addnew = view.findViewById(R.id.addnew);
         radioGroup=view.findViewById(R.id.radioGroupId);
         motorCycleBlueBookImageView=view.findViewById(R.id.motorcycleBlueBookId);
         blueBookImageShow=view.findViewById(R.id.blueBookImageShowId);
@@ -133,7 +135,7 @@ public class AddVehicleFragment extends Fragment {
         progressDialog = new ProgressDialog(getActivity());
         autoCompleteNumber.setDropDownBackgroundDrawable(new ColorDrawable(getActivity().getApplicationContext().getResources().getColor(R.color.colorPrimary)));
 
-        ArrayAdapter adapter = new
+        final ArrayAdapter adapter = new
                 ArrayAdapter(getActivity().getApplicationContext(),android.R.layout.simple_list_item_1,rNumberFormat);
         autoCompleteNumber.setAdapter(adapter);
         autoCompleteNumber.setThreshold(1);
@@ -168,7 +170,7 @@ public class AddVehicleFragment extends Fragment {
                                 Picasso.get().load(vehicle.getmBlueBookImage()).placeholder(R.drawable.car_red).error(R.drawable.car_red).into(carBlueBookImageView);
                             }
 
-                            carNumber.setText(vehicle.getmVehicleNumber()+"\n"+vehicle.getmVehicleType());
+                            carNumber.setText(vehicle.getmVehicleNumberPrefix()+" "+vehicle.getmVehicleNumber()+"\n"+vehicle.getmVehicleType());
                         }
                         else if (vehicle.getmVehicleType().equals(VehicleType.MotorCycle))
                         {
@@ -181,7 +183,7 @@ public class AddVehicleFragment extends Fragment {
                             else {
                                 Picasso.get().load(vehicle.getmBlueBookImage()).placeholder(R.drawable.bike_red).error(R.drawable.bike_red).into(motorCycleBlueBookImageView);
                             }
-                            motorCycleNumber.setText(vehicle.getmVehicleNumber()+"\n"+vehicle.getmVehicleType());
+                            motorCycleNumber.setText(vehicle.getmVehicleNumberPrefix()+" "+vehicle.getmVehicleNumber()+"\n"+vehicle.getmVehicleType());
                         }
                     }
                 }
@@ -209,14 +211,16 @@ public class AddVehicleFragment extends Fragment {
                 internetstatus = isNetworkAvailable();
                 if (internetstatus==true){
                     if (count<2){
+                        vehicleNumberPrefix = autoCompleteNumber.getText().toString();
                         vehicleNumber=vehicleNumberInpur.getText().toString();
                         if (carRadioButton.isChecked())
                             vehicleType= VehicleType.Car;
                         if (motorCycleRadioButton.isChecked())
                             vehicleType=VehicleType.MotorCycle;
-                        if (vehicleNumber==null||vehicleNumber.equals(null) || vehicleNumber.isEmpty()){
+                        if (vehicleNumber==null||vehicleNumber.equals(null) || vehicleNumber.isEmpty() || vehicleNumberPrefix == null||vehicleNumberPrefix.isEmpty()){
                             Toast.makeText(getContext().getApplicationContext(), "Add vehicle number", Toast.LENGTH_SHORT).show();
-                        }/*
+                        }
+                        /*
                     else if (mParkPlacePhotoUrl.equals(null)||mParkPlacePhotoUrl==null || mParkPlacePhotoUrl.isEmpty()){
                         Toast.makeText(getActivity().getApplicationContext(), "Add a Blue Book Image", Toast.LENGTH_SHORT).show();
                     }*/
@@ -241,7 +245,43 @@ public class AddVehicleFragment extends Fragment {
             }
         });
 
+            addnew.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
+                  autoCompleteNumber.getText().clear();
+                  autoCompleteNumber.requestFocus();
+                    vehicleNumberInpur.getText().clear();
+
+                    if(car.size()>0){
+                        carRadioButton.setVisibility(View.GONE);
+                        microbusTV.setVisibility(View.GONE);
+                        carRadioButton.setChecked(false);
+
+                    }else {
+                        carRadioButton.setVisibility(View.VISIBLE);
+                        microbusTV.setVisibility(View.VISIBLE);
+
+                        blueBookImageShow.setImageResource(R.drawable.car_red);
+                        carRadioButton.setChecked(false);
+
+
+
+
+                    }
+                    if(motorByke.size()>0){
+                        motorCycleRadioButton.setVisibility(View.GONE);
+                        motorCycleRadioButton.setChecked(false);
+
+
+                    }else {
+                        motorCycleRadioButton.setVisibility(View.VISIBLE);
+                        blueBookImageShow.setImageResource(R.drawable.bike_red);
+                        motorCycleRadioButton.setChecked(false);
+
+                    }
+                }
+            });
 
         carCardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -255,6 +295,9 @@ public class AddVehicleFragment extends Fragment {
                 carRadioButton.setChecked(true);
                 mParkPlacePhotoUrl=car.get(0).getmBlueBookImage();
                 vehicleNumberInpur.setText(car.get(0).getmVehicleNumber());
+                autoCompleteNumber.setText(car.get(0).getmVehicleNumberPrefix());
+                vehicleNumberInpur.requestFocus();
+                vehicleNumberInpur.setSelection(vehicleNumberInpur.getText().length());
 
                 if (car.get(0).getmBlueBookImage()!=null && !car.get(0).getmBlueBookImage().equals(null) && !car.get(0).getmBlueBookImage().isEmpty()){
                     Picasso.get().load(car.get(0).getmBlueBookImage()).placeholder(R.drawable.car_red).error(R.drawable.car).into(blueBookImageShow);
@@ -274,11 +317,14 @@ public class AddVehicleFragment extends Fragment {
                 count=0;
                 currentVehicleId=motorBikeVehicleId;
                 vehicleNumberInpur.setText(motorByke.get(0).getmVehicleNumber());
+                autoCompleteNumber.setText(motorByke.get(0).getmVehicleNumberPrefix());
                 motorCycleRadioButton.setVisibility(View.VISIBLE);
                 carRadioButton.setVisibility(View.GONE);
                 microbusTV.setVisibility(View.GONE);
-                mParkPlacePhotoUrl=motorByke.get(0).getmBlueBookImage();
                 motorCycleRadioButton.setChecked(true);
+                vehicleNumberInpur.requestFocus();
+                vehicleNumberInpur.setSelection(vehicleNumberInpur.getText().length());
+                mParkPlacePhotoUrl=motorByke.get(0).getmBlueBookImage();
                 if (motorByke.get(0).getmBlueBookImage()!=null && !motorByke.get(0).getmBlueBookImage().equals(null) && !motorByke.get(0).getmBlueBookImage().isEmpty()){
                     Picasso.get().load(motorByke.get(0).getmBlueBookImage()).placeholder(R.drawable.bike_red).error(R.drawable.bike_red).into(blueBookImageShow);
                 }
@@ -302,6 +348,7 @@ public class AddVehicleFragment extends Fragment {
             addVehicleDB=FirebaseDatabase.getInstance().getReference("ConsumerList/"+mUserId+"/Vehicle/"+currentVehicleId);
             HashMap<String, String> newVehicle = new HashMap<>();
 
+            newVehicle.put("mVehicleNumberPrefix",vehicleNumberPrefix);
             newVehicle.put("mVehicleNumber", vehicleNumber);
             newVehicle.put("mVehicleType", vehicleType);
             newVehicle.put("mBlueBookImage", mParkPlacePhotoUrl);
@@ -328,6 +375,7 @@ public class AddVehicleFragment extends Fragment {
             addVehicleDB=FirebaseDatabase.getInstance().getReference("ConsumerList/"+mUserId+"/Vehicle");
             HashMap<String, String> newVehicle = new HashMap<>();
 
+            newVehicle.put("mVehicleNumberPrefix",vehicleNumberPrefix);
             newVehicle.put("mVehicleNumber", vehicleNumber);
             newVehicle.put("mVehicleType", vehicleType);
             newVehicle.put("mBlueBookImage", mParkPlacePhotoUrl);
@@ -357,13 +405,13 @@ public class AddVehicleFragment extends Fragment {
     private void showMotorCycleDetails() {
 
         motorCycleBlueBookImageView.setImageBitmap(mBitmapImage4);
-        motorCycleNumber.setText(vehicleNumber+"\n"+vehicleType);
+        motorCycleNumber.setText(vehicleNumberPrefix+"\n"+vehicleNumber+"\n"+vehicleType);
     }
 
     private void showCarDetails() {
 
         carBlueBookImageView.setImageBitmap(mBitmapImage4);
-        carNumber.setText(vehicleNumber+"\n"+vehicleType);
+        carNumber.setText(vehicleNumberPrefix+"\n"+vehicleNumber+"\n"+vehicleType);
     }
 
 
