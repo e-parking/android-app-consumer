@@ -218,21 +218,18 @@ public class SignUpActivity extends AppCompatActivity {
         mProviderPhone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(SignUpActivity.this, "Sorry, Phone number can not be changed.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignUpActivity.this, "Sorry,Phone number can not be changed.", Toast.LENGTH_SHORT).show();
             }
         });
 
 
     }
 
-
-
-
     public void updateProfile()
     {
         mFirebaseUserInformation  = mFirebaseInstance.getReference("ConsumerList/"+mConsumerID);
         progressDialog.setTitle("Please wait");
-        progressDialog.setMessage("We are loading your profile information...");
+        progressDialog.setMessage("We are updateing your profile information...");
         progressDialog.show();
 
         Date todayDate = new Date();

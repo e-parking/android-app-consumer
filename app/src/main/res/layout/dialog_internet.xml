@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activityCardView"
     android:layout_width="match_parent"
-    android:layout_height="160dp"
+    android:layout_height="180dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="5dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="9dp"
     android:clickable="true"
-    app:cardBackgroundColor="@color/CardColor">
+    app:cardBackgroundColor="@color/dialog_box_color">
 
 
     <LinearLayout
@@ -32,65 +32,36 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:gravity="center"
             android:fontFamily="@font/roboto_regular"
             android:text="No internet connection"
             android:textSize="16sp"
             android:textStyle="bold" />
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
+        <TextView
+            android:id="@+id/textView3"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:maxLines="2"
+            android:fontFamily="@font/roboto_regular"
+            android:text="You are offline. Check your internet connection and refresh." />
 
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_weight=".4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:maxLines="3"
-                    android:minLines="3"
-                    android:fontFamily="@font/roboto_regular"
-                    android:text="You are offline, Check your internet connection and retry." />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/mTurnOnInternet"
-                android:layout_weight=".6"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|bottom"
-                android:layout_marginBottom="8dp"
-                android:gravity="right|bottom"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Refresh"
-                android:maxLines="1"
-                android:textAllCaps="true"
-                android:textColor="@color/gps_red"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-
-        </LinearLayout>
-
-
-
-
-
-        <!--  <android.support.constraint.Guideline
-              android:id="@+id/guideline"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              app:layout_constraintGuide_begin="20dp" />-->
+        <TextView
+            android:id="@+id/mTurnOnInternet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/roboto_regular"
+            android:text="Refresh"
+            android:maxLines="1"
+            android:textAllCaps="true"
+            android:textColor="@color/gps_red"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
+
 
 </android.support.v7.widget.CardView>
