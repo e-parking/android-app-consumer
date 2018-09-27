@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements
         , ActivityFragment.ActivityFragmentInterface
         , PaymentFragment.PaymentFragmentInterface
         ,AddVehicleFragment.AddVehicleFragmentInterface {
+    private static final int LONG_DELAY = 2000;
 
     private static final String DISTANCE_BASE_URL = "https://maps.googleapis.com/maps/api/directions/";
     private DirectionService directionService;
@@ -1322,11 +1323,19 @@ public class MainActivity extends AppCompatActivity implements
             goToActivity();
             vehicleSelection.setVisibility(View.GONE);
 
+
         } else if (id == R.id.nav_map) {
-            innitializeMap();
-            bikeImage.setImageResource(R.drawable.bike_white);
-            carImage.setImageResource(R.drawable.car_red);
-            vehicleSelection.setVisibility(View.VISIBLE);
+            mInternetStatus = isNetworkAvailable();
+            if (mInternetStatus ==  true){
+                innitializeMap();
+                bikeImage.setImageResource(R.drawable.bike_white);
+                carImage.setImageResource(R.drawable.car_red);
+                vehicleSelection.setVisibility(View.VISIBLE);
+            }
+            else {
+                showInternetDialogBox();
+            }
+
 
 
         }else if (id == R.id.nav_add_vehicle) {
@@ -1340,11 +1349,13 @@ public class MainActivity extends AppCompatActivity implements
 
         } else if (id == R.id.nav_logout) {
             mLoginPreference.setStatus(false);
-            signOut();
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-            finish();
-            startActivity(intent);
+
+                signOut();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                finish();
+                startActivity(intent);
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

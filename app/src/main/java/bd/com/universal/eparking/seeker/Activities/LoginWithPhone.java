@@ -1,7 +1,10 @@
 package bd.com.universal.eparking.seeker.Activities;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -72,6 +75,7 @@ public class LoginWithPhone extends AppCompatActivity {
     Boolean status = false;
     Boolean isProvider = false;
     private String phoneNumber = "";
+    Boolean internetstatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -312,58 +316,74 @@ public class LoginWithPhone extends AppCompatActivity {
     {
 
         status = false;
-        mFirebaseRefConsumer.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+        internetstatus = isNetworkAvailable();
+        if (internetstatus==true){
+            mFirebaseRefConsumer.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
 
-                for(DataSnapshot data:dataSnapshot.getChildren()){
-                    Consumer consumer = data.getValue(Consumer.class);
-                    System.out.println(consumer);
-                    consumerList.add(consumer);
+                    for(DataSnapshot data:dataSnapshot.getChildren()){
+                        Consumer consumer = data.getValue(Consumer.class);
+                        System.out.println(consumer);
+                        consumerList.add(consumer);
 
-                    if (consumer!=null && consumer.getmPhone()!=null)
-                    if (consumer.getmPhone().contains(phoneNumber) || consumer.getmPhone().equals("+88"+phoneNumber) )
-                    {
-                        //Toast.makeText(LoginWithPhone.this, "Match Found", Toast.LENGTH_SHORT).show();
-                        status = true;
-                        break;
+                        if (consumer!=null && consumer.getmPhone()!=null)
+                            if (consumer.getmPhone().contains(phoneNumber) || consumer.getmPhone().equals("+88"+phoneNumber) )
+                            {
+                                //Toast.makeText(LoginWithPhone.this, "Match Found", Toast.LENGTH_SHORT).show();
+                                status = true;
+                                break;
+                            }
                     }
+
+                    if (status)
+                    {
+                        fabProgressCircle.hide();
+
+                            Intent intent = new Intent(LoginWithPhone.this, VerifyPhoneActivity.class);
+                            intent.putExtra("user","old_user");
+                            intent.putExtra("mobile",phoneNumber);
+                            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(LoginWithPhone.this);
+                            startActivity(intent, options.toBundle());
+
+
+                    }else
+                    {
+                        fabProgressCircle.hide();
+                        Intent intent = new Intent(LoginWithPhone.this, VerifyPhoneActivity.class);
+                        intent.putExtra("mobile", phoneNumber);
+                        intent.putExtra("user", "new_user");
+                        startActivity(intent);
+                    }
+
+
+
                 }
 
-                if (status)
-                {
-                    fabProgressCircle.hide();
-                    Intent intent = new Intent(LoginWithPhone.this, VerifyPhoneActivity.class);
-                    intent.putExtra("user","old_user");
-                    intent.putExtra("mobile",phoneNumber);
-                    ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(LoginWithPhone.this);
-                    startActivity(intent, options.toBundle());
-                }else
-                {
-                    fabProgressCircle.hide();
-                    Intent intent = new Intent(LoginWithPhone.this, VerifyPhoneActivity.class);
-                    intent.putExtra("mobile", phoneNumber);
-                    intent.putExtra("user", "new_user");
-                    startActivity(intent);
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Toast.makeText(LoginWithPhone.this, "We can't read your data", Toast.LENGTH_SHORT).show();
                 }
+            });
+        }
+        else {
+            showInternetDialogBox();
+        }
 
-
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(LoginWithPhone.this, "We can't read your data", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 
     public void showInternetDialogBox ()
     {
         mUserAlertDialog = new Dialog(this);
         mUserAlertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mUserAlertDialog.setContentView(R.layout.dialog_alert);
+        mUserAlertDialog.setContentView(R.layout.dialog_internet);
         mUserAlertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         mUserAlertDialog.setCancelable(false);
 
@@ -373,6 +393,10 @@ public class LoginWithPhone extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mUserAlertDialog.dismiss();
+                Intent intent = new Intent(getApplicationContext(),LoginWithPhone.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+
             }
         });
         mUserAlertDialog.show();

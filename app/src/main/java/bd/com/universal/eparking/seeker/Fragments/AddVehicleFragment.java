@@ -3,18 +3,23 @@ package bd.com.universal.eparking.seeker.Fragments;
 import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.util.Base64;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +48,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import bd.com.universal.eparking.seeker.Activities.LoginWithPhone;
 import bd.com.universal.eparking.seeker.OtherClasses.VehicleType;
 import bd.com.universal.eparking.seeker.PoJoClasses.Vehicle;
 import bd.com.universal.eparking.seeker.R;
@@ -92,6 +99,8 @@ public class AddVehicleFragment extends Fragment {
     private LinearLayout linearLayout;
     private String[] rNumberFormat={"Dhaka Metro","Chotta Metro"};
     private AutoCompleteTextView autoCompleteNumber;
+    private Dialog mUserAlertDialog;
+    Boolean internetstatus;
 
     public interface  AddVehicleFragmentInterface {
         public void goToAddVehicle ();
@@ -197,29 +206,36 @@ public class AddVehicleFragment extends Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (count<2){
-                    vehicleNumber=vehicleNumberInpur.getText().toString();
-                    if (carRadioButton.isChecked())
-                        vehicleType= VehicleType.Car;
-                    if (motorCycleRadioButton.isChecked())
-                        vehicleType=VehicleType.MotorCycle;
-                    if (vehicleNumber==null||vehicleNumber.equals(null) || vehicleNumber.isEmpty()){
-                        Toast.makeText(getContext().getApplicationContext(), "Add vehicle number", Toast.LENGTH_SHORT).show();
-                    }/*
+                internetstatus = isNetworkAvailable();
+                if (internetstatus==true){
+                    if (count<2){
+                        vehicleNumber=vehicleNumberInpur.getText().toString();
+                        if (carRadioButton.isChecked())
+                            vehicleType= VehicleType.Car;
+                        if (motorCycleRadioButton.isChecked())
+                            vehicleType=VehicleType.MotorCycle;
+                        if (vehicleNumber==null||vehicleNumber.equals(null) || vehicleNumber.isEmpty()){
+                            Toast.makeText(getContext().getApplicationContext(), "Add vehicle number", Toast.LENGTH_SHORT).show();
+                        }/*
                     else if (mParkPlacePhotoUrl.equals(null)||mParkPlacePhotoUrl==null || mParkPlacePhotoUrl.isEmpty()){
                         Toast.makeText(getActivity().getApplicationContext(), "Add a Blue Book Image", Toast.LENGTH_SHORT).show();
                     }*/
-                    else if (vehicleType==null||vehicleType.equals(null)||vehicleType.isEmpty()){
-                        Toast.makeText(getActivity().getApplicationContext(), "Select vehicle type", Toast.LENGTH_SHORT).show();
+                        else if (vehicleType==null||vehicleType.equals(null)||vehicleType.isEmpty()){
+                            Toast.makeText(getActivity().getApplicationContext(), "Select vehicle type", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+
+                            UploadVehicleToFirebase();
+                        }
                     }
                     else {
-
-                        UploadVehicleToFirebase();
+                        Toast.makeText(getActivity().getApplicationContext(), "You cann't add more then two vehicle", Toast.LENGTH_SHORT).show();
                     }
                 }
-                else {
-                    Toast.makeText(getActivity().getApplicationContext(), "You cann't add more then two vehicle", Toast.LENGTH_SHORT).show();
+                else{
+                    showInternetDialogBox();
                 }
+
 
 
             }
@@ -480,5 +496,34 @@ public class AddVehicleFragment extends Fragment {
             }
         }
     }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager)getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public void showInternetDialogBox ()
+    {
+        mUserAlertDialog = new Dialog(getActivity());
+        mUserAlertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mUserAlertDialog.setContentView(R.layout.dialog_internet);
+        mUserAlertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        mUserAlertDialog.setCancelable(false);
+
+        TextView mRefresh = mUserAlertDialog.findViewById(R.id.mTurnOnInternet);
+
+        mRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mUserAlertDialog.dismiss();
+
+            }
+        });
+        mUserAlertDialog.show();
+    }
+
 
 }
