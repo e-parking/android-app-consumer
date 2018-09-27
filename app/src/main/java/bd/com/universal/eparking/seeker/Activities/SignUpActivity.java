@@ -2,9 +2,13 @@ package bd.com.universal.eparking.seeker.Activities;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -12,10 +16,12 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -96,6 +102,9 @@ public class SignUpActivity extends AppCompatActivity {
     private int year,day,month;
 
     private Uri profileUri,documentUri1,documentUri2,documentUri3;
+
+    private Dialog mUserAlertDialog;
+    Boolean internetstatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,7 +204,14 @@ public class SignUpActivity extends AppCompatActivity {
         mProfileUpdateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateProfile();
+                internetstatus = isNetworkAvailable();
+                if (internetstatus == true){
+                    updateProfile();
+                }
+                else {
+                    showInternetDialogBox();
+                }
+
             }
         });
 
@@ -215,8 +231,8 @@ public class SignUpActivity extends AppCompatActivity {
     public void updateProfile()
     {
         mFirebaseUserInformation  = mFirebaseInstance.getReference("ConsumerList/"+mConsumerID);
-        progressDialog.setTitle("Please Wait");
-        progressDialog.setMessage("We are Updating your profile...");
+        progressDialog.setTitle("Please wait");
+        progressDialog.setMessage("We are loading your profile information...");
         progressDialog.show();
 
         Date todayDate = new Date();
@@ -628,6 +644,32 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
 
+    public void showInternetDialogBox ()
+    {
+        mUserAlertDialog = new Dialog(this);
+        mUserAlertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        mUserAlertDialog.setContentView(R.layout.dialog_internet);
+        mUserAlertDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        mUserAlertDialog.setCancelable(false);
+
+        TextView mRefresh = mUserAlertDialog.findViewById(R.id.mTurnOnInternet);
+
+        mRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mUserAlertDialog.dismiss();
+
+            }
+        });
+        mUserAlertDialog.show();
+    }
 
 }
