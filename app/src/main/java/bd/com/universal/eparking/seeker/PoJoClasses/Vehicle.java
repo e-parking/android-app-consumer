@@ -5,6 +5,7 @@ package bd.com.universal.eparking.seeker.PoJoClasses;
  */
 
 public class Vehicle {
+    private String mVehicleNumberPrefix;
     private String mVehicleNumber;
     private String mVehicleType;
     private String mBlueBookImage;
@@ -13,10 +14,20 @@ public class Vehicle {
 
     }
 
-    public Vehicle(String mVehicleNumber, String mVehicleType, String mBlueBookImage) {
+    public Vehicle(String mVehicleNumberPrefix,String mVehicleNumber, String mVehicleType, String mBlueBookImage) {
+        this.mVehicleNumberPrefix = mVehicleNumberPrefix;
         this.mVehicleNumber = mVehicleNumber;
         this.mVehicleType = mVehicleType;
         this.mBlueBookImage = mBlueBookImage;
+    }
+
+
+    public String getmVehicleNumberPrefix() {
+        return mVehicleNumberPrefix;
+    }
+
+    public void setmVehicleNumberPrefix(String mVehicleNumberPrefix) {
+        this.mVehicleNumberPrefix = mVehicleNumberPrefix;
     }
 
     public String getmVehicleNumber() {

@@ -482,6 +482,9 @@ public class MainActivity extends AppCompatActivity implements
                                 || data.child("mStatus").getValue().toString().equals(Status.STARTED)) {
                             isReuestPending = true;
                         }
+                        else{
+                            isReuestPending = false;
+                        }
                     }
                 }
             }
@@ -839,7 +842,7 @@ public class MainActivity extends AppCompatActivity implements
                             mRequest = new Request(mRequestID, mSenderUID, TempHolder.mConsumer.getmName(),
                                     TempHolder.mConsumer.getmPhone(),
                                     TempHolder.mConsumer.getmPhoto(),
-                                    vehicle.getmVehicleNumber());
+                                    vehicle.getmVehicleNumberPrefix()+" "+ vehicle.getmVehicleNumber());
                             Consumer consumer = TempHolder.mConsumer;
 
                             ParkingRequest providerRequest = new ParkingRequest(consumer.getmComsumerID(),
@@ -849,7 +852,7 @@ public class MainActivity extends AppCompatActivity implements
                                     mRequestID,
                                     consumer.getmName(),
                                     consumer.getmPhone(),
-                                    vehicle.getmVehicleNumber(),
+                                    vehicle.getmVehicleNumberPrefix()+" "+ vehicle.getmVehicleNumber(),
                                     provider.getmName(),
                                     provider.getmPhone(),
                                     parkPlace.getmAddress(),
@@ -881,7 +884,7 @@ public class MainActivity extends AppCompatActivity implements
                             //for notification
                             FirebaseFirestore mFireStore = FirebaseFirestore.getInstance();
                             Map<String, Object> notificationMap = new HashMap<>();
-                            notificationMap.put("message", consumer.getmName() + " wants to park " + vehicle.getmVehicleType() + " (" + vehicle.getmVehicleNumber() + ")");
+                            notificationMap.put("message", consumer.getmName() + " wants to park " + vehicle.getmVehicleType() + " (" + vehicle.getmVehicleNumberPrefix()+" "+ vehicle.getmVehicleNumber() + ")");
                             notificationMap.put("consumer", mConsumerID);
 
                             mFireStore.collection("Users").document(provider.getmProviderID()).collection("Notifications").add(notificationMap);
@@ -918,7 +921,7 @@ public class MainActivity extends AppCompatActivity implements
                             mRequest = new Request(mRequestID, mSenderUID, TempHolder.mConsumer.getmName(),
                                     TempHolder.mConsumer.getmPhone(),
                                     TempHolder.mConsumer.getmPhoto(),
-                                    "DMC 5643 TA");
+                                    vehicle.getmVehicleNumberPrefix()+" "+ vehicle.getmVehicleNumber());
                             Consumer consumer = TempHolder.mConsumer;
 
                             ParkingRequest providerRequest = new ParkingRequest(consumer.getmComsumerID(),
@@ -928,7 +931,7 @@ public class MainActivity extends AppCompatActivity implements
                                     mRequestID,
                                     consumer.getmName(),
                                     consumer.getmPhone(),
-                                    vehicle.getmVehicleNumber(),
+                                    vehicle.getmVehicleNumberPrefix()+" "+ vehicle.getmVehicleNumber(),
                                     provider.getmName(),
                                     provider.getmPhone(),
                                     parkPlace.getmAddress(),
@@ -959,7 +962,7 @@ public class MainActivity extends AppCompatActivity implements
                             //for notification
                             FirebaseFirestore mFireStore = FirebaseFirestore.getInstance();
                             Map<String, Object> notificationMap = new HashMap<>();
-                            notificationMap.put("message", consumer.getmName() + " wants to park " + vehicle.getmVehicleType() + " (" + vehicle.getmVehicleNumber() + ")");
+                            notificationMap.put("message", consumer.getmName() + " wants to park " + vehicle.getmVehicleType() + " (" + vehicle.getmVehicleNumberPrefix()+" "+ vehicle.getmVehicleNumber() + ")");
                             notificationMap.put("consumer", mConsumerID);
 
                             mFireStore.collection("Users").document(provider.getmProviderID()).collection("Notifications").add(notificationMap);
