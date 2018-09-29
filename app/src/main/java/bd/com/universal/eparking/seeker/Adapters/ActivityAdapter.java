@@ -206,7 +206,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
                                 parkPlaceRequestDB.child("mStatus").setValue(Status.CANCELLED,new DatabaseReference.CompletionListener() {
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                                        Toast ToastMessage = Toast.makeText(context," "+Status.CANCELLED+" Successfully ! ",Toast.LENGTH_SHORT);
+                                        Toast ToastMessage = Toast.makeText(context,"  "+Status.CANCELLED+" Successfully !  ",Toast.LENGTH_SHORT);
                                         View toastView = ToastMessage.getView();
                                         toastView.setBackgroundResource(R.drawable.custom_toast);
                                         ToastMessage.show();
@@ -259,7 +259,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
             @Override
             public void onClick(View v) {
 
-                Toast ToastMessage = Toast.makeText(context,"  You are calling "+number+" ",Toast.LENGTH_SHORT);
+                Toast ToastMessage = Toast.makeText(context,"  You are calling "+number+"  ",Toast.LENGTH_SHORT);
                 View toastView = ToastMessage.getView();
                 toastView.setBackgroundResource(R.drawable.custom_toast);
                 ToastMessage.show();
@@ -300,7 +300,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
 
                                         //Toast.makeText(context, Status.ENDED+" service", Toast.LENGTH_LONG).show();
 
-                                        Toast ToastMessage = Toast.makeText(context,"  "+Status.ENDED+" service",Toast.LENGTH_SHORT);
+                                        Toast ToastMessage = Toast.makeText(context,"  "+Status.ENDED+" service  ",Toast.LENGTH_SHORT);
                                         View toastView = ToastMessage.getView();
                                         toastView.setBackgroundResource(R.drawable.custom_toast);
                                         ToastMessage.show();
@@ -336,11 +336,6 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
                                 notificationMap.put("consumer",mConsumerID);
 
                                 mFireStore.collection("Users").document(model.getmProviderID()).collection("Notifications").add(notificationMap);
-
-
-
-
-
 
                                 break;
 
