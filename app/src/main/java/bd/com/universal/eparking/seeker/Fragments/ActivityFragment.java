@@ -126,7 +126,7 @@ public class ActivityFragment extends Fragment {
             mInfoText.setVisibility(View.VISIBLE);
 
         }
-        Collections.reverse(requestList);
+        //Collections.reverse(requestList);
         activityAdapter = new ActivityAdapter(requestList,getActivity());
         mActivityRecyclerView.setAdapter(activityAdapter);
     }

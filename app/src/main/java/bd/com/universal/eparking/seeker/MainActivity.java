@@ -23,6 +23,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -280,7 +281,6 @@ public class MainActivity extends AppCompatActivity implements
         vehicleSelection = findViewById(R.id.vehicleSelection);
         bikeImage = findViewById(R.id.bikeImage);
         carImage = findViewById(R.id.carImage);
-
 
         //get current date
         Date date = Calendar.getInstance().getTime();
@@ -845,6 +845,8 @@ public class MainActivity extends AppCompatActivity implements
                                     vehicle.getmVehicleNumberPrefix()+" "+ vehicle.getmVehicleNumber());
                             Consumer consumer = TempHolder.mConsumer;
 
+                            long time=System.currentTimeMillis()*-1;
+
                             ParkingRequest providerRequest = new ParkingRequest(consumer.getmComsumerID(),
                                     provider.getmProviderID(),
                                     parkPlace.getmParkPlaceID(),
@@ -865,7 +867,7 @@ public class MainActivity extends AppCompatActivity implements
                                     0,
                                     0,
                                     0,
-                                    System.currentTimeMillis());
+                                     time);
 
 
                             //for update parking current status available or not
