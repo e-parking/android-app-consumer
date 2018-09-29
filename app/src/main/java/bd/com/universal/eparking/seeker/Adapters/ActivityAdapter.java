@@ -96,9 +96,6 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.model_activities, parent, false);
 
-
-
-
         return new Viewholder(itemView);
 
     }
@@ -180,41 +177,77 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
 
 
 
+        holder.mDirection.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast ToastMessage = Toast.makeText(context," Direction is not available right now",Toast.LENGTH_LONG);
+                View toastView = ToastMessage.getView();
+                toastView.setBackgroundResource(R.drawable.custom_toast);
+                ToastMessage.show();
+            }
+        });
+
+
         holder.mCancleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference parkPlaceRequestDB=mFirebaseInstance.getReference("ProviderList/"+model.getmProviderID()+"/ParkPlaceList/" + model.getmParkPlaceID()+"/Request/"+model.getmRequestID());
-                DatabaseReference consumerRequestDB=mFirebaseInstance.getReference("ConsumerList/"+mConsumerID+"/Request/"+model.getmRequestID());
-                DatabaseReference parkPlaceDB=mFirebaseInstance.getReference("ProviderList/"+model.getmProviderID()+"/ParkPlaceList/" + model.getmParkPlaceID());
 
-                parkPlaceRequestDB.child("mStatus").setValue(Status.CANCELLED,new DatabaseReference.CompletionListener() {
+                DialogInterface.OnClickListener onClickListener=new DialogInterface.OnClickListener() {
                     @Override
-                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        Toast ToastMessage = Toast.makeText(context," "+Status.CANCELLED+" Successfully ! ",Toast.LENGTH_SHORT);
-                        View toastView = ToastMessage.getView();
-                        toastView.setBackgroundResource(R.drawable.custom_toast);
-                        ToastMessage.show();
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+
+                                DatabaseReference parkPlaceRequestDB=mFirebaseInstance.getReference("ProviderList/"+model.getmProviderID()+"/ParkPlaceList/" + model.getmParkPlaceID()+"/Request/"+model.getmRequestID());
+                                DatabaseReference consumerRequestDB=mFirebaseInstance.getReference("ConsumerList/"+mConsumerID+"/Request/"+model.getmRequestID());
+                                DatabaseReference parkPlaceDB=mFirebaseInstance.getReference("ProviderList/"+model.getmProviderID()+"/ParkPlaceList/" + model.getmParkPlaceID());
+
+                                parkPlaceRequestDB.child("mStatus").setValue(Status.CANCELLED,new DatabaseReference.CompletionListener() {
+                                    @Override
+                                    public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                                        Toast ToastMessage = Toast.makeText(context," "+Status.CANCELLED+" Successfully ! ",Toast.LENGTH_SHORT);
+                                        View toastView = ToastMessage.getView();
+                                        toastView.setBackgroundResource(R.drawable.custom_toast);
+                                        ToastMessage.show();
 
 
 
-                        // Toast.makeText(context, Status.CANCELLED+" Successfully !", Toast.LENGTH_LONG).show();
+                                        // Toast.makeText(context, Status.CANCELLED+" Successfully !", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                                consumerRequestDB.child("mStatus").setValue(Status.CANCELLED);
+                                parkPlaceDB.child("mIsAvailable").setValue("true");
+
+                                holder.mStatus.setText(Status.CANCELLED);
+                                holder.mCancleButton.setEnabled(false);
+
+
+                                FirebaseFirestore mFireStore=FirebaseFirestore.getInstance();
+                                Map<String,Object> notificationMap=new HashMap<>();
+                                notificationMap.put("message",model.getmConsumerName()+" has Cancel request.");
+                                notificationMap.put("consumer",mConsumerID);
+
+                                mFireStore.collection("Users").document(model.getmProviderID()).collection("Notifications").add(notificationMap);
+
+
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                dialog.dismiss();
+                                break;
+                        }
                     }
-                });
-                consumerRequestDB.child("mStatus").setValue(Status.CANCELLED);
-                parkPlaceDB.child("mIsAvailable").setValue("true");
-
-                holder.mStatus.setText(Status.CANCELLED);
-                holder.mCancleButton.setEnabled(false);
+                };
 
 
-                FirebaseFirestore mFireStore=FirebaseFirestore.getInstance();
-                Map<String,Object> notificationMap=new HashMap<>();
-                notificationMap.put("message",model.getmConsumerName()+" has Cancel request.");
-                notificationMap.put("consumer",mConsumerID);
 
-                mFireStore.collection("Users").document(model.getmProviderID()).collection("Notifications").add(notificationMap);
 
+                AlertDialog.Builder builder=new AlertDialog.Builder(context);
+                builder.setTitle("Alert");
+                builder.setIcon(R.drawable.warning_red);
+                builder.setMessage("Do you want to cancel this parking request?").setPositiveButton("YES",onClickListener)
+                        .setNegativeButton("NO",onClickListener).show();
 
 
             }
@@ -226,7 +259,12 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
             @Override
             public void onClick(View v) {
 
-                Toast.makeText(context, "You are calling "+number, Toast.LENGTH_SHORT).show();
+                Toast ToastMessage = Toast.makeText(context,"  You are calling "+number+" ",Toast.LENGTH_SHORT);
+                View toastView = ToastMessage.getView();
+                toastView.setBackgroundResource(R.drawable.custom_toast);
+                ToastMessage.show();
+
+                //Toast.makeText(context, "You are calling "+number, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(Intent.ACTION_CALL);
                 intent.setData(Uri.parse("tel:" + number));
                 if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -260,7 +298,12 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
                                     @Override
                                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
 
-                                        Toast.makeText(context, Status.ENDED+" service", Toast.LENGTH_LONG).show();
+                                        //Toast.makeText(context, Status.ENDED+" service", Toast.LENGTH_LONG).show();
+
+                                        Toast ToastMessage = Toast.makeText(context,"  "+Status.ENDED+" service",Toast.LENGTH_SHORT);
+                                        View toastView = ToastMessage.getView();
+                                        toastView.setBackgroundResource(R.drawable.custom_toast);
+                                        ToastMessage.show();
 
 
                                         Intent intent=new Intent(context, PaymentActivity.class);
@@ -311,7 +354,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
 
                 AlertDialog.Builder builder=new AlertDialog.Builder(context);
                 builder.setTitle("Alert");
-                builder.setIcon(R.drawable.ic_add_alert_black_24dp);
+                builder.setIcon(R.drawable.warning_red);
                 builder.setMessage("Do you want to end this parking session?").setPositiveButton("YES",onClickListener)
                         .setNegativeButton("NO",onClickListener).show();
 

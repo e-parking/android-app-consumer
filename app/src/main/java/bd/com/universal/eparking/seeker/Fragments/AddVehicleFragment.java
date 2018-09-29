@@ -198,6 +198,12 @@ public class AddVehicleFragment extends Fragment {
         });
 
 
+
+        if (car.size()==0 && motorByke.size()==0 || car.size()==1 && motorByke.size()==1){
+            addnew.setVisibility(View.GONE);
+        }
+
+
         blueBookImageUpload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -250,7 +256,7 @@ public class AddVehicleFragment extends Fragment {
             addnew.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    edit=false;
                   autoCompleteNumber.getText().clear();
                   autoCompleteNumber.requestFocus();
                     vehicleNumberInpur.getText().clear();
@@ -263,24 +269,15 @@ public class AddVehicleFragment extends Fragment {
                     }else {
                         carRadioButton.setVisibility(View.VISIBLE);
                         microbusTV.setVisibility(View.VISIBLE);
-
                         blueBookImageShow.setImageResource(R.drawable.car_red);
-                        carRadioButton.setChecked(false);
-
-
-
-
                     }
                     if(motorByke.size()>0){
                         motorCycleRadioButton.setVisibility(View.GONE);
                         motorCycleRadioButton.setChecked(false);
 
-
                     }else {
                         motorCycleRadioButton.setVisibility(View.VISIBLE);
                         blueBookImageShow.setImageResource(R.drawable.bike_red);
-                        motorCycleRadioButton.setChecked(false);
-
                     }
                 }
             });
@@ -290,6 +287,10 @@ public class AddVehicleFragment extends Fragment {
             public void onClick(View v) {
                 edit=true;
                 count=0;
+                if (motorByke.size()==0){
+                    addnew.setVisibility(View.VISIBLE);
+                }
+                radioGroup.clearCheck();
                 currentVehicleId=carVehicleId;
                 carRadioButton.setVisibility(View.VISIBLE);
                 microbusTV.setVisibility(View.VISIBLE);
@@ -302,7 +303,7 @@ public class AddVehicleFragment extends Fragment {
                 vehicleNumberInpur.setSelection(vehicleNumberInpur.getText().length());
 
                 if (car.get(0).getmBlueBookImage()!=null && !car.get(0).getmBlueBookImage().equals(null) && !car.get(0).getmBlueBookImage().isEmpty()){
-                    Picasso.get().load(car.get(0).getmBlueBookImage()).placeholder(R.drawable.car_red).error(R.drawable.car).into(blueBookImageShow);
+                    Picasso.get().load(car.get(0).getmBlueBookImage()).placeholder(R.drawable.car_red).error(R.drawable.car_red).into(blueBookImageShow);
                 }
                 else {
                     blueBookImageShow.setImageResource(R.drawable.car_red);
@@ -317,6 +318,12 @@ public class AddVehicleFragment extends Fragment {
             public void onClick(View v) {
                 edit=true;
                 count=0;
+                radioGroup.clearCheck();
+
+                if (car.size()==0){
+                    addnew.setVisibility(View.VISIBLE);
+                }
+
                 currentVehicleId=motorBikeVehicleId;
                 vehicleNumberInpur.setText(motorByke.get(0).getmVehicleNumber());
                 autoCompleteNumber.setText(motorByke.get(0).getmVehicleNumberPrefix());
@@ -491,13 +498,17 @@ public class AddVehicleFragment extends Fragment {
                 mParkPlacePhotoUrl = taskSnapshot.getDownloadUrl().toString();
                 blueBookImageShow.setImageBitmap(mBitmapImage4);
                 //Picasso.get().load(mParkPlacePhotoUrl).into(blueBookImageShow);
-                Toast.makeText(getActivity(), "picture added successfully.", Toast.LENGTH_SHORT).show();
+                SuccessToast("picture added successfully.");
+
+                //Toast.makeText(getActivity(), "picture added successfully.", Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                ShowToast(e.getMessage());
+
+                //Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
             }
         });

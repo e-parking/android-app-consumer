@@ -74,8 +74,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name="bd.com.universal.eparking.seeker.Activities.TutorialActivity"
             android:parentActivityName="bd.com.universal.eparking.seeker.Activities.LoginActivity"></activity>
+
+        <service android:name="MyFirebaseNotificationService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>

@@ -238,7 +238,6 @@ public class MainActivity extends AppCompatActivity implements
         progressDialog.show();
 
 
-
         //-------------------------- Firebase ----------------------------------------
 
         mFirebaseInstance = FirebaseDatabase.getInstance();
@@ -846,7 +845,6 @@ public class MainActivity extends AppCompatActivity implements
                                     vehicle.getmVehicleNumberPrefix()+" "+ vehicle.getmVehicleNumber());
                             Consumer consumer = TempHolder.mConsumer;
 
-                            long time=System.currentTimeMillis()*-1;
 
                             ParkingRequest providerRequest = new ParkingRequest(consumer.getmComsumerID(),
                                     provider.getmProviderID(),
@@ -868,7 +866,7 @@ public class MainActivity extends AppCompatActivity implements
                                     0,
                                     0,
                                     0,
-                                     time);
+                                     System.currentTimeMillis()*-1);
 
 
                             //for update parking current status available or not
@@ -947,7 +945,7 @@ public class MainActivity extends AppCompatActivity implements
                                     0,
                                     0,
                                     0,
-                                    System.currentTimeMillis());
+                                    System.currentTimeMillis()*-1);
 
                             //for update parking current status available or not
                             providerRequestDb2 = mFirebaseInstance.getReference

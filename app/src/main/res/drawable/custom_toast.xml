@@ -6,7 +6,6 @@
         android:radius="5dp"/>
 
     <gradient
-
         android:centerColor="@color/dark_light_green"
         android:endColor="@color/dark_light_green"
         android:startColor="@color/dark_light_green"/>
