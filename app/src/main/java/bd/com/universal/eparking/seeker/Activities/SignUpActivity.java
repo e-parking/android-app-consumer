@@ -15,7 +15,10 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
@@ -298,7 +301,8 @@ public class SignUpActivity extends AppCompatActivity {
         mProviderAddress.setText("");
         mProviderNID.setText("");
         progressDialog.dismiss();
-        Toast.makeText(SignUpActivity.this, "Profile successfully updated",    Toast.LENGTH_SHORT).show();
+        ShowToast("Profile updated successfully");
+       // Toast.makeText(SignUpActivity.this, "Profile successfully updated",    Toast.LENGTH_SHORT).show();
         //startActivity(new Intent(SignUpActivity.this, MainActivity.class));
         finish();
 
@@ -668,5 +672,17 @@ public class SignUpActivity extends AppCompatActivity {
         });
         mUserAlertDialog.show();
     }
+    private void ShowToast(String text){
 
+        LayoutInflater layoutInflater=getLayoutInflater();
+        View layout=layoutInflater.inflate(R.layout.custom_toast_layout,(ViewGroup)findViewById(R.id.custom_toast_layout));
+        TextView textView=layout.findViewById(R.id.toast_text_id);
+        textView.setText(text);
+
+        Toast toast=new Toast(getApplicationContext());
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.BOTTOM,0,30);
+        toast.setView(layout);
+        toast.show();
+    }
 }

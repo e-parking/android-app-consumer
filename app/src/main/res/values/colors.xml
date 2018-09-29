@@ -12,6 +12,8 @@
     <color name="blue">#3c5a98</color>
     <color name="gray">#e9e9e9</color>
     <color name="trans">#59000000</color>
+    <color name="dark_light_green">#1faa00</color>
+    <color name="warning">#ff5722</color>
 
     <color name="dialog_box_color">#ffffff</color>
 

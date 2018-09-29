@@ -151,9 +151,8 @@
                         android:textStyle="bold"
                         android:layout_gravity="center_vertical"
                         android:text="End Now"
-                        android:visibility="gone"
-                        android:textColor="@color/white"
-                        android:background="@color/red"
+                        android:textColor="@color/black"
+                        android:background="@color/white"
                         />
 
                     <Button
@@ -165,11 +164,11 @@
                         android:layout_marginRight="10dp"
                         android:layout_marginLeft="5dp"
                         android:textStyle="bold"
+                        android:visibility="gone"
                         android:layout_gravity="center_vertical"
                         android:text="Cancel"
-                        android:visibility="gone"
-                        android:textColor="@color/white"
-                        android:background="@color/red"
+                        android:textColor="@color/black"
+                        android:background="@color/white"
                         />
 
 

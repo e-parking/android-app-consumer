@@ -238,6 +238,7 @@ public class MainActivity extends AppCompatActivity implements
         progressDialog.show();
 
 
+
         //-------------------------- Firebase ----------------------------------------
 
         mFirebaseInstance = FirebaseDatabase.getInstance();
@@ -460,7 +461,7 @@ public class MainActivity extends AppCompatActivity implements
 
         Toast toast=new Toast(getApplicationContext());
         toast.setDuration(Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.BOTTOM,0,0);
+        toast.setGravity(Gravity.BOTTOM,0,30);
         toast.setView(layout);
         toast.show();
     }
@@ -1013,7 +1014,8 @@ public class MainActivity extends AppCompatActivity implements
                     return;
                 } else{
                     vehicleSelection.setVisibility(View.GONE);
-                    Toast.makeText(MainActivity.this, "Request sent to parking owner ", Toast.LENGTH_SHORT).show();
+                    ShowToast("Request sent to parking owner ");
+                   // Toast.makeText(MainActivity.this, "Request sent to parking owner ", Toast.LENGTH_SHORT).show();
                 }
 
             }

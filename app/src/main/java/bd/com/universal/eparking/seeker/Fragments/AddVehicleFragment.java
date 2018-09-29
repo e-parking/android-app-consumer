@@ -63,6 +63,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class AddVehicleFragment extends Fragment {
@@ -233,7 +234,8 @@ public class AddVehicleFragment extends Fragment {
                         }
                     }
                     else {
-                        Toast.makeText(getActivity().getApplicationContext(), "You cann't add more then two vehicle", Toast.LENGTH_SHORT).show();
+                        ShowToast( "You cann't add more then two vehicle");
+                       // Toast.makeText(getActivity().getApplicationContext(), "You cann't add more then two vehicle", Toast.LENGTH_SHORT).show();
                     }
                 }
                 else{
@@ -357,8 +359,8 @@ public class AddVehicleFragment extends Fragment {
                 public void onComplete(@NonNull Task<Void> task) {
 
                     if (task.isSuccessful()) {
-
-                        Toast.makeText(getActivity().getApplicationContext(), "Vehicle added successfully", Toast.LENGTH_SHORT).show();
+                        SuccessToast("Vehicle added successfully");
+                      //  Toast.makeText(getActivity().getApplicationContext(), "Vehicle added successfully", Toast.LENGTH_SHORT).show();
                         if (vehicleType.equals(VehicleType.Car)){
                             carCardView.setVisibility(View.VISIBLE);
                             showCarDetails();
@@ -384,8 +386,8 @@ public class AddVehicleFragment extends Fragment {
                 public void onComplete(@NonNull Task<Void> task) {
 
                     if (task.isSuccessful()) {
-
-                        Toast.makeText(getActivity().getApplicationContext(), "Vehicle added successfully", Toast.LENGTH_SHORT).show();
+                        SuccessToast("Vehicle added successfully");
+                       // Toast.makeText(getActivity().getApplicationContext(), "Vehicle added successfully", Toast.LENGTH_SHORT).show();
                         if (vehicleType.equals(VehicleType.Car)){
                             carCardView.setVisibility(View.VISIBLE);
                             showCarDetails();
@@ -572,6 +574,32 @@ public class AddVehicleFragment extends Fragment {
         });
         mUserAlertDialog.show();
     }
+    private void ShowToast(String text){
 
+        LayoutInflater layoutInflater=getLayoutInflater();
+        View layout=layoutInflater.inflate(R.layout.error_custom_toast,(ViewGroup)getView().findViewById(R.id.error_toast_layout));
+        TextView textView=layout.findViewById(R.id.toast_text_id);
+        textView.setText(text);
+
+        Toast toast=new Toast(getActivity());
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.BOTTOM,0,30);
+        toast.setView(layout);
+        toast.show();
+    }
+
+    private void SuccessToast(String text){
+
+        LayoutInflater layoutInflater=getLayoutInflater();
+        View layout=layoutInflater.inflate(R.layout.custom_toast_layout,(ViewGroup)getView().findViewById(R.id.custom_toast_layout));
+        TextView textView=layout.findViewById(R.id.toast_text_id);
+        textView.setText(text);
+
+        Toast toast=new Toast(getActivity());
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.BOTTOM,0,30);
+        toast.setView(layout);
+        toast.show();
+    }
 
 }

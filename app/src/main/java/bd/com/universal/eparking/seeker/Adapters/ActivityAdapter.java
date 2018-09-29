@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,8 @@ import com.squareup.picasso.Picasso;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewholder> {
@@ -92,6 +95,10 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
     public Viewholder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.model_activities, parent, false);
+
+
+
+
         return new Viewholder(itemView);
 
     }
@@ -184,7 +191,14 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
                 parkPlaceRequestDB.child("mStatus").setValue(Status.CANCELLED,new DatabaseReference.CompletionListener() {
                     @Override
                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
-                        Toast.makeText(context, Status.CANCELLED+" Successfully !", Toast.LENGTH_LONG).show();
+                        Toast ToastMessage = Toast.makeText(context," "+Status.CANCELLED+" Successfully ! ",Toast.LENGTH_SHORT);
+                        View toastView = ToastMessage.getView();
+                        toastView.setBackgroundResource(R.drawable.custom_toast);
+                        ToastMessage.show();
+
+
+
+                        // Toast.makeText(context, Status.CANCELLED+" Successfully !", Toast.LENGTH_LONG).show();
                     }
                 });
                 consumerRequestDB.child("mStatus").setValue(Status.CANCELLED);
@@ -247,6 +261,8 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
                                     public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
 
                                         Toast.makeText(context, Status.ENDED+" service", Toast.LENGTH_LONG).show();
+
+
                                         Intent intent=new Intent(context, PaymentActivity.class);
                                         intent.putExtra("RequestId",model.getmRequestID());
                                         intent.putExtra("mProviderId",model.getmProviderID());
@@ -303,13 +319,20 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
             }
         });
 
-
-
-
-
-
     }
+   /* private void ShowToast(String text){
 
+        LayoutInflater layoutInflater=(LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout=layoutInflater.inflate(R.layout.custom_toast_layout, (View).findViewById(R.id.custom_toast_layout));
+        TextView textView=layout.findViewById(R.id.toast_text_id);
+        textView.setText(text);
+
+        Toast toast=new Toast(getApplicationContext());
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.BOTTOM,0,0);
+        toast.setView(layout);
+        toast.show();
+    }*/
     @Override
     public int getItemCount() {
         return requestList.size();
