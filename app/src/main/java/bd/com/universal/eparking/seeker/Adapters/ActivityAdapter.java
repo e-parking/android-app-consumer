@@ -65,7 +65,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
 
 
         public ImageView mParkImage,mobileIcon;
-        public TextView mParkAddress;
+        public TextView mParkAddress,mParkplacename;
         public TextView mStatus,requestDateTV;
         public TextView mDurationTV,phoneNumberTV;
         public Button mEndButton,callButton,mDirection,mCancleButton;
@@ -76,6 +76,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
 
             // 2. Define your Views here
 
+            mParkplacename =  itemView.findViewById(R.id.NameTV);
             mParkImage = (ImageView) itemView.findViewById(R.id.parkPlaceImage);
             mParkAddress = (TextView)itemView.findViewById(R.id.addressTV);
             mStatus = (TextView)itemView.findViewById(R.id.status_id);
@@ -105,7 +106,8 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
     public void onBindViewHolder(final Viewholder holder, int position) {
 
         final ParkingRequest model = requestList.get(position);
-        holder.mParkAddress.setText(model.getmParkPlaceAddress());
+        holder.mParkplacename.setText(model.getmProviderName());
+        holder.mParkAddress.setText(model.getmParkPlaceTitle()+", "+model.getmParkPlaceAddress());
         Picasso.get().load(model.getmParkPlacePhotoUrl())
                 .placeholder(context.getResources().getDrawable(R.drawable.ic_park_false))
                 .error(context.getResources().getDrawable(R.drawable.ic_park_false))
