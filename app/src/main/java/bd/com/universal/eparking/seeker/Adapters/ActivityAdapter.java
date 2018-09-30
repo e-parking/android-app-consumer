@@ -30,9 +30,11 @@ import bd.com.universal.eparking.seeker.Activities.PaymentActivity;
 import bd.com.universal.eparking.seeker.PoJoClasses.ParkingRequest;
 import bd.com.universal.eparking.seeker.PoJoClasses.Status;
 import bd.com.universal.eparking.seeker.R;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,8 +49,8 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
     public static ProgressDialog progressDialog;
     public static List<ParkingRequest> requestList;
     public static Context context;
-
     public static String mConsumerID;
+    SimpleDateFormat formatedDate = new SimpleDateFormat("dd MMM yyyy");
 
 
     public ActivityAdapter(List<ParkingRequest> requestList, Context context) {
@@ -62,20 +64,19 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
     public static class Viewholder extends RecyclerView.ViewHolder {
 
 
-        public ImageView mParkImage;
+        public ImageView mParkImage,mobileIcon;
         public TextView mParkAddress;
-        public TextView mStatus;
+        public TextView mStatus,requestDateTV;
         public TextView mDurationTV,phoneNumberTV;
         public Button mEndButton,callButton,mDirection,mCancleButton;
         public RatingBar ratingBar;
-
 
         public Viewholder(final View itemView) {
             super(itemView);
 
             // 2. Define your Views here
 
-            mParkImage = (ImageView)itemView.findViewById(R.id.parkPlaceImage);
+            mParkImage = (ImageView) itemView.findViewById(R.id.parkPlaceImage);
             mParkAddress = (TextView)itemView.findViewById(R.id.addressTV);
             mStatus = (TextView)itemView.findViewById(R.id.status_id);
             mDurationTV = (TextView)itemView.findViewById(R.id.durationTV);
@@ -85,8 +86,8 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
             mDirection=(Button)itemView.findViewById(R.id.mapButton);
             ratingBar=itemView.findViewById(R.id.ratingBarId);
             mCancleButton=itemView.findViewById(R.id.cancleButtonId);
-
-
+            requestDateTV=itemView.findViewById(R.id.requestDateId);
+            mobileIcon=itemView.findViewById(R.id.mobileIcon);
 
         }
     }
@@ -116,6 +117,8 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
         final long startTime=model.getmStartTime();
         final String number=model.getmProviderPhone();
         holder.phoneNumberTV.setText(number);
+        holder.requestDateTV.setText(formatedDate.format(model.getmRequestTime()));
+        //Toast.makeText(context, formatedDate.format(model.getmRequestTime()), Toast.LENGTH_SHORT).show();
 
         if (model.getmStatus().equals(Status.STARTED))
         {
@@ -160,11 +163,17 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
         else if (mStatus.equals(Status.REJECTED)){
             holder.mStatus.setText(Status.REJECTED);
             holder.mEndButton.setVisibility(View.GONE);
+            holder.phoneNumberTV.setVisibility(View.GONE);
+            holder.callButton.setVisibility(View.GONE);
+            holder.mobileIcon.setVisibility(View.GONE);
         }
         else if (mStatus.equals(Status.ENDED)){
             holder.mStatus.setText(Status.ENDED);
             holder.mEndButton.setVisibility(View.GONE);
             holder.ratingBar.setVisibility(View.VISIBLE);
+            holder.phoneNumberTV.setVisibility(View.GONE);
+            holder.callButton.setVisibility(View.GONE);
+            holder.mobileIcon.setVisibility(View.GONE);
         }
         else if (mStatus.equals(Status.ACCEPTED)){
             holder.mStatus.setText(Status.ACCEPTED);
@@ -173,6 +182,9 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
         else if (mStatus.equals(Status.CANCELLED)){
             holder.mStatus.setText(Status.CANCELLED);
             holder.mEndButton.setVisibility(View.GONE);
+            holder.phoneNumberTV.setVisibility(View.GONE);
+            holder.callButton.setVisibility(View.GONE);
+            holder.mobileIcon.setVisibility(View.GONE);
         }
 
 
@@ -180,7 +192,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
         holder.mDirection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast ToastMessage = Toast.makeText(context," Direction is not available right now",Toast.LENGTH_LONG);
+                Toast ToastMessage = Toast.makeText(context,"  Direction is not available right now  ",Toast.LENGTH_LONG);
                 View toastView = ToastMessage.getView();
                 toastView.setBackgroundResource(R.drawable.custom_toast);
                 ToastMessage.show();
@@ -221,11 +233,14 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
 
                                 holder.mStatus.setText(Status.CANCELLED);
                                 holder.mCancleButton.setEnabled(false);
-
+                                holder.mCancleButton.setVisibility(View.GONE);
+                                holder.phoneNumberTV.setVisibility(View.GONE);
+                                holder.callButton.setVisibility(View.GONE);
+                                holder.mobileIcon.setVisibility(View.GONE);
 
                                 FirebaseFirestore mFireStore=FirebaseFirestore.getInstance();
                                 Map<String,Object> notificationMap=new HashMap<>();
-                                notificationMap.put("message",model.getmConsumerName()+" has Cancel request.");
+                                notificationMap.put("message",model.getmConsumerName()+" has cancelled request.");
                                 notificationMap.put("consumer",mConsumerID);
 
                                 mFireStore.collection("Users").document(model.getmProviderID()).collection("Notifications").add(notificationMap);
@@ -239,8 +254,6 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
                         }
                     }
                 };
-
-
 
 
                 AlertDialog.Builder builder=new AlertDialog.Builder(context);

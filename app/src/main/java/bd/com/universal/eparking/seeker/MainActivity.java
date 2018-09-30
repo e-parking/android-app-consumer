@@ -483,7 +483,7 @@ public class MainActivity extends AppCompatActivity implements
                             isReuestPending = true;
                         }
                         else{
-                            isReuestPending = false;
+                            //isReuestPending = false;
                         }
                     }
                 }
@@ -690,9 +690,12 @@ public class MainActivity extends AppCompatActivity implements
                         ratingBar.setRating(parkPlace.getmProviderAvarageRating());
                         hourlyRate.setText(parkPlace.getmParkingChargePerHour() + " TK/Hr");
 
-                        if (parkPlace.getmParkPlacePhotoUrl().contains("https://")) {
-                            Picasso.get().load(parkPlace.getmParkPlacePhotoUrl()).into(infoParkPlaceImage);
-                        } else {
+                        if (parkPlace.getmParkPlacePhotoUrl().contains("https://") && parkPlace.getmParkingType().equals(VehicleType.Car)) {
+                            Picasso.get().load(parkPlace.getmParkPlacePhotoUrl()).placeholder(R.drawable.car_park_place_icon).error(R.drawable.car_park_place_icon).into(infoParkPlaceImage);
+                        }else if (parkPlace.getmParkPlacePhotoUrl().contains("https://") && parkPlace.getmParkingType().equals(VehicleType.MotorCycle)){
+                            Picasso.get().load(parkPlace.getmParkPlacePhotoUrl()).placeholder(R.drawable.bike_park_place_icon).error(R.drawable.bike_park_place_icon).into(infoParkPlaceImage);
+                        }
+                        else {
                             Bitmap bitmap = decodeBase64(parkPlace.getmParkPlacePhotoUrl());
                             infoParkPlaceImage.setImageBitmap(bitmap);
                         }
@@ -701,7 +704,8 @@ public class MainActivity extends AppCompatActivity implements
                     }
                 } else {
 
-                    Toast.makeText(MainActivity.this, "Zoom Out", Toast.LENGTH_SHORT).show();
+                    ErrorToast("Zoom Out");
+                    //Toast.makeText(MainActivity.this, , Toast.LENGTH_SHORT).show();
                     return null;
                 }
 
@@ -797,7 +801,8 @@ public class MainActivity extends AppCompatActivity implements
 
                     }
                 } else {
-                    Toast.makeText(MainActivity.this, "Please add vehicle details first", Toast.LENGTH_LONG).show();
+                    ErrorToast("Please add vehicle details first");
+                    //Toast.makeText(MainActivity.this, , Toast.LENGTH_LONG).show();
                     //goToAddVehicle();
                 }
 
@@ -821,7 +826,7 @@ public class MainActivity extends AppCompatActivity implements
     public void sendRequest(ParkPlace parkPlace) {
 
         if (isReuestPending==true) {
-            ShowToast("You already have a pending request");
+            ErrorToast("You already have a pending request");
             goToActivity();
         } else {
 
@@ -866,7 +871,7 @@ public class MainActivity extends AppCompatActivity implements
                                     0,
                                     0,
                                     0,
-                                     System.currentTimeMillis()*-1);
+                                     System.currentTimeMillis());
 
 
                             //for update parking current status available or not
@@ -902,8 +907,10 @@ public class MainActivity extends AppCompatActivity implements
                 if (success == false) {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setMessage("You have no Car Information ").setPositiveButton("OK", onClickListener)
-                            .setNegativeButton("No Thanks", onClickListener).show();
+                    builder.setTitle("Alert");
+                    builder.setIcon(R.drawable.warning_red);
+                    builder.setMessage("You have no car information. Want to add one? ").setPositiveButton("Yes", onClickListener)
+                            .setNegativeButton("No", onClickListener).show();
 
 
                 }
@@ -945,7 +952,7 @@ public class MainActivity extends AppCompatActivity implements
                                     0,
                                     0,
                                     0,
-                                    System.currentTimeMillis()*-1);
+                                    System.currentTimeMillis());
 
                             //for update parking current status available or not
                             providerRequestDb2 = mFirebaseInstance.getReference
@@ -980,14 +987,17 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 if (success == false) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setMessage("You have no Bike Information ").setPositiveButton("OK", onClickListener)
-                            .setNegativeButton("No Thanks", onClickListener).show();
+                    builder.setTitle("Alert");
+                    builder.setIcon(R.drawable.warning_red);
+                    builder.setMessage("You have no bike information. Want to add one?").setPositiveButton("Yes", onClickListener)
+                            .setNegativeButton("No", onClickListener).show();
                 }
             }
 
 
         } else {
-            Toast.makeText(this, "Please add vehicle details for sending request", Toast.LENGTH_SHORT).show();
+            ErrorToast("Please add vehicle details for sending request");
+            //Toast.makeText(this, , Toast.LENGTH_SHORT).show();
             goToAddVehicle();
         }
 
@@ -1243,9 +1253,19 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+                if (dataSnapshot.child("mName").getValue().toString().isEmpty()
+                        || dataSnapshot.child("mName").getValue().toString().equals("")
+                        || dataSnapshot.child("mName").getValue().toString().equals(null))
+                {
+                    Intent intent=new Intent(MainActivity.this,SignUpActivity.class);
+                    startActivity(intent);
+                    ErrorToast("Please update your profile first");
+
+                }
 
                 System.out.println(">>>>>>>>>>>>>> Get Status Called  from firebase");
                 if (dataSnapshot.getValue(Consumer.class) != null) {
+
                     TempHolder.mConsumer = dataSnapshot.getValue(Consumer.class);
                     mUserName.setText(TempHolder.mConsumer.getmName());
 
@@ -1264,6 +1284,7 @@ public class MainActivity extends AppCompatActivity implements
                     System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> USER : " + TempHolder.mConsumer);
                     getStatus();
                 }
+
 
             }
 
@@ -1592,6 +1613,19 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+
+    private void ErrorToast(String text){
+
+        LayoutInflater layoutInflater=getLayoutInflater();
+        View layout=layoutInflater.inflate(R.layout.error_custom_toast,(ViewGroup)findViewById(R.id.error_toast_layout));
+        TextView textView=layout.findViewById(R.id.toast_text_id);
+        textView.setText(text);
+        Toast toast=new Toast(getApplicationContext());
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.BOTTOM,0,30);
+        toast.setView(layout);
+        toast.show();
+    }
 
 
 }
