@@ -44,7 +44,6 @@
                 android:layout_marginEnd="10dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/bd_flag"
-                android:transitionName="@string/transition_ivFlag"
                 android:layout_marginRight="10dp" />
 
             <TextView
@@ -55,8 +54,7 @@
                 android:text="+88"
                 android:textColor="#0E0E0E"
                 android:textSize="18sp"
-                android:fontFamily="@font/roboto_regular"
-                android:transitionName="@string/transition_tvCode" />
+                android:fontFamily="@font/roboto_regular" />
 
             <EditText
                 android:id="@+id/etPhoneNo"
