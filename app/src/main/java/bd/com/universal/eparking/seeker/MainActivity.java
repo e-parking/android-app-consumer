@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Please Wait...");
-        progressDialog.setMessage("We are Preparing your map.");
+        progressDialog.setMessage("We are preparing your map.");
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setCancelable(false);
         progressDialog.isIndeterminate();
@@ -264,6 +264,7 @@ public class MainActivity extends AppCompatActivity implements
             progressDialog.dismiss();
             showInternetDialogBox();
         } else {
+
             statusCheck();
         }
 
@@ -595,9 +596,6 @@ public class MainActivity extends AppCompatActivity implements
 
         clusterManager = new ClusterManager<MyItems>(this, map);
         mapWrapperLayout.init(map, getPixelsFromDp(this, 39 + 20));
-        // We want to reuse the info window for all the markers,
-        // so let's create only one class member instance
-
 
         this.infoWindow = (ViewGroup) getLayoutInflater().inflate(R.layout.info_window, null);
         this.mCurrentLocationWindowBox = (ViewGroup) getLayoutInflater().inflate(R.layout.dialog_current_location, null);
@@ -1278,7 +1276,7 @@ public class MainActivity extends AppCompatActivity implements
                     }
 
                     if (!TempHolder.mConsumer.getmPhoto().equals("")) {
-                        Picasso.get().load(TempHolder.mConsumer.getmPhoto()).into(mProfileImage);
+                        Picasso.get().load(TempHolder.mConsumer.getmPhoto()).placeholder(R.drawable.profile).error(R.drawable.profile).into(mProfileImage);
                     } else {
                         mProfileImage.setImageResource(R.drawable.profile);
                     }
