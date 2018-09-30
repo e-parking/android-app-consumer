@@ -165,10 +165,10 @@ public class AddVehicleFragment extends Fragment {
                             microbusTV.setVisibility(View.GONE);
                             carVehicleId=data.getKey();
                             car.add(vehicle);
-                            if (vehicle.getmBlueBookImage()==null || vehicle.getmBlueBookImage().equals(null)| vehicle.getmBlueBookImage().isEmpty()){
+                            if (vehicle.getmVehicleImage()==null || vehicle.getmVehicleImage().equals(null)| vehicle.getmVehicleImage().isEmpty()){
                             }
                             else {
-                                Picasso.get().load(vehicle.getmBlueBookImage()).placeholder(R.drawable.car_red).error(R.drawable.car_red).into(carBlueBookImageView);
+                                Picasso.get().load(vehicle.getmVehicleImage()).placeholder(R.drawable.car_red).error(R.drawable.car_red).into(carBlueBookImageView);
                             }
 
                             carNumber.setText(vehicle.getmVehicleNumberPrefix()+" "+vehicle.getmVehicleNumber()+"\n"+vehicle.getmVehicleType());
@@ -179,10 +179,10 @@ public class AddVehicleFragment extends Fragment {
                             motorCycleRadioButton.setVisibility(View.GONE);
                             motorBikeVehicleId=data.getKey();
                             motorByke.add(vehicle);
-                            if (vehicle.getmBlueBookImage()==null || vehicle.getmBlueBookImage().equals(null)|| vehicle.getmBlueBookImage().isEmpty()){
+                            if (vehicle.getmVehicleImage()==null || vehicle.getmVehicleImage().equals(null)|| vehicle.getmVehicleImage().isEmpty()){
                             }
                             else {
-                                Picasso.get().load(vehicle.getmBlueBookImage()).placeholder(R.drawable.bike_red).error(R.drawable.bike_red).into(motorCycleBlueBookImageView);
+                                Picasso.get().load(vehicle.getmVehicleImage()).placeholder(R.drawable.bike_red).error(R.drawable.bike_red).into(motorCycleBlueBookImageView);
                             }
                             motorCycleNumber.setText(vehicle.getmVehicleNumberPrefix()+" "+vehicle.getmVehicleNumber()+"\n"+vehicle.getmVehicleType());
                         }
@@ -296,14 +296,14 @@ public class AddVehicleFragment extends Fragment {
                 microbusTV.setVisibility(View.VISIBLE);
                 motorCycleRadioButton.setVisibility(View.GONE);
                 carRadioButton.setChecked(true);
-                mParkPlacePhotoUrl=car.get(0).getmBlueBookImage();
+                mParkPlacePhotoUrl=car.get(0).getmVehicleImage();
                 vehicleNumberInpur.setText(car.get(0).getmVehicleNumber());
                 autoCompleteNumber.setText(car.get(0).getmVehicleNumberPrefix());
                 vehicleNumberInpur.requestFocus();
                 vehicleNumberInpur.setSelection(vehicleNumberInpur.getText().length());
 
-                if (car.get(0).getmBlueBookImage()!=null && !car.get(0).getmBlueBookImage().equals(null) && !car.get(0).getmBlueBookImage().isEmpty()){
-                    Picasso.get().load(car.get(0).getmBlueBookImage()).placeholder(R.drawable.car_red).error(R.drawable.car_red).into(blueBookImageShow);
+                if (car.get(0).getmVehicleImage()!=null && !car.get(0).getmVehicleImage().equals(null) && !car.get(0).getmVehicleImage().isEmpty()){
+                    Picasso.get().load(car.get(0).getmVehicleImage()).placeholder(R.drawable.car_red).error(R.drawable.car_red).into(blueBookImageShow);
                 }
                 else {
                     blueBookImageShow.setImageResource(R.drawable.car_red);
@@ -333,9 +333,9 @@ public class AddVehicleFragment extends Fragment {
                 motorCycleRadioButton.setChecked(true);
                 vehicleNumberInpur.requestFocus();
                 vehicleNumberInpur.setSelection(vehicleNumberInpur.getText().length());
-                mParkPlacePhotoUrl=motorByke.get(0).getmBlueBookImage();
-                if (motorByke.get(0).getmBlueBookImage()!=null && !motorByke.get(0).getmBlueBookImage().equals(null) && !motorByke.get(0).getmBlueBookImage().isEmpty()){
-                    Picasso.get().load(motorByke.get(0).getmBlueBookImage()).placeholder(R.drawable.bike_red).error(R.drawable.bike_red).into(blueBookImageShow);
+                mParkPlacePhotoUrl=motorByke.get(0).getmVehicleImage();
+                if (motorByke.get(0).getmVehicleImage()!=null && !motorByke.get(0).getmVehicleImage().equals(null) && !motorByke.get(0).getmVehicleImage().isEmpty()){
+                    Picasso.get().load(motorByke.get(0).getmVehicleImage()).placeholder(R.drawable.bike_red).error(R.drawable.bike_red).into(blueBookImageShow);
                 }
                 else {
                     blueBookImageShow.setImageResource(R.drawable.bike_red);
@@ -360,7 +360,8 @@ public class AddVehicleFragment extends Fragment {
             newVehicle.put("mVehicleNumberPrefix",vehicleNumberPrefix);
             newVehicle.put("mVehicleNumber", vehicleNumber);
             newVehicle.put("mVehicleType", vehicleType);
-            newVehicle.put("mBlueBookImage", mParkPlacePhotoUrl);
+            newVehicle.put("mBlueBookImage", "");
+            newVehicle.put("mVehicleImage", mParkPlacePhotoUrl);
             addVehicleDB.setValue(newVehicle).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
@@ -387,7 +388,8 @@ public class AddVehicleFragment extends Fragment {
             newVehicle.put("mVehicleNumberPrefix",vehicleNumberPrefix);
             newVehicle.put("mVehicleNumber", vehicleNumber);
             newVehicle.put("mVehicleType", vehicleType);
-            newVehicle.put("mBlueBookImage", mParkPlacePhotoUrl);
+            newVehicle.put("mBlueBookImage", "");
+            newVehicle.put("mVehicleImage", mParkPlacePhotoUrl);
             addVehicleDB.push().setValue(newVehicle).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {

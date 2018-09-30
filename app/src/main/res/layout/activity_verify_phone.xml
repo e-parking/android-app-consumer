@@ -70,8 +70,7 @@
             android:hint="Enter verification code"
             android:inputType="phone"
             android:maxLength="10"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textSize="20sp"/>
 
         <Button
             android:id="@+id/buttonSignIn"
