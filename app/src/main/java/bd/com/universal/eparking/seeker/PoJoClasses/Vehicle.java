@@ -9,16 +9,19 @@ public class Vehicle {
     private String mVehicleNumber;
     private String mVehicleType;
     private String mBlueBookImage;
+    private String mVehicleImage;
+
 
     public Vehicle() {
 
     }
 
-    public Vehicle(String mVehicleNumberPrefix,String mVehicleNumber, String mVehicleType, String mBlueBookImage) {
+    public Vehicle(String mVehicleNumberPrefix,String mVehicleNumber, String mVehicleType, String mBlueBookImage,String mVehicleImage) {
         this.mVehicleNumberPrefix = mVehicleNumberPrefix;
         this.mVehicleNumber = mVehicleNumber;
         this.mVehicleType = mVehicleType;
         this.mBlueBookImage = mBlueBookImage;
+        this.mVehicleImage = mVehicleImage;
     }
 
 
@@ -52,5 +55,13 @@ public class Vehicle {
 
     public void setmBlueBookImage(String mBlueBookImage) {
         this.mBlueBookImage = mBlueBookImage;
+    }
+
+    public String getmVehicleImage() {
+        return mVehicleImage;
+    }
+
+    public void setmVehicleImage(String mVehicleImage) {
+        this.mVehicleImage = mVehicleImage;
     }
 }
