@@ -102,7 +102,7 @@
                         android:maxLines="1"
                         android:fontFamily="@font/roboto_regular"
                         android:textColor="@color/white"
-                        android:text="Address goes here \nThis is second line"/>
+                        android:text="Address goes here"/>
 
                     <Button
                         android:id="@+id/mapButton"

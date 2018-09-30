@@ -212,7 +212,7 @@ public class MainActivity extends AppCompatActivity implements
     LoginPreferences mLoginPreference;
     private String requestVehicleType = VehicleType.Car;
     private boolean isCar = true;
-
+    Toolbar toolbar;
     //------------- Time Picking -----------------
     private Calendar calendar;
     private int year, day, month;
@@ -226,8 +226,10 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        toolbar.setTitle(R.string.app_name);
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Please Wait...");
@@ -1307,6 +1309,7 @@ public class MainActivity extends AppCompatActivity implements
         } else if (backStackCount==1){
             super.onBackPressed();
             CarSelect();
+            toolbar.setTitle(R.string.app_name);
             vehicleSelection.setVisibility(View.VISIBLE);
         }
         else {
@@ -1354,6 +1357,7 @@ public class MainActivity extends AppCompatActivity implements
             mInternetStatus = isNetworkAvailable();
             if (mInternetStatus ==  true){
                 innitializeMap();
+                toolbar.setTitle(R.string.app_name);
                 bikeImage.setImageResource(R.drawable.bike_white);
                 carImage.setImageResource(R.drawable.car_red);
                 vehicleSelection.setVisibility(View.VISIBLE);
@@ -1454,6 +1458,8 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void goToActivity() {
+
+
         mHeaderMenu.setVisibility(View.GONE);
         ft = fm.beginTransaction();
         vehicleSelection.setVisibility(View.GONE);

@@ -116,6 +116,8 @@ public class AddVehicleFragment extends Fragment {
 
         final View view = inflater.inflate(R.layout.fragment_add_vehicle, container, false);
 
+        getActivity().setTitle("Add Vehicle");
+
         carNumber=view.findViewById(R.id.carNumberId);
         motorCycleNumber=view.findViewById(R.id.motorCycleNumberId);
         blueBookImageUpload=view.findViewById(R.id.uploadBlueBookId);
