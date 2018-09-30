@@ -165,6 +165,7 @@ public class PaymentActivity extends AppCompatActivity {
             public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                 reviewStatus=true;
                 Intent intent = new Intent(PaymentActivity.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
                 finish();
             }

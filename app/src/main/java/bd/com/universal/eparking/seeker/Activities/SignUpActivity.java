@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -225,6 +226,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
 
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
     }
 
@@ -635,6 +637,7 @@ public class SignUpActivity extends AppCompatActivity {
 
 
             mProviderName.setText(TempHolder.mConsumer.getmName());
+            mProviderName.setSelection(mProviderName.getText().length());
             mProviderPassword1.setText(TempHolder.mConsumer.getmPassword());
             mProviderPhone.setText(TempHolder.mConsumer.getmPhone());
             mProviderAddress.setText(TempHolder.mConsumer.getmAddress());

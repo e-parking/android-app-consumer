@@ -130,10 +130,6 @@ public class VerifyPhoneActivity extends AppCompatActivity {
             }
         });
 
-
-
-        //if the automatic sms detection did not work, user can also enter the code manually
-        //so adding a click listener to the button
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -141,6 +137,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                 if (code.isEmpty() || code.length() < 6) {
                     editTextCode.setError("Enter valid code");
                     editTextCode.requestFocus();
+                    editTextCode.setSelection(editTextCode.getText().length());
                     return;
                 }
 
