@@ -78,13 +78,10 @@ public class ActivityFragment extends Fragment {
     }
 
 
-
-
-
     private void getUserCurrentActivity() {
         mUserCurrentActivityDB = mFirebaseInstance.getReference("ConsumerList/" + mConsumerID + "/Request/");
 
-        Query query=mUserCurrentActivityDB.orderByChild("mRequestTime").limitToLast(7);
+        Query query=mUserCurrentActivityDB.orderByChild("mRequestTime").limitToLast(15);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -99,10 +96,12 @@ public class ActivityFragment extends Fragment {
                                 || parkingRequest.getmStatus().equals(Status.ENDED)
                                 || parkingRequest.getmStatus().equals(Status.CANCELLED)) {
                             requestList.add(parkingRequest);
-                            setNotifactionRecyclerView();
+
 
                         }
                     }
+
+                    setNotifactionRecyclerView();
                 }
                 else {
                     setNotifactionRecyclerView();
@@ -124,9 +123,13 @@ public class ActivityFragment extends Fragment {
         if (requestList.size()<1)
         {
             mInfoText.setVisibility(View.VISIBLE);
-
         }
-        //Collections.reverse(requestList);
+        else {
+            mInfoText.setVisibility(View.GONE);
+        }
+
+
+        Collections.reverse(requestList);
         activityAdapter = new ActivityAdapter(requestList,getActivity());
         mActivityRecyclerView.setAdapter(activityAdapter);
     }
