@@ -212,8 +212,7 @@
                         android:text="PENDING"
                         android:textColor="@color/white"
                         android:fontFamily="@font/roboto_regular"
-                        android:background="@drawable/all_side_border"
-                        />
+                        android:background="@drawable/all_side_border" />
 
 
                 </LinearLayout>

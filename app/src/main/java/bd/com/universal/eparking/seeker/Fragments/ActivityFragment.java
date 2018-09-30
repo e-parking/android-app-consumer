@@ -129,7 +129,6 @@ public class ActivityFragment extends Fragment {
             mInfoText.setVisibility(View.GONE);
         }
 
-
         Collections.reverse(requestList);
         activityAdapter = new ActivityAdapter(requestList,getActivity());
         mActivityRecyclerView.setAdapter(activityAdapter);
