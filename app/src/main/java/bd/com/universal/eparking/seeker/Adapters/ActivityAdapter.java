@@ -158,6 +158,9 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
             holder.mEndButton.setVisibility(View.VISIBLE);
             holder.mCancleButton.setVisibility(View.GONE);
             holder.ratingBar.setVisibility(View.GONE);
+            holder.phoneNumberTV.setVisibility(View.VISIBLE);
+            holder.callButton.setVisibility(View.VISIBLE);
+            holder.mobileIcon.setVisibility(View.VISIBLE);
         }
         else if (mStatus.equals(Status.PENDING)){
             holder.mStatus.setVisibility(View.VISIBLE);
@@ -165,6 +168,9 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
             holder.mEndButton.setVisibility(View.GONE);
             holder.mCancleButton.setVisibility(View.VISIBLE);
             holder.ratingBar.setVisibility(View.GONE);
+            holder.phoneNumberTV.setVisibility(View.VISIBLE);
+            holder.callButton.setVisibility(View.VISIBLE);
+            holder.mobileIcon.setVisibility(View.VISIBLE);
 
         }
         else if (mStatus.equals(Status.REJECTED)){
@@ -193,6 +199,9 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
             holder.mEndButton.setVisibility(View.GONE);
             holder.mCancleButton.setVisibility(View.GONE);
             holder.ratingBar.setVisibility(View.GONE);
+            holder.phoneNumberTV.setVisibility(View.VISIBLE);
+            holder.callButton.setVisibility(View.VISIBLE);
+            holder.mobileIcon.setVisibility(View.VISIBLE);
         }
         else if (mStatus.equals(Status.CANCELLED)){
             holder.mStatus.setVisibility(View.VISIBLE);
