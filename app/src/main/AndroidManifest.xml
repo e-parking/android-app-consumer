@@ -81,7 +81,7 @@
 
         </activity>
 
-        <service android:name="MyFirebaseNotificationService">
+        <service android:name="MyFirebaseNotificationServiceSeeker">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

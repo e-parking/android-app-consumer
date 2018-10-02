@@ -242,12 +242,12 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                                             mFirebaseDatabase.child(mConsumerID).setValue(consumer);
 
                                             //fireStore
-                                            mFireStore.collection("Users").document(mConsumerID).set(userMap);
+                                            mFireStore.collection("Seekers").document(mConsumerID).set(userMap);
 
                                         }
                                         else {
 
-                                            mFireStore.collection("Users").document(mConsumerID).set(userMap);
+                                            mFireStore.collection("Seekers").document(mConsumerID).set(userMap);
 
                                             ShowToast("Welcome Back");
                                             //Toast.makeText(VerifyPhoneActivity.this, "Welcome Back", Toast.LENGTH_SHORT).show();

@@ -1,5 +1,7 @@
 package bd.com.universal.eparking.seeker.PoJoClasses;
 
+import java.util.Comparator;
+
 public class ParkingRequest {
 
     private String mConsumerID;
@@ -28,6 +30,19 @@ public class ParkingRequest {
 
     public ParkingRequest() {
     }
+
+
+    public static final Comparator<ParkingRequest> SORT_BY_TIME=new Comparator<ParkingRequest>() {
+        @Override
+        public int compare(ParkingRequest o1, ParkingRequest o2) {
+            if (o1.getmRequestTime()>o2.getmRequestTime()){
+                return -1;
+            }else if (o1.getmRequestTime()<o2.getmRequestTime()){
+                return 1;
+            }
+            return 0;
+        }
+    };
 
     public ParkingRequest(String mConsumerID, String mProviderID, String mParkPlaceID, String mParkPlaceTitle, String mRequestID, String mConsumerName, String mConsumerPhone, String mConsumerVehicleNumber, String mProviderName, String mProviderPhone, String mParkPlaceAddress, String mParkPlaceLatitude, String mParkPlaceLongitude, String mStatus,String mParkPlacePhotoUrl,String mConsumerPhotoUrl, long mStartTime, long mEndTime, double mEstimatedCost, float mConsumerRatingValue,long mRequestTime) {
         this.mConsumerID = mConsumerID;

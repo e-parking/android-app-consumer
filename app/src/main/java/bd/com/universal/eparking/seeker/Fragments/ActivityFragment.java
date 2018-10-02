@@ -129,7 +129,9 @@ public class ActivityFragment extends Fragment {
             mInfoText.setVisibility(View.GONE);
         }
 
-        Collections.reverse(requestList);
+        //Collections.reverse(requestList);
+
+        Collections.sort(requestList,ParkingRequest.SORT_BY_TIME);
         activityAdapter = new ActivityAdapter(requestList,getActivity());
         mActivityRecyclerView.setAdapter(activityAdapter);
     }

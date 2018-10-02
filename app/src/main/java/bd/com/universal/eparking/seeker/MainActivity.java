@@ -268,7 +268,6 @@ public class MainActivity extends AppCompatActivity implements
             statusCheck();
         }
 
-        GetPendingRequest();
         getUserInformation();
 
         //-------------------------------------------------
@@ -574,6 +573,8 @@ public class MainActivity extends AppCompatActivity implements
 
 
     public void innitializeMap() {
+
+        GetPendingRequest();
         //  vehicleSelection.setVisibility(View.VISIBLE);
         mGpsDialog.dismiss();
         options = new GoogleMapOptions();
@@ -893,7 +894,7 @@ public class MainActivity extends AppCompatActivity implements
                             notificationMap.put("message", consumer.getmName() + " wants to park " + vehicle.getmVehicleType() + " (" + vehicle.getmVehicleNumberPrefix()+" "+ vehicle.getmVehicleNumber() + ")");
                             notificationMap.put("consumer", mConsumerID);
 
-                            mFireStore.collection("Users").document(provider.getmProviderID()).collection("Notifications").add(notificationMap);
+                            mFireStore.collection("Owners").document(provider.getmProviderID()).collection("Notifications").add(notificationMap);
 
 
                         }
@@ -973,7 +974,7 @@ public class MainActivity extends AppCompatActivity implements
                             notificationMap.put("message", consumer.getmName() + " wants to park " + vehicle.getmVehicleType() + " (" + vehicle.getmVehicleNumberPrefix()+" "+ vehicle.getmVehicleNumber() + ")");
                             notificationMap.put("consumer", mConsumerID);
 
-                            mFireStore.collection("Users").document(provider.getmProviderID()).collection("Notifications").add(notificationMap);
+                            mFireStore.collection("Owners").document(provider.getmProviderID()).collection("Notifications").add(notificationMap);
 
 
                         }
