@@ -96,13 +96,14 @@ public class ActivityFragment extends Fragment {
                                 || parkingRequest.getmStatus().equals(Status.REJECTED)
                                 || parkingRequest.getmStatus().equals(Status.ENDED)
                                 || parkingRequest.getmStatus().equals(Status.CANCELLED)) {
-                            requestList.add(parkingRequest);
 
+                            requestList.add(parkingRequest);
+                            setNotifactionRecyclerView();
 
                         }
                     }
 
-                    setNotifactionRecyclerView();
+
                 }
                 else {
                     setNotifactionRecyclerView();

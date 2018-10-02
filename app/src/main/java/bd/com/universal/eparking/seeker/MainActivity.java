@@ -576,7 +576,9 @@ public class MainActivity extends AppCompatActivity implements
 
     public void innitializeMap() {
 
+        isReuestPending=false;
         GetPendingRequest();
+        vehicleList.clear();
         GetVehicle();
 
         //  vehicleSelection.setVisibility(View.VISIBLE);
@@ -854,6 +856,7 @@ public class MainActivity extends AppCompatActivity implements
                                     TempHolder.mConsumer.getmPhoto(),
                                     vehicle.getmVehicleNumberPrefix()+" "+ vehicle.getmVehicleNumber());
                             Consumer consumer = TempHolder.mConsumer;
+
 
 
                             ParkingRequest providerRequest = new ParkingRequest(consumer.getmComsumerID(),
