@@ -446,7 +446,7 @@ public class MainActivity extends AppCompatActivity implements
 
         getDeviceCurrentLocation();
         getLocationUpdates();
-        GetVehicle();
+
 
 
     }  //End of onCreat Method
@@ -540,6 +540,8 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         }
+
+
     }
 
 
@@ -575,6 +577,8 @@ public class MainActivity extends AppCompatActivity implements
     public void innitializeMap() {
 
         GetPendingRequest();
+        GetVehicle();
+
         //  vehicleSelection.setVisibility(View.VISIBLE);
         mGpsDialog.dismiss();
         options = new GoogleMapOptions();
@@ -1384,6 +1388,12 @@ public class MainActivity extends AppCompatActivity implements
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 finish();
                 startActivity(intent);
+
+                FirebaseFirestore mFireStore=FirebaseFirestore.getInstance();
+                mFireStore.collection("Seekers").document(mConsumerID).update("token_id","");
+
+
+
 
         }
 

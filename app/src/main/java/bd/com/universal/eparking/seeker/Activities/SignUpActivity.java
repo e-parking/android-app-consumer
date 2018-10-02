@@ -210,7 +210,15 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View v) {
                 internetstatus = isNetworkAvailable();
                 if (internetstatus == true){
-                    updateProfile();
+
+                    if (mProviderName.getText().toString()==null || mProviderName.getText().toString().isEmpty() && mProviderName.getText().toString().equals(""))
+                    {
+                        ErrorToast("Enter a valid Name");
+                    }
+                    else {
+                        updateProfile();
+                    }
+
                 }
                 else {
                     showInternetDialogBox();
@@ -688,4 +696,19 @@ public class SignUpActivity extends AppCompatActivity {
         toast.setView(layout);
         toast.show();
     }
+
+
+    private void ErrorToast(String text){
+        LayoutInflater layoutInflater=getLayoutInflater();
+        View layout=layoutInflater.inflate(R.layout.error_custom_toast,(ViewGroup)findViewById(R.id.error_toast_layout));
+        TextView textView=layout.findViewById(R.id.toast_text_id);
+        textView.setText(text);
+        Toast toast=new Toast(getApplicationContext());
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.BOTTOM,0,30);
+        toast.setView(layout);
+        toast.show();
+    }
+
+
 }
