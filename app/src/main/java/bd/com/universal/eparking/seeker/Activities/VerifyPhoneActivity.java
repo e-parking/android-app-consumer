@@ -138,11 +138,12 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                     editTextCode.setError("Enter valid code");
                     editTextCode.requestFocus();
                     editTextCode.setSelection(editTextCode.getText().length());
-                    return;
+                }else {
+
+                    //verifying the code entered manually
+                    verifyVerificationCode(code);
                 }
 
-                //verifying the code entered manually
-                verifyVerificationCode(code);
             }
         });
 
@@ -237,7 +238,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                                             mFirebaseDatabase.child(mConsumerID).setValue(consumer).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(Void aVoid) {
-                                                    goToMainActivity();
+                                                    goToProfileActivity();
                                                 }
                                             });
 
@@ -260,6 +261,8 @@ public class VerifyPhoneActivity extends AppCompatActivity {
 
                                         }
 
+                                    }else {
+                                        ErrorToast("Invalid OTP Code");
                                     }
                                 }
                             }, 2000);
@@ -269,12 +272,20 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                             progressBar.setVisibility(View.INVISIBLE);
                             signIn.setVisibility(View.VISIBLE);
 
-                            ErrorToast("Invalid OTP Code");
+
                            // Toast.makeText(VerifyPhoneActivity.this, "Invalid OTP Code", Toast.LENGTH_SHORT).show();
 
                         }
                     }
                 });
+    }
+
+    private void goToProfileActivity() {
+        Intent intent=new Intent(VerifyPhoneActivity.this,SignUpActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        //ErrorToast("Please update your profile first");
+
     }
 
     private void goToMainActivity() {

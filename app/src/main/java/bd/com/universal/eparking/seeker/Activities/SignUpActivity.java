@@ -211,7 +211,7 @@ public class SignUpActivity extends AppCompatActivity {
                 internetstatus = isNetworkAvailable();
                 if (internetstatus == true){
 
-                    if (mProviderName.getText().toString()==null || mProviderName.getText().toString().isEmpty() && mProviderName.getText().toString().equals(""))
+                    if (mProviderName.getText().toString()==null || mProviderName.getText().toString().isEmpty() || mProviderName.getText().toString().equals(""))
                     {
                         ErrorToast("Enter a valid Name");
                     }
@@ -230,7 +230,8 @@ public class SignUpActivity extends AppCompatActivity {
         mProviderPhone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(SignUpActivity.this, "Sorry,Phone number can not be changed.", Toast.LENGTH_SHORT).show();
+                ErrorToast("Sorry,Phone number can not be changed.");
+               // Toast.makeText(SignUpActivity.this, "Sorry,Phone number can not be changed.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -300,8 +301,7 @@ public class SignUpActivity extends AppCompatActivity {
             mFirebaseUserInformation.child("mLatitude").setValue(mSelectedLatitude);
             mFirebaseUserInformation.child("mLongitude").setValue(mSelectedLatitude);
         }
-
-
+/*
         // clear edit text
         mProviderName.setText("");
         mProviderEmail.setText("");
@@ -309,12 +309,12 @@ public class SignUpActivity extends AppCompatActivity {
         mProviderPassword1.setText("");
         mProviderPhone.setText("");
         mProviderAddress.setText("");
-        mProviderNID.setText("");
+        mProviderNID.setText("");*/
         progressDialog.dismiss();
         ShowToast("Profile updated successfully");
        // Toast.makeText(SignUpActivity.this, "Profile successfully updated",    Toast.LENGTH_SHORT).show();
         //startActivity(new Intent(SignUpActivity.this, MainActivity.class));
-        finish();
+        //finish();
 
 
 
@@ -378,7 +378,8 @@ public class SignUpActivity extends AppCompatActivity {
                     mProviderAddress.setText("");
                     mProviderNID.setText("");
                     progressDialog.dismiss();
-                    Toast.makeText(SignUpActivity.this, "Profile successfully updated",    Toast.LENGTH_SHORT).show();
+                    ShowToast("Profile successfully updated");
+                    //Toast.makeText(SignUpActivity.this, "Profile successfully updated",    Toast.LENGTH_SHORT).show();
                     //startActivity(new Intent(SignUpActivity.this, MainActivity.class));
                     finish();
                     //reload();
@@ -432,13 +433,17 @@ public class SignUpActivity extends AppCompatActivity {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 mProfileURL = taskSnapshot.getDownloadUrl().toString();
                 mFirebaseUserInformation.child("mPhoto").setValue(mProfileURL);
-                Toast.makeText(SignUpActivity.this, "Profile picture added successfully",    Toast.LENGTH_SHORT).show();
+
+                ShowToast("Profile picture added successfully");
+                //Toast.makeText(SignUpActivity.this, "Profile picture added successfully",    Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                ErrorToast(e.getMessage());
+                //Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
             }
         });
