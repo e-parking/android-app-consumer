@@ -1116,12 +1116,15 @@ public class MainActivity extends AppCompatActivity implements
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             if (dataSnapshot.exists()){
                                                 totalProviderRatingValue=0;
-                                                ProviderRating providerRating;
                                                 int counter=0;
                                                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                                    providerRating=data.getValue(ProviderRating.class);
-                                                    counter++;
-                                                    totalProviderRatingValue=totalProviderRatingValue+providerRating.getmConsumerRatingValue();
+
+                                                    ProviderRating providerRating=data.getValue(ProviderRating.class);
+                                                    if (providerRating.getmStatus().equals(Status.ENDED)){
+                                                        counter++;
+                                                        totalProviderRatingValue=totalProviderRatingValue+providerRating.getmConsumerRatingValue();
+                                                    }
+
                                                 }
                                                 if (counter>0){
                                                     averageProviderParkingValue=totalProviderRatingValue/counter;

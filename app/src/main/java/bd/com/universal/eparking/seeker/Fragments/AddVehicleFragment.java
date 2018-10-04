@@ -423,7 +423,7 @@ public class AddVehicleFragment extends Fragment {
         else {
             motorCycleBlueBookImageView.setImageResource(R.drawable.bike_red);
         }
-        motorCycleNumber.setText(vehicleNumberPrefix+"\n"+vehicleNumber+"\n"+vehicleType);
+        motorCycleNumber.setText(vehicleNumberPrefix+" "+vehicleNumber+"\n"+vehicleType);
     }
 
     private void showCarDetails() {
@@ -433,7 +433,7 @@ public class AddVehicleFragment extends Fragment {
         }else {
             carBlueBookImageView.setImageResource(R.drawable.car_red);
         }
-        carNumber.setText(vehicleNumberPrefix+"\n"+vehicleNumber+"\n"+vehicleType);
+        carNumber.setText(vehicleNumberPrefix+" "+vehicleNumber+"\n"+vehicleType);
     }
 
 

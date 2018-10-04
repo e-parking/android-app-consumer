@@ -40,7 +40,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:fontFamily="@font/roboto_regular"
-        android:hint="example@gmail.com"
         android:textSize="14sp"
         android:textStyle="bold" />
 </LinearLayout>
