@@ -206,13 +206,6 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             //verification successful we will start the profile activity
 
-                            Intent intent = new Intent(VerifyPhoneActivity.this, MainActivity.class);
-                            intent.putExtra("mobile",mPhoneNumber);
-                            intent.putExtra("user","new_user");
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(VerifyPhoneActivity.this);
-                            startActivity(intent, options.toBundle());
-                            VerifyPhoneActivity.this.finish();
 
 
 
@@ -238,8 +231,15 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                                                 }
                                             });
 
+
+
                                             Consumer consumer = new Consumer(mConsumerID,"","","","",mPhoneNumber,"","","", "0", "0");
-                                            mFirebaseDatabase.child(mConsumerID).setValue(consumer);
+                                            mFirebaseDatabase.child(mConsumerID).setValue(consumer).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    goToMainActivity();
+                                                }
+                                            });
 
                                             //fireStore
                                             mFireStore.collection("Seekers").document(mConsumerID).set(userMap);
@@ -247,7 +247,13 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                                         }
                                         else {
 
-                                            mFireStore.collection("Seekers").document(mConsumerID).set(userMap);
+
+                                            mFireStore.collection("Seekers").document(mConsumerID).set(userMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    goToMainActivity();
+                                                }
+                                            });
 
                                             ShowToast("Welcome Back");
                                             //Toast.makeText(VerifyPhoneActivity.this, "Welcome Back", Toast.LENGTH_SHORT).show();
@@ -271,7 +277,17 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                 });
     }
 
+    private void goToMainActivity() {
 
+        Intent intent = new Intent(VerifyPhoneActivity.this, MainActivity.class);
+        intent.putExtra("mobile",mPhoneNumber);
+        intent.putExtra("user","new_user");
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(VerifyPhoneActivity.this);
+        startActivity(intent, options.toBundle());
+        VerifyPhoneActivity.this.finish();
+
+    }
 
 
     private void ShowToast(String text){
