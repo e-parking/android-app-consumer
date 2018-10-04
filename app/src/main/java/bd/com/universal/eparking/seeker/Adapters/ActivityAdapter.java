@@ -416,5 +416,8 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
     }
 
 
-
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
+    }
 }
