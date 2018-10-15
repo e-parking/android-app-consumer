@@ -96,13 +96,14 @@ public class ActivityFragment extends Fragment {
                                 || parkingRequest.getmStatus().equals(Status.REJECTED)
                                 || parkingRequest.getmStatus().equals(Status.ENDED)
                                 || parkingRequest.getmStatus().equals(Status.CANCELLED)) {
-                            requestList.add(parkingRequest);
 
+                            requestList.add(parkingRequest);
+                            setNotifactionRecyclerView();
 
                         }
                     }
 
-                    setNotifactionRecyclerView();
+
                 }
                 else {
                     setNotifactionRecyclerView();
@@ -129,7 +130,9 @@ public class ActivityFragment extends Fragment {
             mInfoText.setVisibility(View.GONE);
         }
 
-        Collections.reverse(requestList);
+        //Collections.reverse(requestList);
+
+        Collections.sort(requestList,ParkingRequest.SORT_BY_TIME);
         activityAdapter = new ActivityAdapter(requestList,getActivity());
         mActivityRecyclerView.setAdapter(activityAdapter);
     }

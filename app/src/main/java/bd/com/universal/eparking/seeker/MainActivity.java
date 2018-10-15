@@ -268,7 +268,6 @@ public class MainActivity extends AppCompatActivity implements
             statusCheck();
         }
 
-        GetPendingRequest();
         getUserInformation();
 
         //-------------------------------------------------
@@ -447,7 +446,7 @@ public class MainActivity extends AppCompatActivity implements
 
         getDeviceCurrentLocation();
         getLocationUpdates();
-        GetVehicle();
+
 
 
     }  //End of onCreat Method
@@ -541,6 +540,8 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         }
+
+
     }
 
 
@@ -574,6 +575,12 @@ public class MainActivity extends AppCompatActivity implements
 
 
     public void innitializeMap() {
+
+        isReuestPending=false;
+        GetPendingRequest();
+        vehicleList.clear();
+        GetVehicle();
+
         //  vehicleSelection.setVisibility(View.VISIBLE);
         mGpsDialog.dismiss();
         options = new GoogleMapOptions();
@@ -851,6 +858,7 @@ public class MainActivity extends AppCompatActivity implements
                             Consumer consumer = TempHolder.mConsumer;
 
 
+
                             ParkingRequest providerRequest = new ParkingRequest(consumer.getmComsumerID(),
                                     provider.getmProviderID(),
                                     parkPlace.getmParkPlaceID(),
@@ -893,7 +901,7 @@ public class MainActivity extends AppCompatActivity implements
                             notificationMap.put("message", consumer.getmName() + " wants to park " + vehicle.getmVehicleType() + " (" + vehicle.getmVehicleNumberPrefix()+" "+ vehicle.getmVehicleNumber() + ")");
                             notificationMap.put("consumer", mConsumerID);
 
-                            mFireStore.collection("Users").document(provider.getmProviderID()).collection("Notifications").add(notificationMap);
+                            mFireStore.collection("Owners").document(provider.getmProviderID()).collection("Notifications").add(notificationMap);
 
 
                         }
@@ -973,7 +981,7 @@ public class MainActivity extends AppCompatActivity implements
                             notificationMap.put("message", consumer.getmName() + " wants to park " + vehicle.getmVehicleType() + " (" + vehicle.getmVehicleNumberPrefix()+" "+ vehicle.getmVehicleNumber() + ")");
                             notificationMap.put("consumer", mConsumerID);
 
-                            mFireStore.collection("Users").document(provider.getmProviderID()).collection("Notifications").add(notificationMap);
+                            mFireStore.collection("Owners").document(provider.getmProviderID()).collection("Notifications").add(notificationMap);
 
 
                         }
@@ -1108,12 +1116,15 @@ public class MainActivity extends AppCompatActivity implements
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             if (dataSnapshot.exists()){
                                                 totalProviderRatingValue=0;
-                                                ProviderRating providerRating;
                                                 int counter=0;
                                                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                                    providerRating=data.getValue(ProviderRating.class);
-                                                    counter++;
-                                                    totalProviderRatingValue=totalProviderRatingValue+providerRating.getmConsumerRatingValue();
+
+                                                    ProviderRating providerRating=data.getValue(ProviderRating.class);
+                                                    if (providerRating.getmStatus().equals(Status.ENDED)){
+                                                        counter++;
+                                                        totalProviderRatingValue=totalProviderRatingValue+providerRating.getmConsumerRatingValue();
+                                                    }
+
                                                 }
                                                 if (counter>0){
                                                     averageProviderParkingValue=totalProviderRatingValue/counter;
@@ -1253,36 +1264,40 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                if (dataSnapshot.child("mName").getValue().toString().isEmpty()
-                        || dataSnapshot.child("mName").getValue().toString().equals("")
-                        || dataSnapshot.child("mName").getValue().toString().equals(null))
+                if (dataSnapshot.exists())
                 {
-                    Intent intent=new Intent(MainActivity.this,SignUpActivity.class);
-                    startActivity(intent);
-                    ErrorToast("Please update your profile first");
 
-                }
+                    if (dataSnapshot.child("mName").getValue().toString().isEmpty()
+                            || dataSnapshot.child("mName").getValue().toString().equals("")
+                            || dataSnapshot.child("mName").getValue().toString().equals(null))
+                    {
+                        Intent intent=new Intent(MainActivity.this,SignUpActivity.class);
+                        startActivity(intent);
+                        ErrorToast("Please update your profile first");
 
-                System.out.println(">>>>>>>>>>>>>> Get Status Called  from firebase");
-                if (dataSnapshot.getValue(Consumer.class) != null) {
-
-                    TempHolder.mConsumer = dataSnapshot.getValue(Consumer.class);
-                    mUserName.setText(TempHolder.mConsumer.getmName());
-
-                    if (TempHolder.mConsumer.getmEmail().contains("@mail.com")) {
-                        mUserEmailAddress.setText("");
-                    } else {
-                        mUserEmailAddress.setText(TempHolder.mConsumer.getmEmail());
                     }
 
-                    if (!TempHolder.mConsumer.getmPhoto().equals("")) {
-                        Picasso.get().load(TempHolder.mConsumer.getmPhoto()).placeholder(R.drawable.profile).error(R.drawable.profile).into(mProfileImage);
-                    } else {
-                        mProfileImage.setImageResource(R.drawable.profile);
-                    }
+                    System.out.println(">>>>>>>>>>>>>> Get Status Called  from firebase");
+                    if (dataSnapshot.getValue(Consumer.class) != null) {
 
-                    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> USER : " + TempHolder.mConsumer);
-                    getStatus();
+                        TempHolder.mConsumer = dataSnapshot.getValue(Consumer.class);
+                        mUserName.setText(TempHolder.mConsumer.getmName());
+
+                        if (TempHolder.mConsumer.getmEmail().contains("@mail.com")) {
+                            mUserEmailAddress.setText("");
+                        } else {
+                            mUserEmailAddress.setText(TempHolder.mConsumer.getmEmail());
+                        }
+
+                        if (!TempHolder.mConsumer.getmPhoto().equals("")) {
+                            Picasso.get().load(TempHolder.mConsumer.getmPhoto()).placeholder(R.drawable.profile).error(R.drawable.profile).into(mProfileImage);
+                        } else {
+                            mProfileImage.setImageResource(R.drawable.profile);
+                        }
+
+                        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> USER : " + TempHolder.mConsumer);
+                        getStatus();
+                    }
                 }
 
 
@@ -1383,6 +1398,12 @@ public class MainActivity extends AppCompatActivity implements
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 finish();
                 startActivity(intent);
+
+                FirebaseFirestore mFireStore=FirebaseFirestore.getInstance();
+                mFireStore.collection("Seekers").document(mConsumerID).update("token_id","");
+
+
+
 
         }
 

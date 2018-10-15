@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="250dp"
     android:layout_height="250dp"
     android:gravity="center_vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="270dp"
+        android:layout_height="250dp"
         android:background="@drawable/all_side_border_main"
         android:orientation="vertical"
         android:padding="5dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="250dp"
             android:layout_height="match_parent"
             android:layout_weight=".20"
             android:orientation="vertical">
@@ -38,7 +38,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_regular"
-                    android:text="Owner: BITM"
+                    android:text="Owner"
                     android:maxLines="1"
                     android:textAlignment="center"
                     android:textColor="@color/black"

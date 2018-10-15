@@ -36,7 +36,7 @@ public class PaymentActivity extends AppCompatActivity {
     private String mParkPlaceId,mProviderId,mParkingChargePerHour,mParkPlacePhotoUrl;
     private String mParkPlaceTitle,mParkPlaceAddress;
     private int totalCharge;
-    private int hour,min;
+    private int hour,min,sec;
     private float mRatingValue;
     private String mCommentText;
     private boolean reviewStatus=false;
@@ -52,7 +52,6 @@ public class PaymentActivity extends AppCompatActivity {
         mSubmit=findViewById(R.id.submit_button_id);
         mProviderName=findViewById(R.id.provider_name_id);
         mProviderImage=findViewById(R.id.provider_image_id);
-        mVehicleType=findViewById(R.id.vehicle_id);
         mRatingBar=findViewById(R.id.rating_bar_id);
         mComment=findViewById(R.id.comment_id);
         mAddress=findViewById(R.id.address);
@@ -190,7 +189,7 @@ public class PaymentActivity extends AppCompatActivity {
         timeDistance=timeDistance-(hour*3600000);
         min= (int) (timeDistance/60000);
         timeDistance=timeDistance-(min*60000);
-        int sec= (int) (timeDistance/1000);
+        sec= (int) (timeDistance/1000);
         mDuration.setText("Total Time- "+hour+"h:"+min+"m");
     }
 
@@ -199,9 +198,10 @@ public class PaymentActivity extends AppCompatActivity {
         if (hour>0){
             totalCharge=hour*costPerHour;
         }
-        if (min>0){
+        if (min>0 || sec>0){
             totalCharge=totalCharge+costPerHour;
         }
+
 
         mAmmount.setText("Total Charge- "+totalCharge+" TK");
 

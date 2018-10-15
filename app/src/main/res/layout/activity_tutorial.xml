@@ -7,8 +7,9 @@
 
     <android.support.v4.view.ViewPager
         android:layout_width="match_parent"
-        android:layout_height="480dp"
+        android:layout_height="match_parent"
         android:id="@+id/viewPager_id"
+        android:layout_above="@+id/circleIndicator_id"
          />
 
 
@@ -17,7 +18,7 @@
         android:layout_height="20dp"
         android:id="@+id/circleIndicator_id"
         app:ci_drawable="@color/red"
-        android:layout_below="@id/viewPager_id"
+        android:layout_alignParentBottom="true"
         />
 
 

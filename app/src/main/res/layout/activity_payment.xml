@@ -38,7 +38,7 @@
             android:textSize="18sp"
             android:textStyle="bold"
             android:fontFamily="@font/roboto_regular"
-            android:text="00:00:00s"/>
+            android:text=""/>
 
         <View
             android:layout_width="match_parent"
@@ -61,7 +61,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="740"
+            android:text=""
             android:id="@+id/ammount_id"
             android:fontFamily="@font/roboto_regular"
             android:textSize="25sp"/>
@@ -105,13 +105,13 @@
             android:layout_width="wrap_content"
             android:layout_gravity="center"
             android:layout_height="wrap_content">
-            <ImageView
+           <!-- <ImageView
                 android:layout_width="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="5dp"
                 android:id="@+id/vehicle_id"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_vehicle_car"/>
+                android:src="@drawable/ic_vehicle_car"/>-->
         </RelativeLayout>
 
     </LinearLayout>

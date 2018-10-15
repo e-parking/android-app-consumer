@@ -153,40 +153,65 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
         String mStatus=model.getmStatus();
         if (mStatus.equals(Status.STARTED))
         {
+            holder.mStatus.setVisibility(View.VISIBLE);
             holder.mStatus.setText(Status.STARTED);
             holder.mEndButton.setVisibility(View.VISIBLE);
+            holder.mCancleButton.setVisibility(View.GONE);
+            holder.ratingBar.setVisibility(View.GONE);
+            holder.phoneNumberTV.setVisibility(View.VISIBLE);
+            holder.callButton.setVisibility(View.VISIBLE);
+            holder.mobileIcon.setVisibility(View.VISIBLE);
         }
         else if (mStatus.equals(Status.PENDING)){
+            holder.mStatus.setVisibility(View.VISIBLE);
             holder.mStatus.setText(Status.PENDING);
             holder.mEndButton.setVisibility(View.GONE);
             holder.mCancleButton.setVisibility(View.VISIBLE);
+            holder.ratingBar.setVisibility(View.GONE);
+            holder.phoneNumberTV.setVisibility(View.VISIBLE);
+            holder.callButton.setVisibility(View.VISIBLE);
+            holder.mobileIcon.setVisibility(View.VISIBLE);
 
         }
         else if (mStatus.equals(Status.REJECTED)){
+            holder.mStatus.setVisibility(View.VISIBLE);
             holder.mStatus.setText(Status.REJECTED);
             holder.mEndButton.setVisibility(View.GONE);
             holder.phoneNumberTV.setVisibility(View.GONE);
             holder.callButton.setVisibility(View.GONE);
             holder.mobileIcon.setVisibility(View.GONE);
+            holder.ratingBar.setVisibility(View.GONE);
+            holder.mCancleButton.setVisibility(View.GONE);
         }
         else if (mStatus.equals(Status.ENDED)){
+            holder.mStatus.setVisibility(View.VISIBLE);
             holder.mStatus.setText(Status.ENDED);
             holder.mEndButton.setVisibility(View.GONE);
             holder.ratingBar.setVisibility(View.VISIBLE);
             holder.phoneNumberTV.setVisibility(View.GONE);
             holder.callButton.setVisibility(View.GONE);
             holder.mobileIcon.setVisibility(View.GONE);
+            holder.mCancleButton.setVisibility(View.GONE);
         }
         else if (mStatus.equals(Status.ACCEPTED)){
+            holder.mStatus.setVisibility(View.VISIBLE);
             holder.mStatus.setText(Status.ACCEPTED);
             holder.mEndButton.setVisibility(View.GONE);
+            holder.mCancleButton.setVisibility(View.GONE);
+            holder.ratingBar.setVisibility(View.GONE);
+            holder.phoneNumberTV.setVisibility(View.VISIBLE);
+            holder.callButton.setVisibility(View.VISIBLE);
+            holder.mobileIcon.setVisibility(View.VISIBLE);
         }
         else if (mStatus.equals(Status.CANCELLED)){
+            holder.mStatus.setVisibility(View.VISIBLE);
             holder.mStatus.setText(Status.CANCELLED);
             holder.mEndButton.setVisibility(View.GONE);
             holder.phoneNumberTV.setVisibility(View.GONE);
             holder.callButton.setVisibility(View.GONE);
             holder.mobileIcon.setVisibility(View.GONE);
+            holder.mCancleButton.setVisibility(View.GONE);
+            holder.ratingBar.setVisibility(View.GONE);
         }
 
 
@@ -245,8 +270,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
                                 notificationMap.put("message",model.getmConsumerName()+" has cancelled request.");
                                 notificationMap.put("consumer",mConsumerID);
 
-                                mFireStore.collection("Users").document(model.getmProviderID()).collection("Notifications").add(notificationMap);
-
+                                mFireStore.collection("Owners").document(model.getmProviderID()).collection("Notifications").add(notificationMap);
 
                                 break;
 
@@ -350,7 +374,7 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
                                 notificationMap.put("message", model.getmParkPlaceTitle()+" is now free.");
                                 notificationMap.put("consumer",mConsumerID);
 
-                                mFireStore.collection("Users").document(model.getmProviderID()).collection("Notifications").add(notificationMap);
+                                mFireStore.collection("Owners").document(model.getmProviderID()).collection("Notifications").add(notificationMap);
 
                                 break;
 
@@ -392,5 +416,8 @@ public class ActivityAdapter extends RecyclerView.Adapter<ActivityAdapter.Viewho
     }
 
 
-
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
+    }
 }

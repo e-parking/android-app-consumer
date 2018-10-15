@@ -210,7 +210,15 @@ public class SignUpActivity extends AppCompatActivity {
             public void onClick(View v) {
                 internetstatus = isNetworkAvailable();
                 if (internetstatus == true){
-                    updateProfile();
+
+                    if (mProviderName.getText().toString()==null || mProviderName.getText().toString().isEmpty() || mProviderName.getText().toString().equals(""))
+                    {
+                        ErrorToast("Enter a valid Name");
+                    }
+                    else {
+                        updateProfile();
+                    }
+
                 }
                 else {
                     showInternetDialogBox();
@@ -222,7 +230,8 @@ public class SignUpActivity extends AppCompatActivity {
         mProviderPhone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(SignUpActivity.this, "Sorry,Phone number can not be changed.", Toast.LENGTH_SHORT).show();
+                ErrorToast("Sorry,Phone number can not be changed.");
+               // Toast.makeText(SignUpActivity.this, "Sorry,Phone number can not be changed.", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -292,8 +301,7 @@ public class SignUpActivity extends AppCompatActivity {
             mFirebaseUserInformation.child("mLatitude").setValue(mSelectedLatitude);
             mFirebaseUserInformation.child("mLongitude").setValue(mSelectedLatitude);
         }
-
-
+/*
         // clear edit text
         mProviderName.setText("");
         mProviderEmail.setText("");
@@ -301,12 +309,12 @@ public class SignUpActivity extends AppCompatActivity {
         mProviderPassword1.setText("");
         mProviderPhone.setText("");
         mProviderAddress.setText("");
-        mProviderNID.setText("");
+        mProviderNID.setText("");*/
         progressDialog.dismiss();
         ShowToast("Profile updated successfully");
        // Toast.makeText(SignUpActivity.this, "Profile successfully updated",    Toast.LENGTH_SHORT).show();
         //startActivity(new Intent(SignUpActivity.this, MainActivity.class));
-        finish();
+        //finish();
 
 
 
@@ -370,7 +378,8 @@ public class SignUpActivity extends AppCompatActivity {
                     mProviderAddress.setText("");
                     mProviderNID.setText("");
                     progressDialog.dismiss();
-                    Toast.makeText(SignUpActivity.this, "Profile successfully updated",    Toast.LENGTH_SHORT).show();
+                    ShowToast("Profile successfully updated");
+                    //Toast.makeText(SignUpActivity.this, "Profile successfully updated",    Toast.LENGTH_SHORT).show();
                     //startActivity(new Intent(SignUpActivity.this, MainActivity.class));
                     finish();
                     //reload();
@@ -424,13 +433,17 @@ public class SignUpActivity extends AppCompatActivity {
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 mProfileURL = taskSnapshot.getDownloadUrl().toString();
                 mFirebaseUserInformation.child("mPhoto").setValue(mProfileURL);
-                Toast.makeText(SignUpActivity.this, "Profile picture added successfully",    Toast.LENGTH_SHORT).show();
+
+                ShowToast("Profile picture added successfully");
+                //Toast.makeText(SignUpActivity.this, "Profile picture added successfully",    Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                ErrorToast(e.getMessage());
+                //Toast.makeText(SignUpActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
             }
         });
@@ -688,4 +701,19 @@ public class SignUpActivity extends AppCompatActivity {
         toast.setView(layout);
         toast.show();
     }
+
+
+    private void ErrorToast(String text){
+        LayoutInflater layoutInflater=getLayoutInflater();
+        View layout=layoutInflater.inflate(R.layout.error_custom_toast,(ViewGroup)findViewById(R.id.error_toast_layout));
+        TextView textView=layout.findViewById(R.id.toast_text_id);
+        textView.setText(text);
+        Toast toast=new Toast(getApplicationContext());
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setGravity(Gravity.BOTTOM,0,30);
+        toast.setView(layout);
+        toast.show();
+    }
+
+
 }

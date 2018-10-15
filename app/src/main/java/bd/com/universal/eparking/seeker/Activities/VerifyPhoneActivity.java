@@ -138,11 +138,12 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                     editTextCode.setError("Enter valid code");
                     editTextCode.requestFocus();
                     editTextCode.setSelection(editTextCode.getText().length());
-                    return;
+                }else {
+
+                    //verifying the code entered manually
+                    verifyVerificationCode(code);
                 }
 
-                //verifying the code entered manually
-                verifyVerificationCode(code);
             }
         });
 
@@ -206,13 +207,6 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             //verification successful we will start the profile activity
 
-                            Intent intent = new Intent(VerifyPhoneActivity.this, MainActivity.class);
-                            intent.putExtra("mobile",mPhoneNumber);
-                            intent.putExtra("user","new_user");
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(VerifyPhoneActivity.this);
-                            startActivity(intent, options.toBundle());
-                            VerifyPhoneActivity.this.finish();
 
 
 
@@ -238,22 +232,37 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                                                 }
                                             });
 
+
+
                                             Consumer consumer = new Consumer(mConsumerID,"","","","",mPhoneNumber,"","","", "0", "0");
-                                            mFirebaseDatabase.child(mConsumerID).setValue(consumer);
+                                            mFirebaseDatabase.child(mConsumerID).setValue(consumer).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    goToProfileActivity();
+                                                }
+                                            });
 
                                             //fireStore
-                                            mFireStore.collection("Users").document(mConsumerID).set(userMap);
+                                            mFireStore.collection("Seekers").document(mConsumerID).set(userMap);
 
                                         }
                                         else {
 
-                                            mFireStore.collection("Users").document(mConsumerID).set(userMap);
+
+                                            mFireStore.collection("Seekers").document(mConsumerID).set(userMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    goToMainActivity();
+                                                }
+                                            });
 
                                             ShowToast("Welcome Back");
                                             //Toast.makeText(VerifyPhoneActivity.this, "Welcome Back", Toast.LENGTH_SHORT).show();
 
                                         }
 
+                                    }else {
+                                        ErrorToast("Invalid OTP Code");
                                     }
                                 }
                             }, 2000);
@@ -263,7 +272,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                             progressBar.setVisibility(View.INVISIBLE);
                             signIn.setVisibility(View.VISIBLE);
 
-                            ErrorToast("Invalid OTP Code");
+
                            // Toast.makeText(VerifyPhoneActivity.this, "Invalid OTP Code", Toast.LENGTH_SHORT).show();
 
                         }
@@ -271,7 +280,25 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                 });
     }
 
+    private void goToProfileActivity() {
+        Intent intent=new Intent(VerifyPhoneActivity.this,SignUpActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        //ErrorToast("Please update your profile first");
 
+    }
+
+    private void goToMainActivity() {
+
+        Intent intent = new Intent(VerifyPhoneActivity.this, MainActivity.class);
+        intent.putExtra("mobile",mPhoneNumber);
+        intent.putExtra("user","new_user");
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(VerifyPhoneActivity.this);
+        startActivity(intent, options.toBundle());
+        VerifyPhoneActivity.this.finish();
+
+    }
 
 
     private void ShowToast(String text){

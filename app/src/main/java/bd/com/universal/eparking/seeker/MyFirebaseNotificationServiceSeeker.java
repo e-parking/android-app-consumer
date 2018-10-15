@@ -12,7 +12,7 @@ import com.google.firebase.messaging.RemoteMessage;
  * Created by Nipon on 9/29/2018.
  */
 
-public class MyFirebaseNotificationService extends FirebaseMessagingService {
+public class MyFirebaseNotificationServiceSeeker extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -25,7 +25,7 @@ public class MyFirebaseNotificationService extends FirebaseMessagingService {
                 .setContentTitle(remoteMessage.getNotification().getTitle())
                 .setContentText(remoteMessage.getNotification().getBody())
                 .setContentIntent(pendingIntent)
-                .setSmallIcon(android.R.drawable.sym_def_app_icon)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .build();
         NotificationManager notificationManager= (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notificationManager.notify(0,notification);

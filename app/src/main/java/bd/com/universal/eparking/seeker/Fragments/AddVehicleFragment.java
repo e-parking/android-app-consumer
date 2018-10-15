@@ -417,14 +417,23 @@ public class AddVehicleFragment extends Fragment {
 
     private void showMotorCycleDetails() {
 
-        motorCycleBlueBookImageView.setImageBitmap(mBitmapImage4);
-        motorCycleNumber.setText(vehicleNumberPrefix+"\n"+vehicleNumber+"\n"+vehicleType);
+        if (mBitmapImage4!=null){
+            motorCycleBlueBookImageView.setImageBitmap(mBitmapImage4);
+        }
+        else {
+            motorCycleBlueBookImageView.setImageResource(R.drawable.bike_red);
+        }
+        motorCycleNumber.setText(vehicleNumberPrefix+" "+vehicleNumber+"\n"+vehicleType);
     }
 
     private void showCarDetails() {
 
-        carBlueBookImageView.setImageBitmap(mBitmapImage4);
-        carNumber.setText(vehicleNumberPrefix+"\n"+vehicleNumber+"\n"+vehicleType);
+        if (mBitmapImage4!=null){
+            carBlueBookImageView.setImageBitmap(mBitmapImage4);
+        }else {
+            carBlueBookImageView.setImageResource(R.drawable.car_red);
+        }
+        carNumber.setText(vehicleNumberPrefix+" "+vehicleNumber+"\n"+vehicleType);
     }
 
 
