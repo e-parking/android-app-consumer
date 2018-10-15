@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -64,6 +66,8 @@ public class LoginWithPhone extends AppCompatActivity {
     LinearLayout llPhone;
 
 
+    private CheckBox termsAndConditionCheckBox;
+    private TextView terms;
     private Dialog mUserAlertDialog;
     //Firebase Section
     private FirebaseAuth mAuth;
@@ -83,6 +87,8 @@ public class LoginWithPhone extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_login_with_phone);
+        termsAndConditionCheckBox = findViewById(R.id.termsAndCondition);
+        terms = findViewById(R.id.termsAndConditionTV);
 
         mFirebaseInstance = FirebaseDatabase.getInstance();
         mFirebaseRefConsumer = mFirebaseInstance.getReference("ConsumerList");
@@ -92,6 +98,19 @@ public class LoginWithPhone extends AppCompatActivity {
 
         ButterKnife.bind(this);
         //setupWindowAnimations();
+
+        termsAndConditionCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+
+                }
+                else {
+
+                }
+
+            }
+        });
 
     }
 
@@ -271,7 +290,7 @@ public class LoginWithPhone extends AppCompatActivity {
     @OnClick(R.id.fabProgressCircle)
     void nextPager() {
 
-        fabProgressCircle.show();
+
         String mobile = etPhoneNo.getText().toString().trim();
 
 
@@ -283,14 +302,17 @@ public class LoginWithPhone extends AppCompatActivity {
 
         phoneNumber = etPhoneNo.getText().toString();
         isProvider = false;
+        etPhoneNo.setCursorVisible(false);
+        rootFrame.setAlpha(0.4f);
+        fabProgressCircle.show();
         getAllConsumer();
 
 
 
 
-        etPhoneNo.setCursorVisible(false);
+        /*etPhoneNo.setCursorVisible(false);
         rootFrame.setAlpha(0.4f);
-        fabProgressCircle.show();
+        fabProgressCircle.show();*/
 
 
 
@@ -336,9 +358,10 @@ public class LoginWithPhone extends AppCompatActivity {
                             }
                     }
 
-                    if (status)
-                    {
-                        fabProgressCircle.hide();
+                    if(termsAndConditionCheckBox.isChecked()){
+                        if (status)
+                        {
+                            fabProgressCircle.hide();
 
                             Intent intent = new Intent(LoginWithPhone.this, VerifyPhoneActivity.class);
                             intent.putExtra("user","old_user");
@@ -347,13 +370,19 @@ public class LoginWithPhone extends AppCompatActivity {
                             startActivity(intent, options.toBundle());
 
 
-                    }else
-                    {
-                        fabProgressCircle.hide();
-                        Intent intent = new Intent(LoginWithPhone.this, VerifyPhoneActivity.class);
-                        intent.putExtra("mobile", phoneNumber);
-                        intent.putExtra("user", "new_user");
-                        startActivity(intent);
+                        }else
+                        {
+                            fabProgressCircle.hide();
+                            Intent intent = new Intent(LoginWithPhone.this, VerifyPhoneActivity.class);
+                            intent.putExtra("mobile", phoneNumber);
+                            intent.putExtra("user", "new_user");
+                            startActivity(intent);
+                        }
+
+                    }
+                    else {
+                        Toast.makeText(LoginWithPhone.this, "Read terms and condition and checked it", Toast.LENGTH_SHORT).show();
+                        fabProgressCircle.setEnabled(false);
                     }
 
 

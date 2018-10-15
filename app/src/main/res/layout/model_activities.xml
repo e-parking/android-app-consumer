@@ -67,6 +67,7 @@
                         android:layout_weight=".45"
                         android:textStyle="bold"
                         android:maxLines="1"
+                        android:layout_gravity="center"
                         android:fontFamily="@font/roboto_regular"
                         android:textColor="@color/white"
                         android:text="You parked at"
