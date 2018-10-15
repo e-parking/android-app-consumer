@@ -384,9 +384,6 @@ public class LoginWithPhone extends AppCompatActivity {
                         Toast.makeText(LoginWithPhone.this, "Read terms and condition and checked it", Toast.LENGTH_SHORT).show();
                         fabProgressCircle.setEnabled(false);
                     }
-
-
-
                 }
 
                 @Override

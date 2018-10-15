@@ -71,7 +71,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
             if (waitingTime>0)
             {
                 waitingTime--;
-                waitingTimeTV.setText("Resend Code in "+String.valueOf(waitingTime)+" Second");
+                waitingTimeTV.setText("Resend code in "+String.valueOf(waitingTime)+" second");
             }
 
             if (waitingTime<1)
